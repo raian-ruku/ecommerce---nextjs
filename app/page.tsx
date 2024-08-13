@@ -1,113 +1,115 @@
+import { main } from "bun";
 import Image from "next/image";
+import heroImage from "@/public/images/hero_image.png";
+import { Button } from "@/components/ui/button";
+import { FaArrowRight } from "react-icons/fa";
+import { BsTruck } from "react-icons/bs";
+import HomeDetails from "@/components/homeDetails";
+import { GiAchievement } from "react-icons/gi";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import BestSeller from "@/components/bestSeller";
+import dress from "@/public/images/dress.png";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LatestHome from "@/components/latestHome";
+import FeaturedHome from "@/components/featuredHome";
+import { Newsletter } from "@/components/newsletter";
+import { Footer } from "@/components/footer";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="flex flex-col items-center justify-center pt-5">
+      <div className="bg-n100 flex w-full items-center justify-center">
+        <div className="flex w-container items-center justify-between">
+          <div className="flex flex-col gap-y-4">
+            <h1 className="text-[32px] text-b800">Fresh Arrivals Online</h1>{" "}
+            <h3 className="pb-10 text-neutral-600">
+              Discover Our Newest Collection Today.
+            </h3>
+            <Button className="w-[200px] bg-b800 font-light text-white">
+              View Collection
+              <FaArrowRight className="pl-3 font-normal" size={25} />
+            </Button>
+          </div>
+          <Image src={heroImage} alt="Hero Image" className="mt-20" />
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-center py-20">
+        <div className="flex w-container items-center justify-between">
+          <HomeDetails
+            icon={BsTruck}
+            title="Free Shipping"
+            description="Upgrade your style today and get FREE shipping on all orders! Don't miss out."
+          />
+          <HomeDetails
+            icon={GiAchievement}
+            title="Satisfaction Guarantee"
+            description="Shop confidently with our Satisfaction Guarantee: Love it or get a refund."
+          />
+          <HomeDetails
+            icon={IoShieldCheckmarkOutline}
+            title="Secure Payment"
+            description="Your security is our priority. Your payments are secure with us."
+          />
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-center">
+        <div className="flex w-container flex-col items-center justify-between pt-5">
+          <div className="flex flex-col gap-y-3">
+            <h2 className="text-neutral-400">SHOP NOW</h2>
+            <h1 className="text-2xl text-b900">Best Selling</h1>
+          </div>
+          <BestSeller className="py-20" />
+        </div>
+      </div>
+      <div className="mt-10 flex w-full items-center justify-center bg-gradient-to-r from-[#F6F6F6] to-white">
+        <div className="flex w-container items-center justify-between">
+          <div className="flex flex-col gap-y-6">
+            <h1 className="text-[24px] text-b800">
+              Browse Our Fashion Paradise!
+            </h1>
+            <h3 className="w-[450px] pb-10 text-[14px] text-neutral-600">
+              Step into a world of style and explore our diverse collection of
+              clothing categories.
+            </h3>
+            <Button className="w-[200px] bg-b800 font-light text-white">
+              Start Browsing
+              <FaArrowRight className="pl-3 font-normal" size={25} />
+            </Button>
+          </div>
+          <Image src={dress} alt="" className="mb-20" />
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-center pt-32">
+        <div className="flex w-container items-center justify-center">
+          <div>
+            <Tabs defaultValue="featured" className="mb-36">
+              <TabsList className="mb-16 flex gap-4 bg-transparent">
+                <TabsTrigger
+                  value="featured"
+                  className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
+                >
+                  Featured
+                </TabsTrigger>
+                <TabsTrigger
+                  value="latest"
+                  className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
+                >
+                  Latest
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="featured">
+                <FeaturedHome />
+              </TabsContent>
+              <TabsContent value="latest">
+                <LatestHome />
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <Newsletter />
+      <Footer />
     </main>
   );
 }
