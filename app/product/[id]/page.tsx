@@ -130,7 +130,10 @@ const ProductbyID = () => {
                 ))}
               </div>
             </div>
-            <QuantitySelector />
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg text-b900">QUANTITY</h3>
+              <QuantitySelector />
+            </div>
             <div className="flex flex-row items-center gap-4">
               <Button className="flex w-[300px] gap-4 bg-b900">
                 Add to cart <CiShoppingCart size={25} className="" />
@@ -231,7 +234,7 @@ const ProductbyID = () => {
         </div>
       </div>
       <Newsletter />
-      <Footer />
+      <Footer className="" />
     </main>
   );
 };

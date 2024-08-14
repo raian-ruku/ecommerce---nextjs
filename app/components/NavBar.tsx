@@ -28,7 +28,9 @@ const NavBar = async () => {
         </div>
         <div className="flex w-full justify-center">
           <div className="flex w-container justify-between pt-4 text-[16px] text-neutral-500">
-            <Image src={Logo} alt="e-commerce logo" />
+            <Link href="/">
+              <Image src={Logo} alt="e-commerce logo" />
+            </Link>
             <div className="">
               <Link href="/">
                 <Button variant="link" className="text-neutral-500">
@@ -59,7 +61,9 @@ const NavBar = async () => {
                   className="rounded-md border-[1px] border-neutral-300 text-neutral-500 placeholder:text-neutral-100"
                 />
               </div>
-              <CiShoppingCart size={30} className="text-neutral-500" />
+              <Link href="/cart">
+                <CiShoppingCart size={30} className="text-neutral-500" />
+              </Link>
               <RxAvatar size={25} className="text-neutral-500" />
             </div>
           </div>
