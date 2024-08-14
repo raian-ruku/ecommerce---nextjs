@@ -52,7 +52,7 @@ const CartPage = () => {
                 </div>
                 <p>$Price</p>
                 <QuantitySelector />
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-neutral-200 text-red-400">
+                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-neutral-200 text-red-600">
                   <IoIosClose size={30} />
                 </div>
               </div>
