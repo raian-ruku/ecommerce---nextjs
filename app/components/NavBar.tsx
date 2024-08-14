@@ -14,8 +14,9 @@ import { Input } from "@nextui-org/input";
 import { CiSearch } from "react-icons/ci";
 import { CiShoppingCart } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
+import Link from "next/link";
 
-const NavBar = () => {
+const NavBar = async () => {
   return (
     <main className="flex flex-col">
       <div className="flex w-full flex-col">
@@ -29,9 +30,11 @@ const NavBar = () => {
           <div className="flex w-container justify-between pt-4 text-[16px] text-neutral-500">
             <Image src={Logo} alt="e-commerce logo" />
             <div className="">
-              <Button variant="link" className="text-neutral-500">
-                Home
-              </Button>
+              <Link href="/">
+                <Button variant="link" className="text-neutral-500">
+                  Home
+                </Button>
+              </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="link" className="text-neutral-500">
@@ -39,6 +42,7 @@ const NavBar = () => {
                   </Button>
                 </DropdownMenuTrigger>
               </DropdownMenu>
+
               <Button variant="link" className="text-neutral-500">
                 About
               </Button>

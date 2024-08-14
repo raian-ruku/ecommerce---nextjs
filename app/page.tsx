@@ -4,21 +4,21 @@ import heroImage from "@/public/images/hero_image.png";
 import { Button } from "@/components/ui/button";
 import { FaArrowRight } from "react-icons/fa";
 import { BsTruck } from "react-icons/bs";
-import HomeDetails from "@/components/homeDetails";
+import HomeDetails from "@/app/components/homeDetails";
 import { GiAchievement } from "react-icons/gi";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
-import BestSeller from "@/components/bestSeller";
+import BestSeller from "@/app/components/bestSeller";
 import dress from "@/public/images/dress.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import LatestHome from "@/components/latestHome";
-import FeaturedHome from "@/components/featuredHome";
-import { Newsletter } from "@/components/newsletter";
-import { Footer } from "@/components/footer";
+import LatestHome from "@/app/components/latestHome";
+import FeaturedHome from "@/app/components/featuredHome";
+import { Newsletter } from "@/app/components/newsletter";
+import { Footer } from "@/app/components/footer";
 
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center pt-5">
-      <div className="bg-n100 flex w-full items-center justify-center">
+      <div className="flex w-full items-center justify-center bg-n100">
         <div className="flex w-container items-center justify-between">
           <div className="flex flex-col gap-y-4">
             <h1 className="text-[32px] text-b800">Fresh Arrivals Online</h1>{" "}
