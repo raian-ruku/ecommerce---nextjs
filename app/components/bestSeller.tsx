@@ -35,6 +35,8 @@ const BestSeller = async ({ className }: { className?: string }) => {
                     src={tshirt.image}
                     alt={tshirt.title}
                     unoptimized
+                    height={256}
+                    width={256}
                   />
                   <Link href={`/products/${tshirt.id}`}>
                     <div className="h-[100px] w-[256px] text-b900">

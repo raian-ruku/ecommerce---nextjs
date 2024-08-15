@@ -28,6 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import CategoryDrop from "../components/categoryDrop";
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("details");

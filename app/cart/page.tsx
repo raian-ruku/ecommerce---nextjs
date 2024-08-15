@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "../components/footer";
 import CustomTop from "../components/customTop";
 import Link from "next/link";
+import CategoryDrop from "../components/categoryDrop";
 
 type CartItem = {
   id: number;

@@ -15,8 +15,9 @@ import { CiSearch } from "react-icons/ci";
 import { CiShoppingCart } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
 import Link from "next/link";
+import CategoryDrop from "./categoryDrop";
 
-const NavBar = async () => {
+const NavBar = () => {
   return (
     <main className="flex flex-col">
       <div className="flex w-full flex-col">
@@ -37,13 +38,7 @@ const NavBar = async () => {
                   Home
                 </Button>
               </Link>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="link" className="text-neutral-500">
-                    Categories <LiaAngleDownSolid className="pl-2" size={20} />
-                  </Button>
-                </DropdownMenuTrigger>
-              </DropdownMenu>
+              <CategoryDrop />
 
               <Button variant="link" className="text-neutral-500">
                 About
