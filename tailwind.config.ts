@@ -26,6 +26,8 @@ const config = {
         b900: "#0E1422",
         n100: "#F6F6F6",
         n300: "#878A92",
+        g100: "#D5E5D7",
+        r100: "#FBD9D0",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

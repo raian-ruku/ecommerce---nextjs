@@ -9,6 +9,8 @@ import QuantitySelector from "../components/quantitySelector";
 import { IoIosClose } from "react-icons/io";
 import { Button } from "@/components/ui/button";
 import { Footer } from "../components/footer";
+import CustomTop from "../components/customTop";
+import Link from "next/link";
 
 type CartItem = {
   id: number;
@@ -23,19 +25,7 @@ const CartPage = () => {
 
   return (
     <main className="flex flex-col items-center justify-center">
-      <div className="mt-10 flex w-full items-center justify-center bg-n100">
-        <div className="my-10 flex w-container flex-col gap-4">
-          {" "}
-          <h1 className="text-2xl">Cart</h1>{" "}
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>Home</BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>Cart</BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>{" "}
-        </div>
-      </div>
+      <CustomTop text="Cart" bread="Cart" classname="bg-n100" />
       <div className="my-20 flex w-container flex-row justify-between">
         <div className="w-[600px]">
           <h1 className="text-xl">Your cart</h1>
@@ -79,7 +69,9 @@ const CartPage = () => {
               <p>Total</p>
               <p>$Price</p>
             </div>
-            <Button className="mt-5">Checkout</Button>
+            <Link href="/checkout" className="">
+              <Button className="mt-5 w-full">Checkout</Button>
+            </Link>
             <p className="mb-10 flex items-center justify-center text-n300 underline">
               Continue Shopping
             </p>

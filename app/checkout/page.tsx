@@ -9,24 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
 import { Footer } from "../components/footer";
+import CustomTop from "../components/customTop";
 
 const CheckoutPage = () => {
   const items = [1, 2, 3];
   return (
     <main className="flex flex-col items-center justify-center">
-      <div className="mt-10 flex w-full items-center justify-center bg-n100">
-        <div className="my-10 flex w-container flex-col gap-4">
-          {" "}
-          <h1 className="text-2xl">Checkout</h1>{" "}
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>Home</BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>Checkout</BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>{" "}
-        </div>
-      </div>
+      <CustomTop text="Checkout" bread="Checkout" classname="bg-n100" />
       <div className="mt-20 flex w-container items-center justify-between">
         <form className="w-1/2">
           <h1 className="text-xl font-bold text-b900">Shipping Address</h1>
