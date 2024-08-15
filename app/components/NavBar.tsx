@@ -61,10 +61,12 @@ const NavBar = async () => {
                   className="rounded-md border-[1px] border-neutral-300 text-neutral-500 placeholder:text-neutral-100"
                 />
               </div>
+              <Link href="/profile">
+                <RxAvatar size={25} className="text-neutral-500" />
+              </Link>
               <Link href="/cart">
                 <CiShoppingCart size={30} className="text-neutral-500" />
               </Link>
-              <RxAvatar size={25} className="text-neutral-500" />
             </div>
           </div>
         </div>

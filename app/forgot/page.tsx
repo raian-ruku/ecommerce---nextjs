@@ -19,7 +19,9 @@ const ForgotPage = () => {
             <Label htmlFor="email">Email</Label>
             <Input name="email" />
           </div>
-          <Button>Send reset link</Button>
+          <Button className="transition-colors duration-500 ease-in-out">
+            Send reset link
+          </Button>
         </form>
       </div>
       <Footer className="bg-n100" />

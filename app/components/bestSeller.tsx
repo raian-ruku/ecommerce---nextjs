@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import Link from "next/link";
 
 type Tshirts = {
   id: number;
@@ -33,13 +34,13 @@ const BestSeller = async ({ className }: { className?: string }) => {
                     className="h-[256px] w-[256px] justify-self-center"
                     src={tshirt.image}
                     alt={tshirt.title}
-                    width={256}
-                    height={256}
                     unoptimized
                   />
-                  <div className="h-[100px] w-[256px] text-b900">
-                    {tshirt.title}
-                  </div>
+                  <Link href={`/products/${tshirt.id}`}>
+                    <div className="h-[100px] w-[256px] text-b900">
+                      {tshirt.title}
+                    </div>
+                  </Link>
                   <div className="flex w-auto items-center gap-4">
                     <StockBadge />${tshirt.price}
                   </div>
