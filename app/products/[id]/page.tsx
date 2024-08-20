@@ -31,7 +31,6 @@ import { Footer } from "@/app/components/footer";
 import { Newsletter } from "@/app/components/newsletter";
 import SizeSelector from "../_components/sizeSelector";
 import DetailsReview from "../_components/detailsReview";
-import { title } from "process";
 
 type Props = {
   params: { id: number };
