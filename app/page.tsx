@@ -14,6 +14,7 @@ import LatestHome from "@/app/components/latestHome";
 import FeaturedHome from "@/app/components/featuredHome";
 import { Newsletter } from "@/app/components/newsletter";
 import { Footer } from "@/app/components/footer";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -71,10 +72,12 @@ export default function Home() {
               Step into a world of style and explore our diverse collection of
               clothing categories.
             </h3>
-            <Button className="w-[200px] bg-b800 font-light text-white">
-              Start Browsing
-              <FaArrowRight className="pl-3 font-normal" size={25} />
-            </Button>
+            <Link href="/products">
+              <Button className="w-[200px] bg-b800 font-light text-white">
+                Start Browsing
+                <FaArrowRight className="pl-3 font-normal" size={25} />
+              </Button>
+            </Link>
           </div>
           <Image src={dress} alt="" className="mb-20" />
         </div>

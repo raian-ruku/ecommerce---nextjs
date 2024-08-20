@@ -17,7 +17,10 @@ const CategoryDrop = async () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="link" className="text-neutral-500">
+        <Button
+          variant="link"
+          className="text-neutral-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
           Categories <LiaAngleDownSolid className="pl-2" size={20} />
         </Button>
       </DropdownMenuTrigger>

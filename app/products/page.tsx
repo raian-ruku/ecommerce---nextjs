@@ -1,4 +1,5 @@
-// import getProductbyID from "@/app/backend/getProductbyID";
+import CustomTop from "../components/customTop";
+import SideBar from "./_components/sideBar";
 
 interface ProductDetails {
   id: number;
@@ -8,10 +9,15 @@ interface ProductDetails {
   image: string;
 }
 
-const ProductPage = async ({ params }: { params: number }) => {
-  //   const product: ProductDetails[] = await getProductbyID(params);
-  //   console.log(product);
-  return <div>ProductPage</div>;
+const ProductPage = async ({ params }: { params: { id: number } }) => {
+  return (
+    <main className="flex w-full flex-col items-center justify-center">
+      <CustomTop text="Products" bread="Products" classname="bg-n100" />
+      <div className="flex w-container items-center">
+        <SideBar />
+      </div>
+    </main>
+  );
 };
 
 export default ProductPage;
