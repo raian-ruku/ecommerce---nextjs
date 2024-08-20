@@ -1,10 +1,11 @@
+import { Footer } from "@/app/components/footer";
+import { Newsletter } from "@/app/components/newsletter";
 import Link from "next/link";
-import CustomTop from "../components/customTop";
-import SideBar from "./_components/sideBar";
-import StockBadge from "../components/stockBadge";
+import React from "react";
 import Image from "next/image";
-import { Footer } from "../components/footer";
-import { Newsletter } from "../components/newsletter";
+import CustomTop from "@/app/components/customTop";
+import SideBar from "../../_components/sideBar";
+import StockBadge from "@/app/components/stockBadge";
 
 interface ProductDetails {
   id: number;
@@ -13,9 +14,17 @@ interface ProductDetails {
   image: string;
 }
 
-const ProductPage = async ({ params }: { params?: { id: number } }) => {
-  const response = await fetch("https://fakestoreapi.com/products");
+const ProductByCategoryPage = async ({
+  params,
+}: {
+  params: { category: string };
+}) => {
+  const response = await fetch(
+    `https://fakestoreapi.com/products/category/${params.category}`,
+  );
   const products: ProductDetails[] = await response.json();
+  
+
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <CustomTop text="Products" bread="Products" classname="bg-n100" />
@@ -52,4 +61,4 @@ const ProductPage = async ({ params }: { params?: { id: number } }) => {
   );
 };
 
-export default ProductPage;
+export default ProductByCategoryPage;

@@ -20,7 +20,7 @@ const SideBar = () => {
 
   return (
     <div>
-      <div className="rounded-lg border p-4 shadow-md">
+      <div className="rounded-lg border-[1px] p-4 shadow-md">
         {/* Categories */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold">Categories</h2>

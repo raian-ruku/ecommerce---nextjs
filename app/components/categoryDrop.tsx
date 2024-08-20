@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LiaAngleDownSolid } from "react-icons/lia";
+import Link from "next/link";
 
 const CategoryDrop = async () => {
   const response = await fetch("https://fakestoreapi.com/products/categories");
@@ -25,10 +26,15 @@ const CategoryDrop = async () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <Link href="/products">
+          <DropdownMenuItem className="text-sm text-n300">All</DropdownMenuItem>
+        </Link>
         {categories.map((cat: string) => (
-          <DropdownMenuItem key={cat} className="text-sm text-n300">
-            {cat}
-          </DropdownMenuItem>
+          <Link href={`/products/category/${cat}`} key={cat}>
+            <DropdownMenuItem className="text-sm text-n300">
+              {cat}
+            </DropdownMenuItem>
+          </Link>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
