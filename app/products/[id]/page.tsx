@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/carousel";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import CustomTop from "@/app/components/customTop";
 type Props = {
   params: { id: number };
 };
@@ -68,8 +69,6 @@ interface ProductDetails {
 }
 
 const ProductbyID = ({ params }: { params: { id: number } }) => {
-  // const response = await fetch(`https://dummyjson.com/products/${params.id}`);
-  // const product: ProductDetails = await response.json();
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -102,16 +101,8 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
+      <CustomTop classname="bg-n100" />
       <div className="flex w-container flex-col justify-center pt-5">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>Home</BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>Products</BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>This Product</BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
         <div className="my-20 flex w-full justify-between">
           <div className="w-[400px]">
             <Carousel

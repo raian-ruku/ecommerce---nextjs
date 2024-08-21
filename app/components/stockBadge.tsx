@@ -7,10 +7,11 @@ type StockBadgeProps = {
 
 const StockBadge = ({ status }: StockBadgeProps) => {
   const isInStock = status === "In Stock";
+  const displayStatus = status ? status.toUpperCase() : "UNKNOWN";
 
   return (
     <Badge variant={isInStock ? "outline" : "destructive"} className="">
-      {status.toUpperCase()}
+      {displayStatus}
     </Badge>
   );
 };

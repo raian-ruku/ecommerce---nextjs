@@ -44,7 +44,7 @@ const ProductByCategoryPage = ({
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
-      <CustomTop text="Products" bread="Products" classname="bg-n100" />
+      <CustomTop classname="bg-n100" />
       <div className="my-20 flex w-container justify-between">
         <SideBar />
         <div className="grid grid-cols-3 justify-between gap-2">

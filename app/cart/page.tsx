@@ -26,7 +26,7 @@ const CartPage = () => {
 
   return (
     <main className="flex flex-col items-center justify-center">
-      <CustomTop text="Cart" bread="Cart" classname="bg-n100" />
+      <CustomTop classname="bg-n100" />
       <div className="my-20 flex w-container flex-row justify-between">
         <div className="w-[600px]">
           <h1 className="text-xl">Your cart</h1>
