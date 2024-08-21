@@ -1,11 +1,14 @@
+"use client";
+
 import { Footer } from "@/app/components/footer";
 import { Newsletter } from "@/app/components/newsletter";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomTop from "@/app/components/customTop";
 import SideBar from "../../_components/sideBar";
 import StockBadge from "@/app/components/stockBadge";
+import PaginationComponent from "@/app/components/paginationComponent";
 
 interface ProductDetails {
   id: number;
@@ -15,16 +18,29 @@ interface ProductDetails {
   availabilityStatus: "In Stock" | "Out of Stock";
 }
 
-const ProductByCategoryPage = async ({
+const ProductByCategoryPage = ({
   params,
 }: {
   params: { category: string };
 }) => {
-  const response = await fetch(
-    `https://dummyjson.com/products/category/${params.category}?sortBy=price&order=asc`,
-  );
-  const data = await response.json();
-  const products: ProductDetails[] = data.products;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [products, setProducts] = useState<ProductDetails[]>([]);
+  const productsPerPage = 10; // Number of products per page
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const skip = (page - 1) * productsPerPage;
+      const response = await fetch(
+        `https://dummyjson.com/products/category/${params.category}?sortBy=price&order=asc&limit=${productsPerPage}&skip=${skip}`,
+      );
+      const data = await response.json();
+      setProducts(data.products);
+      setTotalPages(Math.ceil(data.total / productsPerPage));
+    };
+
+    fetchProducts();
+  }, [page, params.category]);
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
@@ -56,6 +72,11 @@ const ProductByCategoryPage = async ({
           ))}
         </div>
       </div>
+      <PaginationComponent
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
       <Newsletter />
       <Footer />
     </main>
