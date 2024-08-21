@@ -15,7 +15,8 @@ interface ProductDetails {
   title: string;
   price: number;
   thumbnail: string;
-  availabilityStatus: "In Stock" | "Out of Stock";
+  brand: string;
+  availabilityStatus: "In Stock" | "Out of Stock" | "Low Stock";
 }
 
 const ProductByCategoryPage = ({
@@ -26,7 +27,7 @@ const ProductByCategoryPage = ({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [products, setProducts] = useState<ProductDetails[]>([]);
-  const productsPerPage = 10; // Number of products per page
+  const productsPerPage = 10;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -60,10 +61,11 @@ const ProductByCategoryPage = ({
                   width={256}
                 />
                 <Link href={`/products/${prod.id}`}>
-                  <div className="h-[100px] w-[256px] text-b900">
+                  <div className="h-[50px] w-[256px] text-b900 hover:underline hover:underline-offset-2">
                     {prod.title}
                   </div>
                 </Link>
+                <div className="h-[30px] text-b900">{prod.brand}</div>
                 <div className="flex w-auto items-center gap-4">
                   <StockBadge status={prod.availabilityStatus} />${prod.price}
                 </div>

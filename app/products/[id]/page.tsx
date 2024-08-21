@@ -58,6 +58,11 @@ type Props = {
 //   };
 // }
 
+interface Dimensions {
+  height: number;
+  width: number;
+  depth: number;
+}
 interface ProductDetails {
   id: number;
   title: string;
@@ -65,7 +70,14 @@ interface ProductDetails {
   description: string;
   images: string[];
   rating: number;
-  availabilityStatus: "In Stock" | "Out of Stock";
+  availabilityStatus: "In Stock" | "Out of Stock" | "Low Stock";
+  brand: string;
+  weight: number;
+  dimensions: Dimensions;
+  warrantyInformation: string;
+  shippingInformation: string;
+  returnPolicy: string;
+  minimumOrderQuantity: number;
 }
 
 const ProductbyID = ({ params }: { params: { id: number } }) => {
@@ -180,7 +192,19 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             </div>
           </div>
         </div>
-        <DetailsReview details={product.description} rating={product.rating} />
+        <DetailsReview
+          details={product.description}
+          rating={product.rating}
+          brand={product.brand}
+          weight={product.weight}
+          height={product.dimensions.height}
+          width={product.dimensions.width}
+          depth={product.dimensions.depth}
+          warranty={product.warrantyInformation}
+          shipping={product.shippingInformation}
+          returnPolicy={product.returnPolicy}
+          minimum={product.minimumOrderQuantity}
+        />
         <div className="mb-20">
           <div className="mb-20 flex flex-col gap-2">
             <h2 className="text-2xl font-bold text-b900">

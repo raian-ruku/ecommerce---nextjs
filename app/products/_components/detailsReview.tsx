@@ -23,12 +23,31 @@ import { BsThreeDots } from "react-icons/bs";
 import { LiaAngleDownSolid } from "react-icons/lia";
 import { MdOutlineReviews } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
+
 const DetailsReview = ({
   details,
   rating,
+  brand,
+  weight,
+  height,
+  width,
+  depth,
+  warranty,
+  shipping,
+  returnPolicy,
+  minimum,
 }: {
   details: string;
   rating: number;
+  brand: string;
+  weight: number;
+  height: number;
+  width: number;
+  depth: number;
+  warranty: string;
+  shipping: string;
+  returnPolicy: string;
+  minimum: number;
 }) => {
   const [selectedTab, setSelectedTab] = useState("details");
   return (
@@ -61,7 +80,16 @@ const DetailsReview = ({
             className="flex flex-col gap-y-4 text-justify"
           >
             <h2 className="text-2xl font-semibold">Details</h2>
-            <p>{details}</p>
+            <p className="font-bold">{details}</p>
+            <p>Brand: {brand}</p>
+            <p>Weight: {weight}</p>
+            <p>Height: {height}</p>
+            <p>Width: {width}</p>
+            <p>Depth: {depth}</p>
+            <p>Warranty Policy: {warranty}</p>
+            <p>Return Policy: {returnPolicy}</p>
+            <p>Minimum order quantity: {minimum}</p>
+            <p>Shipping Information: {shipping}</p>
           </TabsContent>
           <TabsContent value="reviews" className="flex w-auto flex-col gap-4">
             <h2 className="text-2xl font-semibold">Reviews</h2>
@@ -70,7 +98,7 @@ const DetailsReview = ({
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="texrder-b900 hover:bg-p border-[1px] border-b900 bg-transparent text-b900">
+                <Button className="border-[1px] border-b900 bg-transparent text-b900 hover:bg-transparent hover:text-b900">
                   Write a review
                 </Button>
               </DialogTrigger>
@@ -84,7 +112,10 @@ const DetailsReview = ({
                 <Label htmlFor="name">Full Name</Label>
                 <Input name="name" />
                 <Label htmlFor="review">Review</Label>
-                <Textarea name="review" />
+                <Textarea
+                  name="review"
+                  className="rounded-md border-[1px] border-neutral-200"
+                />
                 <DialogFooter>
                   <Button className="w-full bg-b900" type="submit">
                     Submit Your Review

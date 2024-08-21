@@ -28,22 +28,18 @@ const SideBar = () => {
     setPrice(value[0]); // Update the state with the new slider value
   };
 
-  function capitalizeFirstLetter(string: string) {
-    return string[0].toUpperCase() + string.slice(1);
-  }
-
   return (
     <div>
       <div className="rounded-lg border-[1px] p-4 shadow-md">
         {/* Categories */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold">Categories</h2>
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-4 flex flex-col gap-3 capitalize">
             {categories.map((category) => (
               <div key={category} className="flex items-center space-x-2">
                 <Checkbox id={category} />
                 <Label htmlFor={category} className="text-sm font-medium">
-                  {capitalizeFirstLetter(category)}
+                  {category}
                 </Label>
               </div>
             ))}

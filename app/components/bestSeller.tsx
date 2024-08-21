@@ -15,7 +15,8 @@ type Products = {
   title: string;
   price: number;
   thumbnail: string;
-  availabilityStatus: "In Stock" | "Out of Stock";
+  brand: string;
+  availabilityStatus: "In Stock" | "Out of Stock" | "Low Stock";
 };
 
 const BestSeller = async ({ className }: { className?: string }) => {
@@ -50,6 +51,7 @@ const BestSeller = async ({ className }: { className?: string }) => {
                       {product.title}
                     </div>
                   </Link>
+                  <div className="h-[30px] text-b900">{product.brand}</div>
                   <div className="flex w-auto items-center gap-4">
                     <StockBadge status={product.availabilityStatus} />$
                     {product.price}

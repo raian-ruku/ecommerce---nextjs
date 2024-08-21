@@ -15,10 +15,6 @@ const CategoryDrop = async () => {
   const response = await fetch("https://dummyjson.com/products/category-list");
   const categories = await response.json();
 
-  function capitalizeFirstLetter(string: string) {
-    return string[0].toUpperCase() + string.slice(1);
-  }
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,17 +25,17 @@ const CategoryDrop = async () => {
           Categories <LiaAngleDownSolid className="pl-2" size={20} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="grid grid-cols-3">
+      <DropdownMenuContent className="grid grid-cols-3 capitalize">
         {categories.map((cat: string) => (
           <Link href={`/products/category/${cat}`} key={cat}>
-            <DropdownMenuItem className="text-sm text-n300">
-              {capitalizeFirstLetter(cat)}
+            <DropdownMenuItem className="cursor-pointer text-sm text-n300">
+              {cat}
             </DropdownMenuItem>
           </Link>
         ))}
         <Link href="/products">
           <DropdownMenuItem className="text-sm text-n300">
-            Show All
+            Show All Products
           </DropdownMenuItem>
         </Link>
       </DropdownMenuContent>
