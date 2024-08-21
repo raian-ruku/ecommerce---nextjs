@@ -10,41 +10,49 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 
-type Tshirts = {
+type Products = {
   id: number;
   title: string;
   price: number;
-  image: string;
+  thumbnail: string;
+  availabilityStatus: "In Stock" | "Out of Stock";
 };
 
 const BestSeller = async ({ className }: { className?: string }) => {
-  const response = await fetch("https://fakestoreapi.com/products?limit=10");
-  const tshirts: Tshirts[] = await response.json();
+  const response = await fetch(
+    "https://dummyjson.com/products?limit=10&sortBy=rating&order=desc",
+  );
+  const data = await response.json();
+  const products: Products[] = data.products;
+
   return (
-    <Carousel opts={{ align: "start", loop: true }}>
+    <Carousel
+      opts={{ align: "start", loop: true, skipSnaps: true, dragFree: true }}
+    >
       <div
         className={`flex w-container flex-row justify-between gap-x-6 ${className}`}
       >
         <CarouselContent className="w-container">
-          {tshirts.map((tshirt) => {
+          {products.map((product) => {
             return (
-              <CarouselItem key={tshirt.id} className="basis-1/4">
+              <CarouselItem key={product.id} className="basis-1/4">
                 <div className="flex flex-col gap-y-5">
                   <Image
                     className="h-[256px] w-[256px] justify-self-center"
-                    src={tshirt.image}
-                    alt={tshirt.title}
+                    src={product.thumbnail}
+                    alt={product.title}
                     unoptimized
                     height={256}
                     width={256}
                   />
-                  <Link href={`/products/${tshirt.id}`}>
+                  <Link href={`/products/${product.id}`}>
                     <div className="h-[100px] w-[256px] text-b900">
-                      {tshirt.title}
+                      {product.title}
                     </div>
                   </Link>
                   <div className="flex w-auto items-center gap-4">
-                    <StockBadge />${tshirt.price}
+                    <StockBadge status={product.availabilityStatus} />$
+                    {product.price}
                   </div>
                 </div>
               </CarouselItem>

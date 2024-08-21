@@ -1,9 +1,16 @@
+// components/stockBadge.tsx
 import { Badge } from "@/components/ui/badge";
 
-const StockBadge = () => {
+type StockBadgeProps = {
+  status: "In Stock" | "Out of Stock";
+};
+
+const StockBadge = ({ status }: StockBadgeProps) => {
+  const isInStock = status === "In Stock";
+
   return (
-    <Badge variant="outline" className="">
-      IN STOCK
+    <Badge variant={isInStock ? "outline" : "destructive"} className="">
+      {status.toUpperCase()}
     </Badge>
   );
 };

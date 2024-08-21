@@ -16,6 +16,7 @@ import { CiShoppingCart } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
 import Link from "next/link";
 import CategoryDrop from "./categoryDrop";
+import { CiLogin } from "react-icons/ci";
 
 const NavBar = () => {
   return (
@@ -61,6 +62,9 @@ const NavBar = () => {
               </Link>
               <Link href="/cart">
                 <CiShoppingCart size={30} className="text-neutral-500" />
+              </Link>
+              <Link href="/login">
+                <CiLogin size={30} className="text-neutral-500" />
               </Link>
             </div>
           </div>

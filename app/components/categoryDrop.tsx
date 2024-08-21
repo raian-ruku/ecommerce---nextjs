@@ -12,8 +12,12 @@ import { LiaAngleDownSolid } from "react-icons/lia";
 import Link from "next/link";
 
 const CategoryDrop = async () => {
-  const response = await fetch("https://fakestoreapi.com/products/categories");
+  const response = await fetch("https://dummyjson.com/products/category-list");
   const categories = await response.json();
+
+  function capitalizeFirstLetter(string: string) {
+    return string[0].toUpperCase() + string.slice(1);
+  }
 
   return (
     <DropdownMenu>
@@ -25,17 +29,19 @@ const CategoryDrop = async () => {
           Categories <LiaAngleDownSolid className="pl-2" size={20} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <Link href="/products">
-          <DropdownMenuItem className="text-sm text-n300">All</DropdownMenuItem>
-        </Link>
+      <DropdownMenuContent className="grid grid-cols-3">
         {categories.map((cat: string) => (
           <Link href={`/products/category/${cat}`} key={cat}>
             <DropdownMenuItem className="text-sm text-n300">
-              {cat}
+              {capitalizeFirstLetter(cat)}
             </DropdownMenuItem>
           </Link>
         ))}
+        <Link href="/products">
+          <DropdownMenuItem className="text-sm text-n300">
+            Show All
+          </DropdownMenuItem>
+        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );

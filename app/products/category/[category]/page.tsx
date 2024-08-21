@@ -11,7 +11,8 @@ interface ProductDetails {
   id: number;
   title: string;
   price: number;
-  image: string;
+  thumbnail: string;
+  availabilityStatus: "In Stock" | "Out of Stock";
 }
 
 const ProductByCategoryPage = async ({
@@ -20,23 +21,23 @@ const ProductByCategoryPage = async ({
   params: { category: string };
 }) => {
   const response = await fetch(
-    `https://fakestoreapi.com/products/category/${params.category}`,
+    `https://dummyjson.com/products/category/${params.category}?sortBy=price&order=asc`,
   );
-  const products: ProductDetails[] = await response.json();
-  
+  const data = await response.json();
+  const products: ProductDetails[] = data.products;
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <CustomTop text="Products" bread="Products" classname="bg-n100" />
-      <div className="my-10 flex w-container justify-between">
+      <div className="my-20 flex w-container justify-between">
         <SideBar />
-        <div className="grid grid-cols-3 justify-between gap-4">
+        <div className="grid grid-cols-3 justify-between gap-2">
           {products.map((prod) => (
             <div key={prod.id}>
               <div className="flex flex-col gap-y-5 rounded-md border-[1px] border-n100 p-4 shadow-md">
                 <Image
                   className="h-[256px] w-[256px] justify-self-center"
-                  src={prod.image}
+                  src={prod.thumbnail}
                   alt={prod.title}
                   unoptimized
                   height={256}
@@ -48,7 +49,7 @@ const ProductByCategoryPage = async ({
                   </div>
                 </Link>
                 <div className="flex w-auto items-center gap-4">
-                  <StockBadge />${prod.price}
+                  <StockBadge status={prod.availabilityStatus} />${prod.price}
                 </div>
               </div>
             </div>

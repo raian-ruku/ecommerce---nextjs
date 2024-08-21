@@ -26,11 +26,9 @@ import { FaStar } from "react-icons/fa";
 const DetailsReview = ({
   details,
   rating,
-  count,
 }: {
   details: string;
   rating: number;
-  count: number;
 }) => {
   const [selectedTab, setSelectedTab] = useState("details");
   return (
@@ -69,7 +67,6 @@ const DetailsReview = ({
             <h2 className="text-2xl font-semibold">Reviews</h2>
             <div className="flex gap-3">
               <FaStar size={20} className="text-yellow-500" /> {rating}{" "}
-              <p>Total Reviews: {count}</p>
             </div>
             <Dialog>
               <DialogTrigger asChild>

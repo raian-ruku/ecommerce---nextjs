@@ -1,22 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 
 const SideBar = () => {
-  const categories = [
-    "electronics",
-    "jewelery",
-    "men's clothing",
-    "women's clothing",
-  ];
+  const [categories, setCategories] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          "https://dummyjson.com/products/category-list",
+        );
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   const [price, setPrice] = useState(100);
 
   const handlePriceChange = (value: number[]) => {
     setPrice(value[0]); // Update the state with the new slider value
   };
+
+  function capitalizeFirstLetter(string: string) {
+    return string[0].toUpperCase() + string.slice(1);
+  }
 
   return (
     <div>
@@ -29,7 +43,7 @@ const SideBar = () => {
               <div key={category} className="flex items-center space-x-2">
                 <Checkbox id={category} />
                 <Label htmlFor={category} className="text-sm font-medium">
-                  {category}
+                  {capitalizeFirstLetter(category)}
                 </Label>
               </div>
             ))}

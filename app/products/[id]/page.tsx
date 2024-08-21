@@ -1,4 +1,5 @@
 // import GetProductbyID from "@/app/backend/getProductbyID";
+"use client";
 
 import Image from "next/image";
 import { Metadata } from "next";
@@ -32,39 +33,72 @@ import { Newsletter } from "@/app/components/newsletter";
 import SizeSelector from "../_components/sizeSelector";
 import DetailsReview from "../_components/detailsReview";
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 type Props = {
   params: { id: number };
 };
 
-export async function generateMetadata({ params }: Props) {
-  const id: number = params.id;
-  const product: ProductDetails = await fetch(
-    `https://fakestoreapi.com/products/${id}`,
-  ).then((response) => response.json());
-  return {
-    title: product.title,
-  };
-}
-
-interface Rating {
-  rate: number;
-  count: number;
-}
+// export async function generateMetadata({ params }: Props) {
+//   const id: number = params.id;
+//   const product: ProductDetails = await fetch(
+//     `https://dummyjson.com/products/${id}`,
+//   ).then((response) => response.json());
+//   return {
+//     title: product.title,
+//   };
+// }
 
 interface ProductDetails {
   id: number;
   title: string;
   price: number;
   description: string;
-  image: string;
-  rating: Rating;
+  images: string[];
+  rating: number;
+  availabilityStatus: "In Stock" | "Out of Stock";
 }
 
-const ProductbyID = async ({ params }: { params: { id: number } }) => {
-  const response = await fetch(
-    `https://fakestoreapi.com/products/${params.id}`,
-  );
-  const product: ProductDetails = await response.json();
+const ProductbyID = ({ params }: { params: { id: number } }) => {
+  // const response = await fetch(`https://dummyjson.com/products/${params.id}`);
+  // const product: ProductDetails = await response.json();
+  const [product, setProduct] = useState<ProductDetails | null>(null);
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
+  const [count, setCount] = React.useState(0);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const response = await fetch(
+        `https://dummyjson.com/products/${params.id}`,
+      );
+      const data: ProductDetails = await response.json();
+      setProduct(data);
+    };
+
+    fetchProduct();
+  }, [params.id]);
+
+  useEffect(() => {
+    if (!api || !product) return;
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api, product]);
+
+  if (!product) return <div>Loading...</div>;
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
@@ -79,13 +113,43 @@ const ProductbyID = async ({ params }: { params: { id: number } }) => {
           </BreadcrumbList>
         </Breadcrumb>
         <div className="my-20 flex w-full justify-between">
-          <Image
-            className="h-[500px] w-[400px] bg-n300"
-            src={product.image}
-            alt={product.title}
-            height={500}
-            width={400}
-          />
+          <div className="w-[400px]">
+            <Carousel
+              setApi={setApi}
+              opts={{
+                align: "start",
+                loop: true,
+
+                dragFree: true,
+              }}
+            >
+              <CarouselContent>
+                {product.images.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <Image
+                      className="h-[500px] w-[400px] rounded-lg border-[1px] border-n100 shadow-sm"
+                      src={image}
+                      alt={`Image ${index + 1} of ${product.title}`}
+                      height={500}
+                      width={400}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {count > 1 && (
+                <>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </>
+              )}
+            </Carousel>
+            {count > 1 && (
+              <div className="py-2 text-center text-sm text-neutral-200">
+                Image {current} of {count}
+              </div>
+            )}
+          </div>
+
           <div className="flex w-[500px] flex-col justify-between">
             <div className="flex flex-row items-center justify-between">
               <h2 className="text-xl text-b900">{product.title}</h2>{" "}
@@ -101,9 +165,9 @@ const ProductbyID = async ({ params }: { params: { id: number } }) => {
             <div className="flex flex-row items-center gap-5">
               <div className="flex flex-row gap-4">
                 <FaStar size={20} className="text-yellow-500" />{" "}
-                {product.rating.rate}
+                {product.rating}
               </div>
-              <StockBadge />
+              <StockBadge status={product.availabilityStatus} />
             </div>
             <div>${product.price}</div>
 
@@ -125,11 +189,7 @@ const ProductbyID = async ({ params }: { params: { id: number } }) => {
             </div>
           </div>
         </div>
-        <DetailsReview
-          details={product.description}
-          rating={product.rating.rate}
-          count={product.rating.count}
-        />
+        <DetailsReview details={product.description} rating={product.rating} />
         <div className="mb-20">
           <div className="mb-20 flex flex-col gap-2">
             <h2 className="text-2xl font-bold text-b900">
