@@ -30,7 +30,7 @@ const PaginationComponent: React.FC<Props> = ({
   return (
     <Pagination className="my-4 flex justify-center gap-1">
       <PaginationPrevious
-        className={`cursor-pointer select-none border-none hover:bg-transparent ${isPreviousActive ? "" : "text-n300 hover:text-red-100"}`}
+        className={`cursor-pointer select-none border-none hover:bg-transparent ${isPreviousActive ? "hover:text-blue-700" : "text-n300 hover:text-red-100"}`}
         onClick={() => handlePageChange(currentPage - 1)}
       ></PaginationPrevious>
       <PaginationContent>
@@ -49,7 +49,7 @@ const PaginationComponent: React.FC<Props> = ({
         ))}
       </PaginationContent>
       <PaginationNext
-        className={`cursor-pointer select-none border-none hover:bg-transparent ${isNextActive ? "" : "text-n300 hover:text-red-100"}`}
+        className={`cursor-pointer select-none border-none hover:bg-transparent ${isNextActive ? "hover:text-blue-700" : "text-n300 hover:text-red-100"}`}
         onClick={() => handlePageChange(currentPage + 1)}
         isActive={isNextActive}
       ></PaginationNext>

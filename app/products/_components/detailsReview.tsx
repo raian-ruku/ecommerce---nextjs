@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,6 +25,14 @@ import { LiaAngleDownSolid } from "react-icons/lia";
 import { MdOutlineReviews } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
 
+type Reviews = {
+  rating: number;
+  comment: string;
+  date: string;
+  reviewerName: string;
+  reviewerEmail: string;
+};
+
 const DetailsReview = ({
   details,
   rating,
@@ -36,6 +45,7 @@ const DetailsReview = ({
   shipping,
   returnPolicy,
   minimum,
+  reviews = [],
 }: {
   details: string;
   rating: number;
@@ -48,8 +58,10 @@ const DetailsReview = ({
   shipping: string;
   returnPolicy: string;
   minimum: number;
+  reviews: Reviews[];
 }) => {
   const [selectedTab, setSelectedTab] = useState("details");
+
   return (
     <div className="my-20 flex h-[700px] w-full items-center">
       <Tabs
@@ -98,7 +110,7 @@ const DetailsReview = ({
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="border-[1px] border-b900 bg-transparent text-b900 hover:bg-transparent hover:text-b900">
+                <Button className="w-auto border-[1px] border-b900 bg-transparent text-b900 hover:bg-transparent hover:text-b900">
                   Write a review
                 </Button>
               </DialogTrigger>
@@ -123,16 +135,37 @@ const DetailsReview = ({
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            <div className="w-full justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="flex items-center">
-                    Sort By
-                    <LiaAngleDownSolid className="pl-2" size={20} />
+
+            <div className="mx-auto max-w-2xl p-4">
+              {reviews.length > 0 ? (
+                reviews.map((review) => (
+                  <div
+                    key={review.reviewerName}
+                    className="mb-6 flex items-start gap-4"
+                  >
+                    <div>
+                      <div className="flex gap-3">
+                        <h4 className="font-semibold">{review.reviewerName}</h4>
+                        <div className="flex gap-1">
+                          <FaStar size={20} className="text-yellow-500" />{" "}
+                          {review.rating}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <p className="text-sm text-gray-500">
+                          {new Date(review.date).toDateString()}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          ({review.reviewerEmail})
+                        </p>
+                      </div>
+                      <p className="mt-2 text-gray-700">{review.comment}</p>
+                    </div>
                   </div>
-                </DropdownMenuTrigger>
-              </DropdownMenu>
-              <hr />
+                ))
+              ) : (
+                <p>No reviews yet.</p>
+              )}
             </div>
           </TabsContent>
         </div>

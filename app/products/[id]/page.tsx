@@ -44,6 +44,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import CustomTop from "@/app/components/customTop";
+import SimilarProducts from "@/app/components/similarProducts";
 type Props = {
   params: { id: number };
 };
@@ -63,6 +64,14 @@ interface Dimensions {
   width: number;
   depth: number;
 }
+
+interface Reviews {
+  rating: number;
+  comment: string;
+  date: string;
+  reviewerName: string;
+  reviewerEmail: string;
+}
 interface ProductDetails {
   id: number;
   title: string;
@@ -78,6 +87,8 @@ interface ProductDetails {
   shippingInformation: string;
   returnPolicy: string;
   minimumOrderQuantity: number;
+  reviews: Reviews[];
+  category: string;
 }
 
 const ProductbyID = ({ params }: { params: { id: number } }) => {
@@ -204,6 +215,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
           shipping={product.shippingInformation}
           returnPolicy={product.returnPolicy}
           minimum={product.minimumOrderQuantity}
+          reviews={product.reviews}
         />
         <div className="mb-20">
           <div className="mb-20 flex flex-col gap-2">
@@ -212,7 +224,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             </h2>
             <h4 className="text-n300">SIMILAR PRODUCTS</h4>
           </div>
-          <LatestHome />
+          <SimilarProducts category={product.category} excludeId={product.id} />
         </div>
       </div>
       <Newsletter />

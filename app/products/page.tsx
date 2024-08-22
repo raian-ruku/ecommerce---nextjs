@@ -22,7 +22,7 @@ const ProductPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [products, setProducts] = useState<ProductDetails[]>([]);
-  const productsPerPage = 10;
+  const productsPerPage = 12;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -43,7 +43,7 @@ const ProductPage = () => {
       <CustomTop classname="bg-n100" />
       <div className="my-20 flex w-container justify-between">
         <SideBar />
-        <div className="grid grid-cols-3 justify-between gap-2">
+        <div className="grid grid-cols-3 justify-between gap-2 gap-y-4">
           {products.map((prod) => (
             <div key={prod.id}>
               <div className="flex flex-col gap-y-5 rounded-md border-[1px] border-n100 p-4 shadow-md">
