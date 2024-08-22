@@ -15,7 +15,7 @@ const CheckoutPage = () => {
   const items = [1, 2, 3];
   return (
     <main className="flex flex-col items-center justify-center">
-      <CustomTop text="Checkout" bread="Checkout" classname="bg-n100" />
+      <CustomTop  classname="bg-n100" />
       <div className="mt-20 flex w-container items-center justify-between">
         <form className="w-1/2">
           <h1 className="text-xl font-bold text-b900">Shipping Address</h1>

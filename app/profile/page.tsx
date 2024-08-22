@@ -2,101 +2,74 @@
 
 import React, { useState } from "react";
 import CustomTop from "../components/customTop";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@nextui-org/input";
-
-import { Input } from "@/components/ui/input";
-import { BsThreeDots } from "react-icons/bs";
-import { LiaAngleDownSolid } from "react-icons/lia";
-import { MdOutlineReviews } from "react-icons/md";
-import { Label } from "@/components/ui/label";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import CategoryDrop from "../components/categoryDrop";
+import { CiShoppingCart } from "react-icons/ci";
+import { FaRegHeart } from "react-icons/fa";
+import { BsTruck } from "react-icons/bs";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { IoPersonOutline } from "react-icons/io5";
+import { CiLogout } from "react-icons/ci";
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("details");
+
   return (
     <main className="flex w-full flex-col items-center justify-center">
-      <CustomTop text="My Account" bread="Profile" classname="bg-n100" />
-      <div className="my-32 flex w-container items-center">
+      <CustomTop classname="bg-n100" />
+      <div className="my-32 flex h-full w-container">
         <Tabs
           defaultValue="orders"
           orientation="vertical"
-          className="flex w-full"
+          className="flex h-full w-full"
         >
-          <TabsList className="flex w-[250px] flex-col">
-            <TabsTrigger value="orders">Orders</TabsTrigger>
-            <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
-            <TabsTrigger value="address">Address</TabsTrigger>
-            <TabsTrigger value="password">Password</TabsTrigger>
-            <TabsTrigger value="accountDetail">Account Detail</TabsTrigger>
-            <TabsTrigger value="logout">Logout</TabsTrigger>
+          <TabsList className="flex h-full w-[250px] flex-col gap-4 bg-transparent text-[20px]">
+            <TabsTrigger
+              value="orders"
+              className="flex items-center gap-1 data-[state=active]:bg-b900 data-[state=active]:text-white"
+            >
+              <CiShoppingCart size={20} />
+              Orders
+            </TabsTrigger>
+            <TabsTrigger
+              value="wishlist"
+              className="flex items-center gap-1 data-[state=active]:bg-b900 data-[state=active]:text-white"
+            >
+              <FaRegHeart size={15} />
+              Wishlist
+            </TabsTrigger>
+            <TabsTrigger
+              value="address"
+              className="flex items-center gap-1 data-[state=active]:bg-b900 data-[state=active]:text-white"
+            >
+              <BsTruck size={15} />
+              Address
+            </TabsTrigger>
+            <TabsTrigger
+              value="password"
+              className="flex items-center gap-1 data-[state=active]:bg-b900 data-[state=active]:text-white"
+            >
+              <RiLockPasswordLine size={15} />
+              Password
+            </TabsTrigger>
+            <TabsTrigger
+              value="accountDetail"
+              className="flex flex-row items-center gap-1 data-[state=active]:bg-b900 data-[state=active]:text-white"
+            >
+              <IoPersonOutline size={15} />
+              Account Detail
+            </TabsTrigger>
+            <TabsTrigger
+              value="logout"
+              className="flex items-center gap-1 data-[state=active]:bg-b900 data-[state=active]:text-white"
+            >
+              <CiLogout size={15} />
+              Logout
+            </TabsTrigger>
           </TabsList>
           {/* Vertical separator */}
-          <div className="border-r border-gray-200"></div>
-          <div className="flex-1 p-4">
-            <TabsContent value="orders">
-              <div className="p-4">
-                <h2 className="text-xl font-bold">Orders</h2>
-                <div className="mt-4 space-y-6">
-                  <div className="flex items-center justify-between rounded-md border p-4">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <h3 className="text-lg font-semibold">
-                          Raw Black T-Shirt Lineup
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Ordered On: 27 July 2023
-                        </p>
-                        <p className="text-sm">$70.00</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-sm text-yellow-500">
-                        Processing
-                      </span>
-                      <Button variant="outline">View item</Button>
-                    </div>
-                  </div>
-                  <hr className="my-6 border-t border-gray-200" />
-                  {/* Order 2 */}
-                  <div className="flex items-center justify-between rounded-md border p-4">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <h3 className="text-lg font-semibold">
-                          Monochromatic Wardrobe
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Ordered On: 9 March 2023
-                        </p>
-                        <p className="text-sm">$27.00</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-sm text-green-500">Completed</span>
-                      <Button variant="outline">View item</Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
+          <div className="mx-8 h-[300px] w-[1px] bg-neutral-200"></div>
+          <div className="h-full flex-1 p-4">
+            <TabsContent value="orders">Orders content here...</TabsContent>
             <TabsContent value="wishlist">
               <div className="p-4">Wishlist content here...</div>
             </TabsContent>

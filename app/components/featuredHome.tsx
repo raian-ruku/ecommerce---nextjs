@@ -1,38 +1,70 @@
-import React from "react";
-
 import StockBadge from "./stockBadge";
+import Image from "next/image";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import Link from "next/link";
 
-type Tshirts = {
+type Products = {
   id: number;
-  name: string;
+  title: string;
+  price: number;
+  thumbnail: string;
+  brand: string;
+  availabilityStatus: "In Stock" | "Out of Stock" | "Low Stock";
 };
 
-const FeaturedHome = ({ className }: { className?: string }) => {
-  const tshirts: Tshirts[] = [
-    { id: 1, name: "Featured Collection 1" },
-    { id: 2, name: "Featured Collection 2" },
-    { id: 3, name: "Featured Collection 3" },
-    { id: 4, name: "Featured Collection 4" },
-  ];
+const FeaturedHome = async ({ className }: { className?: string }) => {
+  const response = await fetch(
+    "https://dummyjson.com/products?limit=10&sortBy=discountPercentage&order=desc",
+  );
+  const data = await response.json();
+  const products: Products[] = data.products;
 
   return (
-    <div
-      className={`flex w-full flex-row justify-between gap-x-6 ${className}`}
+    <Carousel
+      opts={{ align: "start", loop: true, skipSnaps: true, dragFree: true }}
     >
-      {tshirts.map((tshirt) => {
-        let price = (Math.random() * 70 + 30).toFixed(2);
-
-        return (
-          <div className="flex flex-col gap-y-5" key={tshirt.id}>
-            <div className="bg-n100 h-80 w-64"></div>
-            <div className="text-b900">{tshirt.name}</div>
-            <div className="flex w-auto items-center gap-4">
-              <StockBadge />${price}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+      <div
+        className={`flex w-container flex-row justify-between gap-x-6 ${className}`}
+      >
+        <CarouselContent className="w-container">
+          {products.map((product) => {
+            return (
+              <CarouselItem key={product.id} className="basis-1/4">
+                <div className="flex flex-col gap-y-5">
+                  <Image
+                    className="h-[256px] w-[256px] justify-self-center"
+                    src={product.thumbnail}
+                    alt={product.title}
+                    unoptimized
+                    height={256}
+                    width={256}
+                  />
+                  <Link href={`/products/${product.id}`}>
+                    <div className="h-[100px] w-[256px] text-b900">
+                      {product.title}
+                    </div>
+                  </Link>
+                  <div className="h-[30px] text-b900">{product.brand}</div>
+                  <div className="flex w-auto items-center gap-4">
+                    <StockBadge status={product.availabilityStatus} />$
+                    {product.price}
+                  </div>
+                </div>
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </div>
+    </Carousel>
   );
 };
 

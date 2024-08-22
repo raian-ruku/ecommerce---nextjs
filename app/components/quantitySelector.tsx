@@ -2,17 +2,23 @@
 
 import { useState } from "react";
 
-const QuantitySelector = () => {
-  const [quantity, setQuantity] = useState(1);
+type QuantitySelectorProps = {
+  quantity: number;
+  onQuantityChange: (quantity: number) => void;
+};
 
+const QuantitySelector = ({
+  quantity,
+  onQuantityChange,
+}: QuantitySelectorProps) => {
   const handleDecrement = () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
+      onQuantityChange(quantity - 1);
     }
   };
 
   const handleIncrement = () => {
-    setQuantity(quantity + 1);
+    onQuantityChange(quantity + 1);
   };
 
   return (

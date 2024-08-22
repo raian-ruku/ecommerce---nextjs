@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./components/NavBar";
 import localFont from "next/font/local";
+import { CartProvider } from "@/context/cartContext";
 
 export const metadata: Metadata = {
   title: "E-Commerce",
@@ -20,10 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${myFont.variable} font-iosevka`}>
-        <NavBar />
-        {children}
-      </body>
+      <CartProvider>
+        <body className={`${myFont.variable} font-iosevka`}>
+          <NavBar />
+          {children}
+        </body>
+      </CartProvider>
     </html>
   );
 }

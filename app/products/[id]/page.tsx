@@ -45,6 +45,8 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import CustomTop from "@/app/components/customTop";
 import SimilarProducts from "@/app/components/similarProducts";
+import { useCart } from "@/context/cartContext";
+
 type Props = {
   params: { id: number };
 };
@@ -89,6 +91,7 @@ interface ProductDetails {
   minimumOrderQuantity: number;
   reviews: Reviews[];
   category: string;
+  thumbnail: string;
 }
 
 const ProductbyID = ({ params }: { params: { id: number } }) => {
@@ -96,6 +99,8 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
+  const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -119,6 +124,18 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api, product]);
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        quantity: quantity, // Default quantity
+        image: product.thumbnail,
+      });
+    }
+  };
 
   if (!product) return <div>Loading...</div>;
 
@@ -191,10 +208,19 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             </div>
             <div className="flex flex-col gap-2">
               <h3 className="text-lg text-b900">QUANTITY</h3>
-              <QuantitySelector />
+              <QuantitySelector
+                quantity={quantity}
+                onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
+              />
             </div>
             <div className="flex flex-row items-center gap-4">
-              <Button className="flex w-[300px] gap-4 bg-b900">
+              <Button
+                className="flex w-[300px] gap-4 bg-b900 disabled:bg-red-900"
+                disabled={
+                  product.availabilityStatus === "Out of Stock" ? true : false
+                }
+                onClick={handleAddToCart}
+              >
                 Add to cart <CiShoppingCart size={25} className="" />
               </Button>
               <div className="flex items-center justify-center rounded-md border-2 border-neutral-200 bg-transparent p-[11px]">
