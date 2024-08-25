@@ -9,11 +9,11 @@ import CustomTop from "../components/customTop";
 import QuantitySelector from "../components/quantitySelector";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
+import { MdDeleteForever } from "react-icons/md";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
-  const router = useRouter();
 
   const handleRemoveFromCart = (id: number) => {
     removeFromCart(id);
@@ -47,9 +47,7 @@ const CartPage = () => {
     };
   };
 
-  // const handleCheckout = () => {
-  //   router.push("/checkout");
-  // };
+  let isDisabled: boolean = cartItems.length === 0;
 
   return (
     <main className="flex flex-col items-center justify-center">
@@ -93,7 +91,8 @@ const CartPage = () => {
                     className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-[1px] border-red-600 bg-transparent text-red-600 transition-colors duration-300 ease-in-out hover:bg-red-600 hover:text-white"
                     onClick={() => handleRemoveFromCart(item.id)}
                   >
-                    <IoIosClose size={30} />
+                    <MdDeleteForever size={25} />
+                    {/* <IoIosClose size={30} /> */}
                   </div>
                 </div>
               ))
@@ -122,10 +121,30 @@ const CartPage = () => {
               <p>Total</p>
               <p>${calculateFinalPrice().finalPrice}</p>
             </div>
+            {isDisabled === true ? (
+              <Button
+                className="mt-5 w-full disabled:bg-red-900"
+                disabled={isDisabled}
+              >
+                Checkout
+              </Button>
+            ) : (
+              <Button
+                className="mt-5 w-full disabled:bg-red-900"
+                disabled={isDisabled}
+              >
+                Checkout
+              </Button>
+            )}
 
-            <Link href="/checkout">
-              <Button className="mt-5 w-full">Checkout</Button>
-            </Link>
+            {/* <Link href="/checkout">
+              <Button
+                className="mt-5 w-full disabled:bg-red-900"
+                disabled={isDisabled}
+              >
+                Checkout
+              </Button>
+            </Link> */}
 
             <p className="mb-10 flex items-center justify-center text-n300 underline">
               <Link href="/">Continue Shopping</Link>
