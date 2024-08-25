@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 // Define types
 type CartItem = {
@@ -25,7 +25,32 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    // Load cart from local storage on initialization
+    const savedCart =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("cartItems")
+        : null;
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  useEffect(() => {
+    // Save cart to local storage whenever it changes
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+    // Clear cart after 24 hours
+    const clearCartTimeout = setTimeout(
+      () => {
+        setCartItems([]);
+      },
+      24 * 60 * 60 * 1000,
+    );
+
+    // Clean up the timeout when the component unmounts or when cartItems change
+    return () => {
+      clearTimeout(clearCartTimeout);
+    };
+  }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
