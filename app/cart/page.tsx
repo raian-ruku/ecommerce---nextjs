@@ -9,9 +9,11 @@ import CustomTop from "../components/customTop";
 import QuantitySelector from "../components/quantitySelector";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const router = useRouter();
 
   const handleRemoveFromCart = (id: number) => {
     removeFromCart(id);
@@ -44,6 +46,10 @@ const CartPage = () => {
       shipping: shipping.toFixed(2),
     };
   };
+
+  // const handleCheckout = () => {
+  //   router.push("/checkout");
+  // };
 
   return (
     <main className="flex flex-col items-center justify-center">
@@ -116,9 +122,11 @@ const CartPage = () => {
               <p>Total</p>
               <p>${calculateFinalPrice().finalPrice}</p>
             </div>
-            <Link href="/checkout" className="">
+
+            <Link href="/checkout">
               <Button className="mt-5 w-full">Checkout</Button>
             </Link>
+
             <p className="mb-10 flex items-center justify-center text-n300 underline">
               <Link href="/">Continue Shopping</Link>
             </p>
