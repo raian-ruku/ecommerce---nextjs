@@ -75,8 +75,6 @@ const CartPage = () => {
 
                   <div className="flex-col">
                     <p className="w-40">{item.title}</p>
-
-                    {/* Show selected size here */}
                   </div>
                   <p className="w-24">${item.price}</p>
                   <QuantitySelector
@@ -84,8 +82,6 @@ const CartPage = () => {
                     onQuantityChange={(newQuantity) =>
                       handleQuantityChange(item.id, newQuantity)
                     }
-                    // Implement QuantitySelector to handle quantity changes
-                    // Pass current quantity as prop or manage it separately
                   />
                   <div
                     className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-[1px] border-red-600 bg-transparent text-red-600 transition-colors duration-300 ease-in-out hover:bg-red-600 hover:text-white"
@@ -109,12 +105,10 @@ const CartPage = () => {
             <div className="flex w-full justify-between">
               <p>Shipping</p>
               <p>${calculateFinalPrice().shipping}</p>
-              {/* Calculate and show shipping cost */}
             </div>
             <div className="flex w-full justify-between">
               <p>Tax</p>
               <p>${calculateFinalPrice().tax}</p>
-              {/* Calculate and show tax */}
             </div>
             <hr />
             <div className="flex w-full justify-between">
@@ -129,22 +123,15 @@ const CartPage = () => {
                 Checkout
               </Button>
             ) : (
-              <Button
-                className="mt-5 w-full disabled:bg-red-900"
-                disabled={isDisabled}
-              >
-                Checkout
-              </Button>
+              <Link href="/checkout">
+                <Button
+                  className="mt-5 w-full disabled:bg-red-900"
+                  disabled={isDisabled}
+                >
+                  Checkout
+                </Button>
+              </Link>
             )}
-
-            {/* <Link href="/checkout">
-              <Button
-                className="mt-5 w-full disabled:bg-red-900"
-                disabled={isDisabled}
-              >
-                Checkout
-              </Button>
-            </Link> */}
 
             <p className="mb-10 flex items-center justify-center text-n300 underline">
               <Link href="/">Continue Shopping</Link>
