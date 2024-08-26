@@ -175,7 +175,10 @@ const CheckoutPage = () => {
               </div>
             </div>
           </div>
-          <Button type="submit" className="mt-5">
+          <Button
+            type="submit"
+            className="mt-5 transition-colors duration-500 ease-in-out hover:bg-green-600"
+          >
             Place Order
           </Button>
         </form>

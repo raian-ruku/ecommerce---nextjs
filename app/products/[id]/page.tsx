@@ -1,23 +1,13 @@
-// import GetProductbyID from "@/app/backend/getProductbyID";
+
 "use client";
 
 import Image from "next/image";
-
-import { Metadata } from "next";
 
 import { IoShareSocialOutline } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { CiShoppingCart } from "react-icons/ci";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import StockBadge from "@/app/components/stockBadge";
 
 import QuantitySelector from "@/app/components/quantitySelector";
@@ -28,7 +18,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
-import LatestHome from "@/app/components/latestHome";
+
 import { Footer } from "@/app/components/footer";
 import { Newsletter } from "@/app/components/newsletter";
 import SizeSelector from "../_components/sizeSelector";
@@ -43,7 +33,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+
 import CustomTop from "@/app/components/customTop";
 import SimilarProducts from "@/app/components/similarProducts";
 import { useCart } from "@/context/cartContext";
@@ -54,20 +44,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-type Props = {
-  params: { id: number };
-};
-
-// export async function generateMetadata({ params }: Props) {
-//   const id: number = params.id;
-//   const product: ProductDetails = await fetch(
-//     `https://dummyjson.com/products/${id}`,
-//   ).then((response) => response.json());
-//   return {
-//     title: product.title,
-//   };
-// }
 
 interface Dimensions {
   height: number;
@@ -162,7 +138,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
               opts={{
                 align: "start",
                 loop: true,
-                
+
                 dragFree: true,
               }}
             >
