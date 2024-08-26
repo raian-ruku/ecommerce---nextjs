@@ -13,7 +13,8 @@ import Image from "next/image";
 import { MdDeleteForever } from "react-icons/md";
 
 const CartPage = () => {
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getItemMinQuantity } =
+    useCart();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -90,6 +91,7 @@ const CartPage = () => {
                     onQuantityChange={(newQuantity) =>
                       handleQuantityChange(item.id, newQuantity)
                     }
+                    minQuantity={getItemMinQuantity(item.id)}
                   />
                   <div
                     className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-[1px] border-red-600 bg-transparent text-red-600 transition-colors duration-300 ease-in-out hover:bg-red-600 hover:text-white"

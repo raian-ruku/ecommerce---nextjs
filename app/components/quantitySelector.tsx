@@ -5,14 +5,16 @@ import { useState } from "react";
 type QuantitySelectorProps = {
   quantity: number;
   onQuantityChange: (quantity: number) => void;
+  minQuantity?: number;
 };
 
 const QuantitySelector = ({
   quantity,
   onQuantityChange,
+  minQuantity,
 }: QuantitySelectorProps) => {
   const handleDecrement = () => {
-    if (quantity > 1) {
+    if (quantity > (minQuantity ?? 0)) {
       onQuantityChange(quantity - 1);
     }
   };
@@ -27,6 +29,7 @@ const QuantitySelector = ({
         <button
           className="px-3 py-1 text-neutral-500"
           onClick={handleDecrement}
+          disabled={quantity <= (minQuantity ?? 0)}
         >
           -
         </button>

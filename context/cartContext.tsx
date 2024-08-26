@@ -9,6 +9,7 @@ type CartItem = {
   price: number;
   quantity: number;
   image: string;
+  minimumOrderQuantity: number;
 };
 
 type CartContextType = {
@@ -17,6 +18,7 @@ type CartContextType = {
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
   getTotalItems: () => number;
+  getItemMinQuantity: (id: number) => number;
 };
 
 // Create context
@@ -70,6 +72,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
+  const getItemMinQuantity = (id: number) => {
+    const item = cartItems.find((item) => item.id === id);
+    return item ? item.minimumOrderQuantity : 1;
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -78,6 +85,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         removeFromCart,
         updateQuantity,
         getTotalItems,
+        getItemMinQuantity,
       }}
     >
       {children}

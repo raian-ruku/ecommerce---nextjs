@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -17,7 +16,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-
 
 import { Footer } from "@/app/components/footer";
 import { Newsletter } from "@/app/components/newsletter";
@@ -118,6 +116,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
         price: product.price,
         quantity: quantity, // Default quantity
         image: product.thumbnail,
+        minimumOrderQuantity: product.minimumOrderQuantity,
       });
       toast.success(`${product.title} added to cart`);
     } else toast.error("Item was not added to cart");
