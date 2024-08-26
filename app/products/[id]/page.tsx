@@ -48,6 +48,12 @@ import CustomTop from "@/app/components/customTop";
 import SimilarProducts from "@/app/components/similarProducts";
 import { useCart } from "@/context/cartContext";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
   params: { id: number };
@@ -94,6 +100,7 @@ interface ProductDetails {
   reviews: Reviews[];
   category: string;
   thumbnail: string;
+  stock: number;
 }
 
 const ProductbyID = ({ params }: { params: { id: number } }) => {
@@ -142,6 +149,8 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
 
   if (!product) return <div>Loading...</div>;
 
+  const currentUrl = window.location.href;
+
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <CustomTop classname="bg-n100" />
@@ -153,7 +162,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
               opts={{
                 align: "start",
                 loop: true,
-
+                
                 dragFree: true,
               }}
             >
@@ -193,7 +202,9 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                     <IoShareSocialOutline size={25} className="text-b900" />
                   </div>
                 </HoverCardTrigger>
-                <HoverCardContent>Share this product</HoverCardContent>
+                <HoverCardContent className="flex w-[350px] flex-col">
+                  Share this product {currentUrl}
+                </HoverCardContent>
               </HoverCard>
             </div>
             <div className="flex flex-row items-center gap-5">
@@ -205,10 +216,13 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             </div>
             <div>${product.price}</div>
 
-            <div className="flex flex-col gap-3">
-              SELECT SIZE
-              <SizeSelector />
-            </div>
+            {(product.category === "mens-shirts" ||
+              product.category === "womens-dresses") && (
+              <div className="flex flex-col gap-3">
+                SELECT SIZE
+                <SizeSelector />
+              </div>
+            )}
             <div className="flex flex-col gap-2">
               <h3 className="text-lg text-b900">QUANTITY</h3>
               <div className="flex flex-row items-center gap-4">
@@ -216,17 +230,45 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                   quantity={quantity}
                   onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
                 />
-                {quantity < product.minimumOrderQuantity && (
+
+                {quantity < product.minimumOrderQuantity ? (
                   <p className="text-[12px] text-red-500">
                     Minimum order quantity is {product.minimumOrderQuantity}**
                   </p>
+                ) : (
+                  product.stock < product.minimumOrderQuantity && (
+                    <TooltipProvider delayDuration={200}>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <p className="text-[12px] text-red-500">
+                            Product is low on stock**
+                          </p>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Can&apos;t order cause current stock is{" "}
+                            {product.stock}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )
                 )}
               </div>
+              {product.minimumOrderQuantity > 1 && (
+                <span
+                  className="w-24 cursor-pointer text-[10px] hover:underline"
+                  onClick={() => setQuantity(product.minimumOrderQuantity)}
+                >
+                  Set to minimum
+                </span>
+              )}
             </div>
             <div className="flex flex-row items-center gap-4">
               <Button
                 className="flex w-[300px] gap-4 bg-b900 disabled:bg-red-900"
                 disabled={
+                  product.stock < product.minimumOrderQuantity ||
                   quantity < product.minimumOrderQuantity ||
                   product.availabilityStatus === "Out of Stock"
                     ? true
