@@ -1,22 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Footer } from "../components/footer";
-import CustomTop from "../components/customTop";
 import { useCart } from "@/context/cartContext";
 import Image from "next/image";
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import CustomTop from "../components/customTop";
+import { Footer } from "../components/footer";
 
-import { TbShoppingCartCog } from "react-icons/tb";
 import { useRouter } from "next/navigation";
+import { TbShoppingCartCog } from "react-icons/tb";
 
 const CheckoutPage = () => {
   const { cartItems } = useCart(); // Access cart items from CartContext
@@ -188,14 +182,19 @@ const CheckoutPage = () => {
           <div className="flex flex-row items-center justify-between gap-2">
             {cartItems.map((item) => (
               <div key={item.id} className="flex items-center gap-2">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  height={40}
-                  width={40}
-                  className="h-10 w-10 rounded-full bg-n100"
-                />
-                {/* <p className="text-sm">{item.title}</p> */}
+                <div className="relative">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    height={40}
+                    width={40}
+                    className="h-10 w-10 rounded-full bg-n100"
+                  />
+                  {/* <p className="text-sm">{item.title}</p> */}
+                  <span className="absolute -right-2 -top-2 rounded-full bg-red-500 px-2 py-1 text-[8px] text-white">
+                    {item.quantity}
+                  </span>
+                </div>
               </div>
             ))}
             <Link href="/cart">
