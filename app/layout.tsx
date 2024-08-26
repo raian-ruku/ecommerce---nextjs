@@ -3,7 +3,7 @@ import "./globals.css";
 import NavBar from "./components/NavBar";
 import localFont from "next/font/local";
 import { CartProvider } from "@/context/cartContext";
-
+import { Toaster } from "@/components/ui/sonner";
 export const metadata: Metadata = {
   title: "E-Commerce",
 };
@@ -25,6 +25,7 @@ export default function RootLayout({
         <body className={`${myFont.variable} font-iosevka`}>
           <NavBar />
           {children}
+          <Toaster richColors position="top-right" theme="light" />
         </body>
       </CartProvider>
     </html>

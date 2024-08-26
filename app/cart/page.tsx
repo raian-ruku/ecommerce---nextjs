@@ -74,7 +74,9 @@ const CartPage = () => {
                   />
 
                   <div className="flex-col">
-                    <p className="w-40">{item.title}</p>
+                    <Link href={`/products/${item.id}`}>
+                      <p className="w-40">{item.title}</p>
+                    </Link>
                   </div>
                   <p className="w-24">${item.price}</p>
                   <QuantitySelector
@@ -95,7 +97,7 @@ const CartPage = () => {
             )}
           </div>
         </div>
-        <form className="flex w-96 flex-col rounded-md border-[1px] border-neutral-200 p-5">
+        <form className="flex h-1/3 w-96 flex-col rounded-md border-[1px] border-neutral-200 p-5">
           <h1 className="text-xl font-bold text-b900">Order Summary</h1>
           <div className="mt-10 flex w-full flex-col gap-5">
             <div className="flex w-full justify-between">

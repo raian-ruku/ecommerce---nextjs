@@ -2,6 +2,7 @@
 "use client";
 
 import Image from "next/image";
+
 import { Metadata } from "next";
 
 import { IoShareSocialOutline } from "react-icons/io5";
@@ -46,6 +47,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import CustomTop from "@/app/components/customTop";
 import SimilarProducts from "@/app/components/similarProducts";
 import { useCart } from "@/context/cartContext";
+import { toast } from "sonner";
 
 type Props = {
   params: { id: number };
@@ -134,7 +136,8 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
         quantity: quantity, // Default quantity
         image: product.thumbnail,
       });
-    }
+      toast.success(`${product.title} added to cart`);
+    } else toast.error("Item was not added to cart");
   };
 
   if (!product) return <div>Loading...</div>;

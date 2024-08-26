@@ -12,6 +12,7 @@ import PaginationComponent from "@/app/components/paginationComponent";
 import { useCart } from "@/context/cartContext";
 import { Button } from "@/components/ui/button";
 import { BsCartPlus } from "react-icons/bs";
+import { toast } from "sonner";
 
 interface ProductDetails {
   id: number;
@@ -57,7 +58,8 @@ const ProductByCategoryPage = ({
         quantity: 1, // Default quantity
         image: product.thumbnail,
       });
-    }
+      toast.success(`${product.title} added to cart`);
+    } else toast.error("Item was not added to cart");
   };
 
   return (

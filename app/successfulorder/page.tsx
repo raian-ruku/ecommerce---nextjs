@@ -4,19 +4,15 @@ import { LuPackageCheck } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
 import { FaArrowRight } from "react-icons/fa";
 import { Footer } from "../components/footer";
-import UnsuccessfullOrder from "./unsuccessfullOrder";
+import UnsuccessfulOrderPage from "../unsuccessfulorder/page";
 
-const OrderPage = () => {
+const SuccessfulOrderPage = () => {
   try {
     return (
       <main>
         <div className="flex flex-col items-center justify-center">
           {" "}
-          <CustomTop
-            text="Successful Order"
-            bread="Order Successful"
-            classname="bg-g100"
-          />
+          <CustomTop classname="bg-g100" />
           <div className="my-32 flex w-container flex-col items-center justify-center gap-7">
             <LuPackageCheck size={120} />
             <h1 className="text-3xl font-bold text-b900">
@@ -36,8 +32,8 @@ const OrderPage = () => {
       </main>
     );
   } catch (error) {
-    return UnsuccessfullOrder();
+    return UnsuccessfulOrderPage();
   }
 };
 
-export default OrderPage;
+export default SuccessfulOrderPage;
