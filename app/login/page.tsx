@@ -10,7 +10,7 @@ import Link from "next/link";
 const LoginPage = () => {
   return (
     <main className="flex w-full flex-col items-center justify-center">
-      <CustomTop text="Login" bread="Login" classname="bg-n100" />
+      <CustomTop classname="bg-n100" />
       <div className="my-32 flex w-container flex-col items-center justify-center">
         <form className="flex w-[350px] flex-col gap-4">
           <Button
