@@ -1,4 +1,3 @@
-import { main } from "bun";
 import Image from "next/image";
 import heroImage from "@/public/images/hero_image.png";
 import { Button } from "@/components/ui/button";
