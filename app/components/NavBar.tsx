@@ -1,22 +1,12 @@
-import Image from "next/image";
-import Logo from "@/public/images/logo.png";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { LiaAngleDownSolid } from "react-icons/lia";
+import Logo from "@/public/images/logo.png";
 import { Input } from "@nextui-org/input";
-import { CiSearch } from "react-icons/ci";
-import { CiShoppingCart } from "react-icons/ci";
-import { RxAvatar } from "react-icons/rx";
+import Image from "next/image";
 import Link from "next/link";
+import { CiLogin, CiSearch, CiShoppingCart } from "react-icons/ci";
+import { RxAvatar } from "react-icons/rx";
 import CategoryDrop from "./categoryDrop";
-import { CiLogin } from "react-icons/ci";
+import CartCount from "./cartCount";
 
 const NavBar = () => {
   return (
@@ -61,7 +51,7 @@ const NavBar = () => {
                 <RxAvatar size={25} className="text-neutral-500" />
               </Link>
               <Link href="/cart">
-                <CiShoppingCart size={30} className="text-neutral-500" />
+                <CartCount />
               </Link>
               <Link href="/login">
                 <CiLogin size={30} className="text-neutral-500" />

@@ -27,7 +27,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    // Load cart from local storage on initialization
     const savedCart =
       typeof window !== "undefined"
         ? window.localStorage.getItem("cartItems")
@@ -36,33 +35,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   useEffect(() => {
-    // Save cart to local storage whenever it changes
+    const totalItems = getTotalItems();
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
-
-    // Clear cart after 24 hours
-    const clearCartTimeout = setTimeout(
-      () => {
-        setCartItems([]);
-      },
-      24 * 60 * 60 * 1000,
-    );
-
-    // Clean up the timeout when the component unmounts or when cartItems change
-    return () => {
-      clearTimeout(clearCartTimeout);
-    };
-  }, [cartItems]);
+    localStorage.setItem("totalItemCount", `${totalItems}`);
+    window.dispatchEvent(new CustomEvent("cartUpdated")); // Trigger the event to notify listeners
+  }); //removed dependency array for testing [cartItems]
 
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((i) => i.id === item.id);
-      if (existingItem) {
-        return prevItems.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i,
-        );
-      } else {
-        return [...prevItems, item];
-      }
+      const updatedItems = existingItem
+        ? prevItems.map((i) =>
+            i.id === item.id
+              ? { ...i, quantity: i.quantity + item.quantity }
+              : i,
+          )
+        : [...prevItems, item];
+
+      return updatedItems;
     });
   };
 

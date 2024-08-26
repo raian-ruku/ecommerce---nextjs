@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react"; // Import the useCart hook
+import React, { useEffect, useState } from "react"; // Import the useCart hook
 import { useCart } from "@/context/cartContext";
 import { IoIosClose } from "react-icons/io";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,11 @@ import { MdDeleteForever } from "react-icons/md";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleRemoveFromCart = (id: number) => {
     removeFromCart(id);
@@ -46,6 +51,7 @@ const CartPage = () => {
       shipping: shipping.toFixed(2),
     };
   };
+  if (!isClient) return null;
 
   let isDisabled: boolean = cartItems.length === 0;
 
