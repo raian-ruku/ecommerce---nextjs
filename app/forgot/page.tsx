@@ -8,7 +8,7 @@ import { Footer } from "../components/footer";
 const ForgotPage = () => {
   return (
     <main className="flex w-full flex-col items-center justify-center">
-      <CustomTop text="Forgot Password" bread="Forgot" classname="bg-n100" />
+      <CustomTop classname="bg-n100" />
       <div className="my-32 flex w-container flex-col items-center justify-center">
         <form className="flex w-96 flex-col gap-7">
           <p className="text-justify text-neutral-700">
