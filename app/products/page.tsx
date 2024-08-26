@@ -10,7 +10,7 @@ import PaginationComponent from "../components/paginationComponent";
 import React, { useState, useEffect } from "react";
 import { useCart } from "@/context/cartContext";
 import { Button } from "@/components/ui/button";
-import { BsCartPlus } from "react-icons/bs";
+
 import { toast } from "sonner";
 
 interface ProductDetails {
@@ -23,7 +23,6 @@ interface ProductDetails {
 }
 
 const ProductPage = () => {
-  const { addToCart } = useCart();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [products, setProducts] = useState<ProductDetails[]>([]);
@@ -42,20 +41,6 @@ const ProductPage = () => {
 
     fetchProducts();
   }, [page]);
-
-  const handleAddToCart = (productId: number) => {
-    const product = products.find((prod) => prod.id === productId);
-    if (product) {
-      addToCart({
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        quantity: 1, // Default quantity
-        image: product.thumbnail,
-      });
-      toast.success(`${product.title} added to cart`);
-    } else toast.error("Item was not added to cart");
-  };
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
@@ -82,18 +67,6 @@ const ProductPage = () => {
                 <div className="h-[30px] text-b900">{prod.brand}</div>
                 <div className="flex w-auto items-center gap-4">
                   <StockBadge status={prod.availabilityStatus} />${prod.price}
-                  <Button
-                    className="bg-transparent hover:bg-transparent"
-                    disabled={
-                      prod.availabilityStatus === "Out of Stock" ? true : false
-                    }
-                    onClick={() => handleAddToCart(prod.id)}
-                  >
-                    <BsCartPlus
-                      size={20}
-                      className="text-b900 hover:bg-transparent"
-                    />
-                  </Button>
                 </div>
               </div>
             </div>

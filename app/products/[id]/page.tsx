@@ -211,16 +211,26 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             </div>
             <div className="flex flex-col gap-2">
               <h3 className="text-lg text-b900">QUANTITY</h3>
-              <QuantitySelector
-                quantity={quantity}
-                onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
-              />
+              <div className="flex flex-row items-center gap-4">
+                <QuantitySelector
+                  quantity={quantity}
+                  onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
+                />
+                {quantity < product.minimumOrderQuantity && (
+                  <p className="text-[12px] text-red-500">
+                    Minimum order quantity is {product.minimumOrderQuantity}**
+                  </p>
+                )}
+              </div>
             </div>
             <div className="flex flex-row items-center gap-4">
               <Button
                 className="flex w-[300px] gap-4 bg-b900 disabled:bg-red-900"
                 disabled={
-                  product.availabilityStatus === "Out of Stock" ? true : false
+                  quantity < product.minimumOrderQuantity ||
+                  product.availabilityStatus === "Out of Stock"
+                    ? true
+                    : false
                 }
                 onClick={handleAddToCart}
               >
