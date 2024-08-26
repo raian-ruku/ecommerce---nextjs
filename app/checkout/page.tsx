@@ -191,7 +191,7 @@ const CheckoutPage = () => {
                     className="h-10 w-10 rounded-full bg-n100"
                   />
                   {/* <p className="text-sm">{item.title}</p> */}
-                  <span className="absolute -right-2 -top-2 rounded-full bg-red-500 px-2 py-1 text-[8px] text-white">
+                  <span className="pointer-events-none absolute -right-2 -top-2 rounded-full bg-red-500 px-2 py-1 text-[8px] text-white">
                     {item.quantity}
                   </span>
                 </div>

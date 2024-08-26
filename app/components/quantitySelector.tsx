@@ -25,9 +25,9 @@ const QuantitySelector = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex w-32 items-center justify-between rounded-md border-2 border-neutral-300">
+      <div className="flex w-32 items-center justify-between rounded-md border-2 border-neutral-300 ">
         <button
-          className="px-3 py-1 text-neutral-500"
+          className="px-3 py-1 text-neutral-500 disabled:text-red-500"
           onClick={handleDecrement}
           disabled={quantity <= (minQuantity ?? 0)}
         >

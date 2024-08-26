@@ -61,7 +61,7 @@ const CartPage = () => {
       <CustomTop classname="bg-n100" />
       <div className="my-20 flex w-container flex-row justify-between">
         <div className="w-[600px]">
-          <h1 className="text-xl">Your Cart</h1>
+          <h1 className="mb-2 text-xl">Your Cart</h1>
           <hr />
           <div className="mt-10">
             {cartItems.length === 0 ? (

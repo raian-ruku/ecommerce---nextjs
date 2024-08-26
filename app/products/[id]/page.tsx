@@ -118,7 +118,10 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
         image: product.thumbnail,
         minimumOrderQuantity: product.minimumOrderQuantity,
       });
-      toast.success(`${product.title} added to cart`);
+      toast.success(`${product.title} added to cart (${quantity})`, {
+        dismissible: true,
+        closeButton: true,
+      });
     } else toast.error("Item was not added to cart");
   };
 
@@ -241,7 +244,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             </div>
             <div className="flex flex-row items-center gap-4">
               <Button
-                className="flex w-[300px] gap-4 bg-b900 disabled:bg-red-900"
+                className="flex w-[300px] gap-4 bg-b900 transition-colors duration-300 ease-in-out disabled:bg-red-900"
                 disabled={
                   product.stock < product.minimumOrderQuantity ||
                   quantity < product.minimumOrderQuantity ||
