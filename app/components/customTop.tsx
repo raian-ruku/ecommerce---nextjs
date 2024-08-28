@@ -41,7 +41,9 @@ const CustomTop = ({ classname }: { classname: string }) => {
       <React.Fragment key={index}>
         {index > 0 && <BreadcrumbSeparator />}
         <BreadcrumbItem>
-          <a href={href}>{displayName}</a>
+          <a href={href} className="text-sm md:text-base">
+            {displayName}
+          </a>
         </BreadcrumbItem>
       </React.Fragment>
     );
@@ -51,12 +53,12 @@ const CustomTop = ({ classname }: { classname: string }) => {
     <div
       className={`mt-10 flex w-full items-center justify-center ${classname} capitalize`}
     >
-      <div className="my-10 flex w-container flex-col gap-4">
-        <h1 className="text-2xl capitalize">
+      <div className="my-10 flex w-full max-w-7xl flex-col gap-4 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-xl font-bold capitalize sm:text-2xl md:text-3xl">
           {productName || pathArray[pathArray.length - 1]}
         </h1>
         <Breadcrumb>
-          <BreadcrumbList>
+          <BreadcrumbList className="text-xs sm:text-sm md:text-base">
             <BreadcrumbItem>
               <a href="/">Home</a>
             </BreadcrumbItem>

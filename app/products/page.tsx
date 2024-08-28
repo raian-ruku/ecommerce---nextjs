@@ -52,7 +52,7 @@ const ProductPage = () => {
             <div key={prod.id}>
               <div className="flex flex-col gap-y-5 rounded-md border-[1px] border-n100 p-4 shadow-md">
                 <Image
-                  className="h-[256px] w-[256px] justify-self-center"
+                  className="h-[256px] w-[256px] justify-self-center transition-transform duration-200 ease-in-out hover:scale-105"
                   src={prod.thumbnail}
                   alt={prod.title}
                   unoptimized

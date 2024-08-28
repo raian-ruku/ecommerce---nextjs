@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -63,35 +64,35 @@ const DetailsReview = ({
   const [selectedTab, setSelectedTab] = useState("details");
 
   return (
-    <div className="my-20 flex h-[700px] w-full items-center">
+    <div className="my-4 flex w-full flex-col items-start md:my-20 lg:flex-row lg:items-center">
       <Tabs
         value={selectedTab}
         onValueChange={setSelectedTab}
-        className="flex"
+        className="flex w-full flex-col lg:w-auto lg:flex-row"
         orientation="vertical"
       >
-        <TabsList className="flex min-w-80 flex-col bg-transparent pt-20">
+        <TabsList className="flex flex-row bg-transparent pt-4 lg:min-w-80 lg:flex-col lg:bg-transparent lg:pt-20">
           <TabsTrigger
             value="details"
-            className="flex-row items-center gap-2 text-[16px] data-[state=active]:w-full data-[state=inactive]:w-full data-[state=active]:bg-n100"
+            className="flex items-center gap-2 text-[14px] data-[state=active]:w-full data-[state=inactive]:w-full data-[state=active]:bg-n100 md:text-[16px] lg:text-left"
           >
             <BsThreeDots />
             Details
           </TabsTrigger>
           <TabsTrigger
             value="reviews"
-            className="flex-row items-center gap-2 text-left text-[16px] data-[state=active]:w-full data-[state=inactive]:w-full data-[state=active]:bg-n100"
+            className="flex items-center gap-2 text-[14px] data-[state=active]:w-full data-[state=inactive]:w-full data-[state=active]:bg-n100 md:text-[16px] lg:text-left"
           >
             <MdOutlineReviews />
             Reviews
           </TabsTrigger>
         </TabsList>
-        <div className="flex-grow pl-5">
+        <div className="flex-grow pl-4 lg:pl-5">
           <TabsContent
             value="details"
             className="flex flex-col gap-y-4 text-justify"
           >
-            <h2 className="text-2xl font-semibold">Details</h2>
+            <h2 className="text-xl font-semibold md:text-2xl">Details</h2>
             <p className="font-bold">{details}</p>
             <p>Brand: {brand}</p>
             <p>Weight: {weight}</p>
@@ -103,10 +104,10 @@ const DetailsReview = ({
             <p>Minimum order quantity: {minimum}</p>
             <p>Shipping Information: {shipping}</p>
           </TabsContent>
-          <TabsContent value="reviews" className="flex w-auto flex-col gap-4">
-            <h2 className="text-2xl font-semibold">Reviews</h2>
-            <div className="flex gap-3">
-              <FaStar size={20} className="text-yellow-500" /> {rating}{" "}
+          <TabsContent value="reviews" className="flex flex-col gap-4">
+            <h2 className="text-xl font-semibold md:text-2xl">Reviews</h2>
+            <div className="flex items-center gap-3">
+              <FaStar size={20} className="text-yellow-500" /> {rating}
             </div>
             <Dialog>
               <DialogTrigger asChild>
@@ -114,9 +115,9 @@ const DetailsReview = ({
                   Write a review
                 </Button>
               </DialogTrigger>
-              <DialogContent className="h-[500px] w-[400px]">
+              <DialogContent className="mx-4 h-[400px] w-full max-w-md lg:mx-0">
                 <DialogHeader>
-                  <DialogTitle>Write Review </DialogTitle>
+                  <DialogTitle>Write Review</DialogTitle>
                   <hr />
                 </DialogHeader>
                 <Label htmlFor="email">Email</Label>
@@ -136,18 +137,18 @@ const DetailsReview = ({
               </DialogContent>
             </Dialog>
 
-            <div className="mx-auto max-w-2xl p-4">
+            <div className="mx-auto max-w-full p-4 md:max-w-2xl">
               {reviews.length > 0 ? (
                 reviews.map((review) => (
                   <div
                     key={review.reviewerName}
-                    className="mb-6 flex items-start gap-4"
+                    className="mb-6 flex flex-col gap-4"
                   >
                     <div>
-                      <div className="flex gap-3">
+                      <div className="flex items-center gap-3">
                         <h4 className="font-semibold">{review.reviewerName}</h4>
-                        <div className="flex gap-1">
-                          <FaStar size={20} className="text-yellow-500" />{" "}
+                        <div className="flex items-center gap-1">
+                          <FaStar size={20} className="text-yellow-500" />
                           {review.rating}
                         </div>
                       </div>

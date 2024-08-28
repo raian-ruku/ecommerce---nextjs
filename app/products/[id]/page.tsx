@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -130,17 +131,16 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
   const currentUrl = window.location.href;
 
   return (
-    <main className="flex w-full flex-col items-center justify-center">
+    <main className="flex w-full flex-col items-center justify-center px-4 sm:px-6 md:px-8 lg:px-16">
       <CustomTop classname="bg-n100" />
-      <div className="flex w-container flex-col justify-center pt-5">
-        <div className="my-20 flex w-full justify-between">
-          <div className="w-[400px]">
+      <div className="mx-auto flex w-full max-w-6xl flex-col pt-5">
+        <div className="my-10 flex flex-col lg:flex-row lg:justify-between">
+          <div className="w-full lg:w-[400px]">
             <Carousel
               setApi={setApi}
               opts={{
                 align: "start",
                 loop: true,
-
                 dragFree: true,
               }}
             >
@@ -148,10 +148,10 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                 {product.images.map((image, index) => (
                   <CarouselItem key={index}>
                     <Image
-                      className="h-[500px] w-[400px] rounded-lg border-[1px] border-n100 shadow-sm"
+                      className="h-[300px] w-full rounded-lg border-[1px] border-n100 object-cover shadow-sm"
                       src={image}
                       alt={`Image ${index + 1} of ${product.title}`}
-                      height={500}
+                      height={300}
                       width={400}
                     />
                   </CarouselItem>
@@ -171,44 +171,50 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             )}
           </div>
 
-          <div className="flex w-[500px] flex-col justify-between">
-            <div className="flex flex-row items-center justify-between">
-              <h2 className="text-xl text-b900">{product.title}</h2>{" "}
+          <div className="flex w-full max-w-[500px] flex-col justify-between">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+              <h2 className="mb-2 text-xl text-b900 lg:mb-0">
+                {product.title}
+              </h2>
               <HoverCard>
                 <HoverCardTrigger asChild>
                   <div>
                     <IoShareSocialOutline size={25} className="text-b900" />
                   </div>
                 </HoverCardTrigger>
-                <HoverCardContent className="flex w-[350px] flex-col">
+                <HoverCardContent className="flex w-full max-w-[350px] flex-col">
                   Share this product {currentUrl}
                 </HoverCardContent>
               </HoverCard>
             </div>
-            <div className="flex flex-row items-center gap-5">
-              <div className="flex flex-row gap-4">
+
+            <div className="mt-2 flex flex-col lg:flex-row lg:items-center lg:gap-5">
+              <div className="mb-2 flex flex-row items-center gap-4 lg:mb-0">
                 <FaStar size={20} className="text-yellow-500" />{" "}
                 {product.rating}
               </div>
+              <div className="flex-shrink-0">
               <StockBadge status={product.availabilityStatus} />
             </div>
-            <div>${product.price}</div>
+            </div>
+
+            <div className="mb-4 text-lg font-semibold">${product.price}</div>
 
             {(product.category === "mens-shirts" ||
               product.category === "womens-dresses") && (
-              <div className="flex flex-col gap-3">
+              <div className="mb-4 flex flex-col gap-3">
                 SELECT SIZE
                 <SizeSelector />
               </div>
             )}
-            <div className="flex flex-col gap-2">
+
+            <div className="mb-4 flex flex-col gap-2">
               <h3 className="text-lg text-b900">QUANTITY</h3>
-              <div className="flex flex-row items-center gap-4">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:gap-4">
                 <QuantitySelector
                   quantity={quantity}
                   onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
                 />
-
                 {quantity < product.minimumOrderQuantity ? (
                   <p className="text-[12px] text-red-500">
                     Minimum order quantity is {product.minimumOrderQuantity}**
@@ -224,7 +230,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>
-                            Can&apos;t order cause current stock is{" "}
+                            Can&apos;t order because current stock is{" "}
                             {product.stock}
                           </p>
                         </TooltipContent>
@@ -242,9 +248,10 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                 </span>
               )}
             </div>
-            <div className="flex flex-row items-center gap-4">
+
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-4">
               <Button
-                className="flex w-[300px] gap-4 bg-b900 transition-colors duration-300 ease-in-out disabled:bg-red-900"
+                className="mb-4 flex w-full gap-4 bg-b900 transition-colors duration-300 ease-in-out disabled:bg-red-900 lg:mb-0 lg:w-[300px]"
                 disabled={
                   product.stock < product.minimumOrderQuantity ||
                   quantity < product.minimumOrderQuantity ||
@@ -277,7 +284,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
           reviews={product.reviews}
         />
         <div className="mb-20">
-          <div className="mb-20 flex flex-col gap-2">
+          <div className="mb-10 flex flex-col gap-2">
             <h2 className="text-2xl font-bold text-b900">
               You might also like
             </h2>

@@ -19,22 +19,29 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center pt-5">
       <div className="flex w-full items-center justify-center bg-n100">
-        <div className="flex w-container items-center justify-between">
-          <div className="flex flex-col gap-y-4">
-            <h1 className="text-[32px] text-b800">Fresh Arrivals Online</h1>{" "}
+        <div className="flex w-container flex-col items-center justify-between md:flex-row">
+          <div className="flex flex-col gap-y-4 text-center md:text-left">
+            <h1 className="text-2xl text-b800 md:text-[32px]">
+              Fresh Arrivals Online
+            </h1>
             <h3 className="pb-10 text-neutral-600">
               Discover Our Newest Collection Today.
             </h3>
-            <Button className="w-[200px] bg-b800 font-light text-white">
+            <Button className="mx-auto w-[200px] bg-b800 font-light text-white md:mx-0">
               View Collection
               <FaArrowRight className="pl-3 font-normal" size={25} />
             </Button>
           </div>
-          <Image src={heroImage} alt="Hero Image" className="mt-20" />
+          <Image
+            src={heroImage}
+            alt="Hero Image"
+            className="mt-10 max-w-full md:mt-20"
+          />
         </div>
       </div>
+
       <div className="flex w-full items-center justify-center py-20">
-        <div className="flex w-container items-center justify-between">
+        <div className="flex w-container flex-col items-center justify-between gap-y-10 md:flex-row">
           <HomeDetails
             icon={BsTruck}
             title="Free Shipping"
@@ -52,61 +59,62 @@ export default function Home() {
           />
         </div>
       </div>
+
       <div className="flex w-full items-center justify-center">
         <div className="flex w-container flex-col items-center justify-between pt-5">
-          <div className="flex flex-col gap-y-3">
+          <div className="flex flex-col gap-y-3 text-center">
             <h2 className="text-neutral-400">SHOP NOW</h2>
-            <h1 className="text-2xl text-b900">Best Selling</h1>
+            <h1 className="text-xl text-b900 md:text-2xl">Best Selling</h1>
           </div>
           <BestSeller className="py-20" />
         </div>
       </div>
+
       <div className="mt-10 flex w-full items-center justify-center bg-gradient-to-r from-[#F6F6F6] to-white">
-        <div className="flex w-container items-center justify-between">
-          <div className="flex flex-col gap-y-6">
-            <h1 className="text-[24px] text-b800">
+        <div className="flex w-container flex-col items-center justify-between md:flex-row">
+          <div className="flex flex-col gap-y-6 text-center md:text-left">
+            <h1 className="text-xl text-b800 md:text-[24px]">
               Browse Our Fashion Paradise!
             </h1>
-            <h3 className="w-[450px] pb-10 text-[14px] text-neutral-600">
+            <h3 className="mx-auto w-full pb-10 text-[14px] text-neutral-600 md:mx-0 md:w-[450px]">
               Step into a world of style and explore our diverse collection of
               clothing categories.
             </h3>
             <Link href="/products">
-              <Button className="w-[200px] bg-b800 font-light text-white">
+              <Button className="mx-auto w-[200px] bg-b800 font-light text-white md:mx-0">
                 Start Browsing
                 <FaArrowRight className="pl-3 font-normal" size={25} />
               </Button>
             </Link>
           </div>
-          <Image src={dress} alt="" className="mb-20" />
+          <Image src={dress} alt="" className="mb-20 max-w-full" />
         </div>
       </div>
+
       <div className="flex w-full items-center justify-center pt-32">
-        <div className="flex w-container items-center justify-center">
-          <div>
-            <Tabs defaultValue="featured" className="mb-36">
-              <TabsList className="mb-16 flex gap-4 bg-transparent">
-                <TabsTrigger
-                  value="featured"
-                  className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
-                >
-                  Featured
-                </TabsTrigger>
-                <TabsTrigger
-                  value="latest"
-                  className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
-                >
-                  Latest
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="featured">
-                <FeaturedHome />
-              </TabsContent>
-              <TabsContent value="latest">
-                <LatestHome />
-              </TabsContent>
-            </Tabs>
-          </div>
+        <div className="flex w-container flex-col items-center justify-center">
+          <Tabs defaultValue="featured" className="mb-36">
+            <TabsList className="mb-16 flex gap-4 bg-transparent">
+              <TabsTrigger
+                value="featured"
+                className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
+              >
+                Featured
+              </TabsTrigger>
+              <TabsTrigger
+                value="latest"
+                className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
+              >
+                Latest
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="featured">
+              <FeaturedHome />
+            </TabsContent>
+            <TabsContent value="latest">
+              <LatestHome />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 

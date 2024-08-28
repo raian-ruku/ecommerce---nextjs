@@ -4,8 +4,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LiaAngleDownSolid } from "react-icons/lia";
@@ -25,16 +23,16 @@ const CategoryDrop = async () => {
           Categories <LiaAngleDownSolid className="pl-2" size={20} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="grid grid-cols-3 capitalize">
+      <DropdownMenuContent className="grid grid-cols-2 gap-2 p-4 capitalize sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
         {categories.map((cat: string) => (
-          <Link href={`/products/category/${cat}`} key={cat}>
-            <DropdownMenuItem className="cursor-pointer text-sm text-n300">
+          <Link href={`/products/category/${cat}`} key={cat} passHref>
+            <DropdownMenuItem className="cursor-pointer text-sm text-n300 hover:bg-gray-100">
               {cat}
             </DropdownMenuItem>
           </Link>
         ))}
-        <Link href="/products">
-          <DropdownMenuItem className="text-sm text-n300">
+        <Link href="/products" passHref>
+          <DropdownMenuItem className="text-sm text-n300 hover:bg-gray-100">
             Show All Products
           </DropdownMenuItem>
         </Link>
