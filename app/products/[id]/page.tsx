@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -194,8 +193,8 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                 {product.rating}
               </div>
               <div className="flex-shrink-0">
-              <StockBadge status={product.availabilityStatus} />
-            </div>
+                <StockBadge status={product.availabilityStatus} />
+              </div>
             </div>
 
             <div className="mb-4 text-lg font-semibold">${product.price}</div>

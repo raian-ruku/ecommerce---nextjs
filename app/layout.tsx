@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import { CartProvider } from "@/context/cartContext";
 import { Toaster } from "@/components/ui/sonner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 export const metadata: Metadata = {
   title: "E-Commerce",
 };
@@ -27,6 +28,7 @@ export default function RootLayout({
           <NavBar />
           {children}
           <SpeedInsights />
+          <Analytics />
           <Toaster richColors position="top-right" theme="light" />
         </body>
       </CartProvider>

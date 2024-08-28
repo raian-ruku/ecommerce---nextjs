@@ -97,13 +97,13 @@ export default function Home() {
             <TabsList className="mb-16 flex gap-4 bg-transparent">
               <TabsTrigger
                 value="featured"
-                className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
+                className="data-[state=active]:rounded-full data-[state=active]:bg-b900 data-[state=active]:text-n100 data-[state=active]:shadow-none"
               >
                 Featured
               </TabsTrigger>
               <TabsTrigger
                 value="latest"
-                className="data-[state=active]:rounded-full data-[state=active]:border-[1px] data-[state=active]:shadow-none"
+                className="data-[state=active]:rounded-full data-[state=active]:bg-b900 data-[state=active]:text-n100 data-[state=active]:shadow-none"
               >
                 Latest
               </TabsTrigger>
