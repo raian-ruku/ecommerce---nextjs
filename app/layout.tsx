@@ -4,6 +4,7 @@ import NavBar from "./components/NavBar";
 import localFont from "next/font/local";
 import { CartProvider } from "@/context/cartContext";
 import { Toaster } from "@/components/ui/sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata: Metadata = {
   title: "E-Commerce",
 };
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <CartProvider>
         <body className={`${myFont.variable} font-iosevka`}>
+          <SpeedInsights />
           <NavBar />
           {children}
           <Toaster richColors position="top-right" theme="light" />
