@@ -24,9 +24,9 @@ export default function RootLayout({
     <html lang="en">
       <CartProvider>
         <body className={`${myFont.variable} font-iosevka`}>
-          <SpeedInsights />
           <NavBar />
           {children}
+          <SpeedInsights />
           <Toaster richColors position="top-right" theme="light" />
         </body>
       </CartProvider>
