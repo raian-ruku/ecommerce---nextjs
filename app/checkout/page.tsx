@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { TbShoppingCartCog } from "react-icons/tb";
 
 const CheckoutPage = () => {
-  const { cartItems } = useCart(); // Access cart items from CartContext
+  const { cartItems, clearCart } = useCart(); // Access cart items from CartContext
   const [isClient, setIsClient] = useState(false);
   const [formData, setFormData] = useState({
     street: "",
@@ -47,6 +47,9 @@ const CheckoutPage = () => {
 
     if (isFormValid) {
       router.push("/successfulorder");
+      setTimeout(() => {
+        clearCart(); // Clear the cart after a 1000ms delay
+      }, 1000);
     } else {
       router.push("/unsuccessfulorder");
     }

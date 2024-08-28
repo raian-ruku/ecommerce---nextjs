@@ -19,6 +19,7 @@ type CartContextType = {
   updateQuantity: (id: number, quantity: number) => void;
   getTotalItems: () => number;
   getItemMinQuantity: (id: number) => number;
+  clearCart: () => void;
 };
 
 // Create context
@@ -77,6 +78,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     return item ? item.minimumOrderQuantity : 1;
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem("cartItems");
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -86,6 +92,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         updateQuantity,
         getTotalItems,
         getItemMinQuantity,
+        clearCart,
       }}
     >
       {children}
