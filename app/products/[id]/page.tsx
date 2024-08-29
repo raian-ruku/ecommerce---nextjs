@@ -147,7 +147,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                 {product.images.map((image, index) => (
                   <CarouselItem key={index}>
                     <Image
-                      className="h-[300px] w-full rounded-lg border-[1px] border-n100 object-cover shadow-sm"
+                      className="h-[400px] w-full rounded-lg border-[1px] border-n100 object-cover shadow-sm"
                       src={image}
                       alt={`Image ${index + 1} of ${product.title}`}
                       height={300}
@@ -200,7 +200,8 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             <div className="mb-4 text-lg font-semibold">${product.price}</div>
 
             {(product.category === "mens-shirts" ||
-              product.category === "womens-dresses") && (
+              product.category === "womens-dresses" ||
+              product.category === "tops") && (
               <div className="mb-4 flex flex-col gap-3">
                 SELECT SIZE
                 <SizeSelector />
