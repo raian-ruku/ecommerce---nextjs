@@ -1,14 +1,11 @@
 "use client";
 
 import Image from "next/image";
-
 import { IoShareSocialOutline } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { CiShoppingCart } from "react-icons/ci";
-
 import StockBadge from "@/app/components/stockBadge";
-
 import QuantitySelector from "@/app/components/quantitySelector";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,12 +13,10 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-
 import { Footer } from "@/app/components/footer";
 import { Newsletter } from "@/app/components/newsletter";
 import SizeSelector from "../_components/sizeSelector";
 import DetailsReview from "../_components/detailsReview";
-
 import {
   Carousel,
   CarouselContent,
@@ -31,7 +26,6 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import React, { useEffect, useState } from "react";
-
 import CustomTop from "@/app/components/customTop";
 import SimilarProducts from "@/app/components/similarProducts";
 import { useCart } from "@/context/cartContext";
@@ -43,6 +37,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+// ... (keep all interfaces as they are)
 interface Dimensions {
   height: number;
   width: number;
@@ -78,6 +73,7 @@ interface ProductDetails {
 }
 
 const ProductbyID = ({ params }: { params: { id: number } }) => {
+  // ... (keep all state and useEffect hooks as they are)
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -133,8 +129,8 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
     <main className="flex w-full flex-col items-center justify-center px-4 sm:px-6 md:px-8 lg:px-16">
       <CustomTop classname="bg-n100" />
       <div className="mx-auto flex w-full max-w-6xl flex-col pt-5">
-        <div className="my-10 flex flex-col lg:flex-row lg:justify-between">
-          <div className="w-full lg:w-[400px]">
+        <div className="my-6 flex flex-col sm:my-10 lg:flex-row lg:justify-between lg:space-x-8">
+          <div className="mb-8 w-full lg:mb-0 lg:w-[400px]">
             <Carousel
               setApi={setApi}
               opts={{
@@ -146,13 +142,14 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
               <CarouselContent>
                 {product.images.map((image, index) => (
                   <CarouselItem key={index}>
-                    <Image
-                      className="h-[400px] w-full rounded-lg border-[1px] border-n100 object-cover shadow-sm"
-                      src={image}
-                      alt={`Image ${index + 1} of ${product.title}`}
-                      height={300}
-                      width={400}
-                    />
+                    <div className="relative aspect-square w-full">
+                      <Image
+                        className="rounded-lg border-[1px] border-n100 object-cover shadow-sm"
+                        src={image}
+                        alt={`Image ${index + 1} of ${product.title}`}
+                        layout="fill"
+                      />
+                    </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -170,27 +167,28 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             )}
           </div>
 
-          <div className="flex w-full max-w-[500px] flex-col justify-between">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-              <h2 className="mb-2 text-xl text-b900 lg:mb-0">
+          <div className="flex w-full flex-col justify-between lg:w-[500px]">
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="mb-2 text-xl text-b900 sm:mb-0 sm:text-2xl">
                 {product.title}
               </h2>
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <div>
+                  <div className="cursor-pointer">
                     <IoShareSocialOutline size={25} className="text-b900" />
                   </div>
                 </HoverCardTrigger>
-                <HoverCardContent className="flex w-full max-w-[350px] flex-col">
-                  Share this product {currentUrl}
+                <HoverCardContent className="w-80">
+                  <p>Share this product</p>
+                  <p className="mt-2 break-all text-sm">{currentUrl}</p>
                 </HoverCardContent>
               </HoverCard>
             </div>
 
-            <div className="mt-2 flex flex-col lg:flex-row lg:items-center lg:gap-5">
-              <div className="mb-2 flex flex-row items-center gap-4 lg:mb-0">
-                <FaStar size={20} className="text-yellow-500" />{" "}
-                {product.rating}
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:space-x-5">
+              <div className="mb-2 flex items-center sm:mb-0">
+                <FaStar size={20} className="mr-1 text-yellow-500" />
+                <span>{product.rating}</span>
               </div>
               <div className="flex-shrink-0">
                 <StockBadge status={product.availabilityStatus} />
@@ -202,21 +200,21 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
             {(product.category === "mens-shirts" ||
               product.category === "womens-dresses" ||
               product.category === "tops") && (
-              <div className="mb-4 flex flex-col gap-3">
-                SELECT SIZE
+              <div className="mb-4">
+                <h3 className="mb-2 text-base font-medium">SELECT SIZE</h3>
                 <SizeSelector />
               </div>
             )}
 
-            <div className="mb-4 flex flex-col gap-2">
-              <h3 className="text-lg text-b900">QUANTITY</h3>
-              <div className="flex flex-col lg:flex-row lg:items-center lg:gap-4">
+            <div className="mb-4">
+              <h3 className="mb-2 text-lg text-b900">QUANTITY</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
                 <QuantitySelector
                   quantity={quantity}
                   onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
                 />
                 {quantity < product.minimumOrderQuantity ? (
-                  <p className="text-[12px] text-red-500">
+                  <p className="mt-2 text-xs text-red-500 sm:mt-0">
                     Minimum order quantity is {product.minimumOrderQuantity}**
                   </p>
                 ) : (
@@ -224,7 +222,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
                     <TooltipProvider delayDuration={200}>
                       <Tooltip>
                         <TooltipTrigger>
-                          <p className="text-[12px] text-red-500">
+                          <p className="mt-2 text-xs text-red-500 sm:mt-0">
                             Product is low on stock**
                           </p>
                         </TooltipTrigger>
@@ -241,7 +239,7 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
               </div>
               {product.minimumOrderQuantity > 1 && (
                 <span
-                  className="w-24 cursor-pointer text-[10px] hover:underline"
+                  className="mt-2 inline-block cursor-pointer text-xs hover:underline"
                   onClick={() => setQuantity(product.minimumOrderQuantity)}
                 >
                   Set to minimum
@@ -249,21 +247,20 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
               )}
             </div>
 
-            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
               <Button
-                className="mb-4 flex w-full gap-4 bg-b900 transition-colors duration-300 ease-in-out disabled:bg-red-900 lg:mb-0 lg:w-[300px]"
+                className="mb-4 flex w-full items-center justify-center space-x-2 bg-b900 transition-colors duration-300 ease-in-out disabled:bg-red-900 sm:mb-0 sm:w-auto"
                 disabled={
                   product.stock < product.minimumOrderQuantity ||
                   quantity < product.minimumOrderQuantity ||
                   product.availabilityStatus === "Out of Stock"
-                    ? true
-                    : false
                 }
                 onClick={handleAddToCart}
               >
-                Add to cart <CiShoppingCart size={25} className="" />
+                <span>Add to cart</span>
+                <CiShoppingCart size={25} />
               </Button>
-              <div className="flex items-center justify-center rounded-md border-2 border-neutral-200 bg-transparent p-[11px]">
+              <div className="flex w-full items-center justify-center rounded-md border-2 border-neutral-200 bg-transparent p-3 sm:w-auto">
                 <FaRegHeart className="text-n300 hover:fill-red-700" />
               </div>
             </div>
@@ -284,11 +281,11 @@ const ProductbyID = ({ params }: { params: { id: number } }) => {
           reviews={product.reviews}
         />
         <div className="mb-20">
-          <div className="mb-10 flex flex-col gap-2">
-            <h2 className="text-2xl font-bold text-b900">
+          <div className="mb-6 sm:mb-10">
+            <h2 className="mb-2 text-xl font-bold text-b900 sm:text-2xl">
               You might also like
             </h2>
-            <h4 className="text-n300">SIMILAR PRODUCTS</h4>
+            <h4 className="text-sm text-n300">SIMILAR PRODUCTS</h4>
           </div>
           <SimilarProducts category={product.category} excludeId={product.id} />
         </div>
