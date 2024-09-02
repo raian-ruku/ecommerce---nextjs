@@ -25,7 +25,7 @@ const CategoryDrop = async () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="grid grid-cols-2 gap-2 p-4 capitalize sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
         {categories.map((cat: string) => (
-          <Link href={`/${cat}`} key={cat} passHref>
+          <Link href={`/category/${cat}`} key={cat} passHref>
             <DropdownMenuItem className="cursor-pointer text-sm text-n300 hover:bg-gray-100">
               {cat}
             </DropdownMenuItem>
