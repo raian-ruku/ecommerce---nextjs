@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Footer } from "@/app/components/footer";
@@ -7,7 +6,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomTop from "@/app/components/customTop";
-import SideBar from "../../_components/sideBar";
+import SideBar from "../../products/_components/sideBar";
 import StockBadge from "@/app/components/stockBadge";
 import PaginationComponent from "@/app/components/paginationComponent";
 import { useCart } from "@/context/cartContext";
