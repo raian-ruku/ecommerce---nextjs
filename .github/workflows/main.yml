@@ -1,0 +1,16 @@
+name: Bun CI
+on: 
+   push:
+    branches: [main]
+jobs:
+  my-job:
+    name: my-job
+    runs-on: self-hosted
+    steps:
+      # ...
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      # run any `bun` or `bunx` command
+      - run: bun install
+      - run: bun run build
