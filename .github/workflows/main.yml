@@ -7,20 +7,26 @@ on:
       - test
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  
 
-    steps:
-    # Checkout the code
-    - name: Checkout Code
-      uses: actions/checkout@v2
+  bench-restart:
+        runs-on: ubuntu-latest
+        
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+      
+        - name: Run bench migrate
+          uses: appleboy/ssh-action@master
+          with:
+           host: ${{ secrets.HOST }}
+           port: 2222
+           username: fervent
+           key: ${{ secrets.SSH_PRIVATE_KEY }} # Your SSH private key secret
+           script: |
+             cd /home/fervent/fervent/apps/fusion_hr
+              echo ${{ secrets.SUDO_PASSWORD}} | sudo -S bench restart
 
-    # Set up SSH access
-    - name: test ls
-      uses: fifsky/ssh-action@master
-      with:
-        command: ssh -o StrictHostKeyChecking=no fervent@103.238.155.65  'cd /fervent/fervent/apps/fusion_hr ls'
-        key: ${{ secrets.SSH_PRIVATE_KEY }} # Corrected secret reference
-        host: 103.238.155.65
-        port: 2222
-        user: fervent
+       
+         
+   
