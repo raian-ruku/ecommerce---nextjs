@@ -24,7 +24,7 @@ jobs:
            key: ${{ secrets.SSH_PRIVATE_KEY }} # Your SSH private key secret
            script: |
              cd /home/fervent/fervent/apps/fusion_hr
-             sudo -S <<< ${{ secrets.SUDO_PASSWORD }} bench restart
+             bench restart
 
        
          
