@@ -1,16 +1,26 @@
-name: Bun CI
-on: 
-   push:
-    branches: [test]
-jobs:
-  my-job:
-    name: my-job
-    runs-on: ubuntu-latest
-    steps:
-      # ...
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+name: CI/CD for Frappe Custom Application
 
-      # run any `bun` or `bunx` command
-      - run: bun install
-      - run: bun run build
+# Trigger this action on pull requests to the dev branch
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    # Set up SSH access
+    - name: test ls
+      uses: fifsky/ssh-action@master
+      with:
+        command: ssh -o StrictHostKeyChecking=no fervent@103.238.155.65  'cd /fervent/fervent/apps/fusion_hr ls'
+        key: ${{ secrets.SSH_PRIVATE_KEY }} # Corrected secret reference
+        host: 103.238.155.65
+        port: 2222
+        user: fervent
