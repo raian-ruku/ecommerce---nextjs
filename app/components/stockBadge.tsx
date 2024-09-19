@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 
 type StockBadgeProps = {
-  status: "In Stock" | "Out of Stock" | "Low Stock";
+  status: "In Stock" | "Out of Stock" | "Low Stock" | "Unknown";
 };
 
 const StockBadge = ({ status }: StockBadgeProps) => {
@@ -9,6 +9,7 @@ const StockBadge = ({ status }: StockBadgeProps) => {
     "In Stock": "bg-green-500 text-white",
     "Low Stock": "bg-yellow-500 text-white",
     "Out of Stock": "bg-red-500 text-white",
+    Unknown: "bg-red-500 text-white",
   };
 
   const currentClass = badgeClassNames[status] || "bg-gray-500 text-white";

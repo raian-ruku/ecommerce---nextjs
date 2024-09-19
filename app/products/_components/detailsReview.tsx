@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -27,11 +26,12 @@ import { MdOutlineReviews } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
 
 type Reviews = {
-  rating: number;
-  comment: string;
-  date: string;
-  reviewerName: string;
-  reviewerEmail: string;
+  review_id: number;
+  review_rating: number;
+  review_comment: string;
+
+  // reviewerName: string;
+  // reviewerEmail: string;
 };
 
 const DetailsReview = ({
@@ -141,26 +141,28 @@ const DetailsReview = ({
               {reviews.length > 0 ? (
                 reviews.map((review) => (
                   <div
-                    key={review.reviewerName}
+                    key={review.review_rating}
                     className="mb-6 flex flex-col gap-4"
                   >
                     <div>
                       <div className="flex items-center gap-3">
-                        <h4 className="font-semibold">{review.reviewerName}</h4>
+                        {/* <h4 className="font-semibold">{review.reviewerName}</h4> */}
                         <div className="flex items-center gap-1">
                           <FaStar size={20} className="text-yellow-500" />
-                          {review.rating}
+                          {review.review_rating}
                         </div>
                       </div>
                       <div className="flex gap-2">
                         <p className="text-sm text-gray-500">
-                          {new Date(review.date).toDateString()}
+                          {/* {new Date(review.review_date).toDateString()} */}
                         </p>
                         <p className="text-sm text-gray-500">
-                          ({review.reviewerEmail})
+                          {/* ({review.reviewerEmail}) */}
                         </p>
                       </div>
-                      <p className="mt-2 text-gray-700">{review.comment}</p>
+                      <p className="mt-2 text-gray-700">
+                        {review.review_comment}
+                      </p>
                     </div>
                   </div>
                 ))

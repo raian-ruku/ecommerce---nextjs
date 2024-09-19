@@ -53,7 +53,7 @@ const CustomTop = ({ classname }: { classname: string }) => {
     <div
       className={`mt-10 flex w-full items-center justify-center ${classname} capitalize`}
     >
-      <div className="my-10 flex w-full max-w-7xl flex-col gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="my-10 flex w-container max-w-7xl flex-col gap-4 px-4 sm:px-6 lg:px-8">
         <h1 className="text-xl font-bold capitalize sm:text-2xl md:text-3xl">
           {productName || pathArray[pathArray.length - 1]}
         </h1>

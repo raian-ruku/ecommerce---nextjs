@@ -9,9 +9,15 @@ import {
 import { LiaAngleDownSolid } from "react-icons/lia";
 import Link from "next/link";
 
+interface Categories {
+  category_id: number;
+  category_name: string;
+}
+
 const CategoryDrop = async () => {
-  const response = await fetch("https://dummyjson.com/products/category-list");
-  const categories = await response.json();
+  const response = await fetch("http://localhost:8000/api/v1/category-list");
+  const data = await response.json();
+  const categories: Categories[] = data.data;
 
   return (
     <DropdownMenu>
@@ -24,10 +30,10 @@ const CategoryDrop = async () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="grid grid-cols-2 gap-2 p-4 capitalize sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-        {categories.map((cat: string) => (
-          <Link href={`/${cat}`} key={cat} passHref>
+        {categories.map((cat) => (
+          <Link href={`/${cat.category_name}`} key={cat.category_id} passHref>
             <DropdownMenuItem className="cursor-pointer text-sm text-n300 hover:bg-gray-100">
-              {cat}
+              {cat.category_name}
             </DropdownMenuItem>
           </Link>
         ))}

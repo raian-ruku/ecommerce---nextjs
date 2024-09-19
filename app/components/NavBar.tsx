@@ -49,7 +49,7 @@ const NavBar = () => {
                 <Input
                   placeholder="Search products"
                   variant="underlined"
-                  startContent={<CiSearch size={20} className="pr-2" />}
+                  startContent={<CiSearch size={30} className="pr-2" />}
                   className="w-full max-w-[150px] rounded-md border-[1px] border-neutral-300 text-neutral-500 placeholder:text-neutral-300 sm:max-w-[200px] md:max-w-[300px]"
                 />
               </div>
