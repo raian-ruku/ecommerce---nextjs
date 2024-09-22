@@ -1,5 +1,4 @@
 const isEmpty = require("is-empty");
-const { getImages } = require("../models/products");
 const table_name = "products";
 
 const queries = {

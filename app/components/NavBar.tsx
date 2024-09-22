@@ -36,12 +36,14 @@ const NavBar = () => {
               >
                 About
               </Button>
-              <Button
-                variant="link"
-                className="hidden text-neutral-500 md:inline"
-              >
-                Contact
-              </Button>
+              <Link href="/custom">
+                <Button
+                  variant="link"
+                  className="hidden text-neutral-500 md:inline"
+                >
+                  Contact
+                </Button>
+              </Link>
             </div>
 
             <div className="flex items-center gap-4 md:gap-6">
