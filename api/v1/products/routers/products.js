@@ -58,6 +58,28 @@ router.get("/products/:id", async (req, res) => {
   });
 });
 
+router.get("/bestseller", async (req, res) => {
+  try {
+    const [result] = await Promise.all([products.getBestSeller()]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Product list.",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Error retrieving products.",
+      error: error.message,
+    });
+  }
+});
+
 router.use(express.json());
 
 module.exports = router;

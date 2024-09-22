@@ -14,6 +14,18 @@ const products = {
     }
   },
 
+  getBestSeller: async (limit, offset) => {
+    try {
+      const [results] = await connection.query(queries.getBestSeller, [
+        limit,
+        offset,
+      ]);
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getTotalProductCount: async () => {
     try {
       const [results] = await connection.query(queries.getTotalProductCount);

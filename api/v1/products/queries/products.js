@@ -1,4 +1,5 @@
 const isEmpty = require("is-empty");
+const { getBestSeller } = require("../models/products");
 const table_name = "products";
 
 const queries = {
@@ -29,6 +30,14 @@ const queries = {
   getDimensions: `
         SELECT height, width, depth FROM dimensions WHERE product_id = ?
     `,
+  getBestSeller: `
+        SELECT p.product_id, p.product_availability, p.product_title, p.product_thumbnail, p.product_brand, PM.product_price
+        FROM ${table_name} AS p
+        INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
+        ORDER BY p.product_rating DESC
+        LIMIT 10 OFFSET 10
+    `,
+  getTotalProductCount: `SELECT COUNT(*) AS total FROM ${table_name}`,
 };
 
 module.exports = queries;

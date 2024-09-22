@@ -11,20 +11,27 @@ import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 
 type Products = {
-  id: number;
-  title: string;
-  price: number;
-  thumbnail: string;
-  brand: string;
-  availabilityStatus: "In Stock" | "Out of Stock" | "Low Stock";
+  product_id: number;
+  product_title: string;
+  product_price: number;
+  product_thumbnail: string;
+  product_brand: string;
+  product_availability: number;
 };
 
 const BestSeller = async ({ className }: { className?: string }) => {
   const response = await fetch(
-    "https://dummyjson.com/products?limit=10&sortBy=rating&order=desc",
+    "http://localhost:8000/api/v1/bestseller?limit=10",
   );
   const data = await response.json();
-  const products: Products[] = data.products;
+  const products: Products[] = data.data;
+
+  const getAvailabilityStatus = (product_availability: number) => {
+    if (product_availability === 0) return "Out of Stock";
+    if (product_availability === 1) return "In Stock";
+    if (product_availability === 2) return "Low Stock";
+    return "Unknown"; // Add a default case to handle undefined values
+  };
 
   return (
     <Carousel
@@ -36,25 +43,31 @@ const BestSeller = async ({ className }: { className?: string }) => {
         <CarouselContent className="w-container">
           {products.map((product) => {
             return (
-              <CarouselItem key={product.id} className="basis-1/4">
+              <CarouselItem key={product.product_id} className="basis-1/4">
                 <div className="flex flex-col gap-y-5">
                   <Image
                     className="h-[256px] w-[256px] justify-self-center"
-                    src={product.thumbnail}
-                    alt={product.title}
+                    src={product.product_thumbnail}
+                    alt={product.product_title}
                     unoptimized
                     height={256}
                     width={256}
                   />
-                  <Link href={`/products/${product.id}`}>
+                  <Link href={`/products/${product.product_id}`}>
                     <div className="h-[100px] w-[256px] text-b900">
-                      {product.title}
+                      {product.product_title}
                     </div>
                   </Link>
-                  <div className="h-[30px] text-b900">{product.brand}</div>
+                  <div className="h-[30px] text-b900">
+                    {product.product_brand}
+                  </div>
                   <div className="flex w-auto items-center gap-4">
-                    <StockBadge status={product.availabilityStatus} />$
-                    {product.price}
+                    <StockBadge
+                      status={getAvailabilityStatus(
+                        product.product_availability,
+                      )}
+                    />
+                    ${product.product_price}
                   </div>
                 </div>
               </CarouselItem>
