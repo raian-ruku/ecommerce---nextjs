@@ -2,13 +2,35 @@ const connection = require("../../connection/connection");
 const queries = require("../queries/products");
 
 const products = {
-  getProducts: async (limit, offset) => {
+  getProducts: async (limit, offset, category, minPrice, maxPrice) => {
     try {
-      const [results] = await connection.query(queries.getProducts, [
-        limit,
-        offset,
-      ]);
+      let query = queries.getProducts;
+      const params = [minPrice, maxPrice, limit, offset];
+
+      if (category) {
+        query = query.replace("WHERE", "WHERE c.category_name = ? AND");
+        params.unshift(category);
+      }
+
+      const [results] = await connection.query(query, params);
       return results;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getTotalProductCount: async (category, minPrice, maxPrice) => {
+    try {
+      let query = queries.getTotalProductCount;
+      const params = [minPrice, maxPrice];
+
+      if (category) {
+        query = query.replace("WHERE", "WHERE c.category_name = ? AND");
+        params.unshift(category);
+      }
+
+      const [results] = await connection.query(query, params);
+      return results[0].total;
     } catch (error) {
       throw error;
     }
@@ -26,14 +48,14 @@ const products = {
     }
   },
 
-  getTotalProductCount: async () => {
-    try {
-      const [results] = await connection.query(queries.getTotalProductCount);
-      return results[0].total;
-    } catch (error) {
-      throw error;
-    }
-  },
+  // getTotalProductCount: async () => {
+  //   try {
+  //     const [results] = await connection.query(queries.getTotalProductCount);
+  //     return results[0].total;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
 
   getProduct: async (id) => {
     try {

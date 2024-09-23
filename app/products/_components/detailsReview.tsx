@@ -125,9 +125,9 @@ const DetailsReview = ({
                 <Label htmlFor="name">Full Name</Label>
                 <Input name="name" />
                 <Label htmlFor="review">Review</Label>
-                <Textarea
+                <textarea
                   name="review"
-                  className="rounded-md border-[1px] border-neutral-200"
+                  className="h-auto resize-none rounded-md border-[1px] border-neutral-200"
                 />
                 <DialogFooter>
                   <Button className="w-full bg-b900" type="submit">

@@ -7,10 +7,13 @@ router.get("/products", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
+    const category = req.query.category;
+    const minPrice = parseFloat(req.query.minPrice) || 0;
+    const maxPrice = parseFloat(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
 
     const [result, totalCount] = await Promise.all([
-      products.getProducts(limit, offset),
-      products.getTotalProductCount(),
+      products.getProducts(limit, offset, category, minPrice, maxPrice),
+      products.getTotalProductCount(category, minPrice, maxPrice),
     ]);
 
     const totalPages = Math.ceil(totalCount / limit);

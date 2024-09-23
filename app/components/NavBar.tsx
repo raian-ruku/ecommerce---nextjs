@@ -14,7 +14,12 @@ const NavBar = () => {
       <div className="flex w-full flex-col">
         <div className="flex h-[30px] place-content-center items-center bg-b800 text-xs text-white sm:text-sm md:text-base">
           Get 25% off on your first order.
-          <span className="pl-2 font-medium">Order Now</span>
+          <Link
+            href="/products"
+            className="pl-2 font-medium hover:underline hover:underline-offset-2"
+          >
+            Order Now
+          </Link>
         </div>
 
         <div className="flex w-full justify-center">

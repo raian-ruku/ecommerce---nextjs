@@ -28,10 +28,18 @@ router.get("/category/:name", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
+    const minPrice = parseFloat(req.query.minPrice) || 0;
+    const maxPrice = parseFloat(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
 
     const [result, totalCount] = await Promise.all([
-      category.getProductByCategory(categoryName, limit, offset),
-      category.getTotalProductCountByCategory(categoryName),
+      category.getProductByCategory(
+        categoryName,
+        limit,
+        offset,
+        minPrice,
+        maxPrice,
+      ),
+      category.getTotalProductCountByCategory(categoryName, minPrice, maxPrice),
     ]);
 
     const totalPages = Math.ceil(totalCount / limit);
@@ -56,7 +64,6 @@ router.get("/category/:name", async (req, res) => {
     });
   }
 });
-
 router.use(express.json());
 
 module.exports = router;

@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import CustomTop from "../components/customTop";
 import SideBar from "./_components/sideBar";
 import StockBadge from "../components/stockBadge";
-import Image from "next/image";
 import { Footer } from "../components/footer";
 import { Newsletter } from "../components/newsletter";
 import PaginationComponent from "../components/paginationComponent";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 interface ProductDetails {
@@ -30,18 +31,21 @@ interface ApiResponse {
   totalPages: number;
   totalCount: number;
 }
-
-const ProductPage = () => {
+//TODO FIX THE FILTER HANDLING AND PAGINATION. ALSO FIX FILTERS IN CATEGORY PAGE
+export default function ProductPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [products, setProducts] = useState<ProductDetails[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const productsPerPage = 12;
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch(
-        `http://localhost:8000/api/v1/products?page=${page}&limit=${productsPerPage}`,
+        `http://localhost:8000/api/v1/products?${searchParams.toString()}&page=${page}&limit=${productsPerPage}`,
       );
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
@@ -50,21 +54,49 @@ const ProductPage = () => {
       setProducts(data.data);
       setTotalPages(data.totalPages);
     };
-
+    const currentPage = searchParams.get("page") || "1";
+    setPage(parseInt(currentPage, 10));
     fetchProducts();
-  }, [page]);
+  }, [searchParams, page]);
+
+  const handleFiltersChange = (
+    category: string | null,
+    price: [number, number],
+  ) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (category) {
+      params.set("category", category);
+    } else {
+      params.delete("category");
+    }
+
+    params.set("minPrice", price[0].toString());
+    params.set("maxPrice", price[1].toString());
+    params.set("page", "1");
+
+    router.push(`?${params.toString()}`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    // Update the URL and also the page state
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    setPage(newPage); // Update page state
+    router.push(`?${params.toString()}`);
+  };
 
   const getAvailabilityStatus = (product_availability: number) => {
     if (product_availability === 0) return "Out of Stock";
     if (product_availability === 1) return "In Stock";
     if (product_availability === 2) return "Low Stock";
-    return "Unknown"; // Add a default case to handle undefined values
+    return "Unknown";
   };
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <CustomTop classname="bg-n100" />
-      <div className="w-container px-4 sm:px-6 lg:px-0">
+      <div className="w-full px-4 sm:px-6 lg:px-0">
         <div className="mx-auto max-w-7xl">
           <div className="my-8 sm:my-12 lg:mx-auto lg:my-20 lg:w-container">
             <div className="mb-4 lg:hidden">
@@ -77,9 +109,11 @@ const ProductPage = () => {
             </div>
             <div className="flex flex-col lg:flex-row lg:justify-between">
               <div
-                className={`lg:w-1/4 ${isSidebarOpen ? "block" : "hidden lg:block"}`}
+                className={`lg:w-1/4 ${
+                  isSidebarOpen ? "block" : "hidden lg:block"
+                }`}
               >
-                <SideBar />
+                <SideBar onFiltersChange={handleFiltersChange} />
               </div>
               <div className="mt-4 lg:mt-0 lg:w-3/4 lg:pl-8">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -96,11 +130,9 @@ const ProductPage = () => {
                               unoptimized
                             />
                           </div>
-
                           <div className="line-clamp-2 h-12 text-sm text-b900 hover:underline hover:underline-offset-2 sm:text-base">
                             {prod.product_title}
                           </div>
-
                           <div className="h-6 text-xs text-b900 sm:text-sm">
                             {prod.product_brand}
                           </div>
@@ -130,13 +162,11 @@ const ProductPage = () => {
         <PaginationComponent
           currentPage={page}
           totalPages={totalPages}
-          onPageChange={setPage}
+          onPageChange={handlePageChange}
         />
       </div>
       <Newsletter />
       <Footer />
     </main>
   );
-};
-
-export default ProductPage;
+}

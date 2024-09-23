@@ -163,10 +163,10 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
 
   return (
     <main className="flex w-full flex-col items-center justify-center px-4 sm:px-6 md:px-8 lg:px-16">
-      <CustomTop classname="bg-n100" />
-      <div className="mx-auto flex w-full max-w-6xl flex-col pt-5">
-        <div className="my-6 flex flex-col sm:my-10 lg:flex-row lg:justify-between lg:space-x-8">
-          <div className="mb-8 w-full lg:mb-0 lg:w-[400px]">
+      <CustomTop classname="bg-n100 w-container" />
+      <div className="mx-auto flex w-container max-w-6xl flex-col pt-5">
+        <div className="my-6 flex w-container flex-col sm:my-10 lg:flex-row lg:justify-between lg:space-x-8">
+          <div className="mb-8 w-container lg:mb-0 lg:w-[400px]">
             <Carousel
               setApi={setApi}
               opts={{
@@ -181,7 +181,7 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
                     <CarouselItem key={image.image_id}>
                       <div className="relative aspect-square w-full">
                         <Image
-                          className="rounded-lg border-[1px] border-n100 object-cover shadow-sm"
+                          className="rounded-lg border-[1px] border-n100 object-contain shadow-sm"
                           src={image.image_data}
                           alt={`Image ${count + 1} of ${product.product_title}`}
                           layout="fill"

@@ -10,10 +10,18 @@ const categories = {
       throw new Error(error);
     }
   },
-  getProductByCategory: async (categoryName, limit, offset) => {
+  getProductByCategory: async (
+    categoryName,
+    limit,
+    offset,
+    minPrice,
+    maxPrice,
+  ) => {
     try {
       const [rows] = await connection.query(queries.getProductByCategory, [
         categoryName,
+        minPrice,
+        maxPrice,
         limit,
         offset,
       ]);
@@ -22,11 +30,12 @@ const categories = {
       throw new Error(error);
     }
   },
-  getTotalProductCountByCategory: async (categoryName) => {
+
+  getTotalProductCountByCategory: async (categoryName, minPrice, maxPrice) => {
     try {
       const [results] = await connection.query(
         queries.getTotalProductCountByCategory,
-        [categoryName],
+        [categoryName, minPrice, maxPrice],
       );
       return results[0].total;
     } catch (error) {

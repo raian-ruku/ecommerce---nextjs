@@ -7,7 +7,7 @@ const queries = {
     FROM products AS p
     INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
     INNER JOIN category AS c ON p.category_id = c.category_id 
-    WHERE c.category_name = ?
+    WHERE c.category_name = ? AND PM.product_price BETWEEN ? AND ?
     ORDER BY PM.product_price ASC
     LIMIT ? OFFSET ?
   `,
@@ -15,7 +15,8 @@ const queries = {
     SELECT COUNT(*) AS total 
     FROM products AS p
     INNER JOIN category AS c ON p.category_id = c.category_id
-    WHERE c.category_name = ?
+    INNER JOIN products_master AS PM ON p.product_id = PM.product_id
+    WHERE c.category_name = ? AND PM.product_price BETWEEN ? AND ?
   `,
 };
 
