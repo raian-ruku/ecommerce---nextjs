@@ -14,12 +14,23 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 interface ProductDetails {
-  id: number;
-  title: string;
-  price: number;
-  thumbnail: string;
-  brand: string;
-  availabilityStatus: "In Stock" | "Out of Stock" | "Low Stock";
+  product_id: number;
+  product_title: string;
+  product_price: number;
+  product_thumbnail: string;
+  product_brand: string;
+  product_availability: number;
+}
+
+interface ApiResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  count: number;
+  data: ProductDetails[];
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
 }
 
 const ProductByCategoryPage = ({
@@ -35,17 +46,26 @@ const ProductByCategoryPage = ({
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const skip = (page - 1) * productsPerPage;
       const response = await fetch(
-        `https://dummyjson.com/products/category/${params.category}?sortBy=price&order=asc&limit=${productsPerPage}&skip=${skip}`,
+        `http://localhost:8000/api/v1/category/${params.category}?page=${page}&limit=${productsPerPage}`,
       );
-      const data = await response.json();
-      setProducts(data.products);
-      setTotalPages(Math.ceil(data.total / productsPerPage));
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+      const data: ApiResponse = await response.json();
+      setProducts(data.data);
+      setTotalPages(data.totalPages);
     };
 
     fetchProducts();
   }, [page, params.category]);
+
+  const getAvailabilityStatus = (product_availability: number) => {
+    if (product_availability === 0) return "Out of Stock";
+    if (product_availability === 1) return "In Stock";
+    if (product_availability === 2) return "Low Stock";
+    return "Unknown"; // Add a default case to handle undefined values
+  };
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
@@ -70,31 +90,35 @@ const ProductByCategoryPage = ({
               <div className="mt-4 lg:mt-0 lg:w-3/4 lg:pl-8">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {products.map((prod) => (
-                    <div key={prod.id}>
+                    <div key={prod.product_id}>
                       <div className="flex flex-col gap-y-3 rounded-md border-[1px] border-n100 p-4 shadow-md">
                         <div className="relative aspect-square w-full">
                           <Image
                             className="object-cover transition-transform duration-200 ease-in-out hover:scale-105"
-                            src={prod.thumbnail}
-                            alt={prod.title}
+                            src={prod.product_thumbnail}
+                            alt={prod.product_title}
                             layout="fill"
                             unoptimized
                           />
                         </div>
-                        <Link href={`/products/${prod.id}`}>
+                        <Link href={`/products/${prod.product_id}`}>
                           <div className="line-clamp-2 h-12 text-sm text-b900 hover:underline hover:underline-offset-2 sm:text-base">
-                            {prod.title}
+                            {prod.product_title}
                           </div>
                         </Link>
                         <div className="h-6 text-xs text-b900 sm:text-sm">
-                          {prod.brand}
+                          {prod.product_brand}
                         </div>
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <div className="flex-shrink-0">
-                            <StockBadge status={prod.availabilityStatus} />
+                            <StockBadge
+                              status={getAvailabilityStatus(
+                                prod.product_availability,
+                              )}
+                            />
                           </div>
                           <div className="text-sm font-semibold sm:text-base">
-                            ${prod.price}
+                            ${prod.product_price}
                           </div>
                         </div>
                       </div>

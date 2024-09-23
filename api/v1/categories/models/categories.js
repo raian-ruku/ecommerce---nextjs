@@ -1,21 +1,19 @@
 const connection = require("../../connection/connection");
-const { getProduct } = require("../../products/queries/products");
 const queries = require("../queries/categories");
 
 const categories = {
   getList: async () => {
     try {
-      // Use await to resolve the query promise
       const [rows] = await connection.query(queries.getList);
-      return rows; // This will return the result of the query
+      return rows;
     } catch (error) {
       throw new Error(error);
     }
   },
-  //TODO Implement the function to get products by category
-  getProductByCategory: async (limit, offset) => {
+  getProductByCategory: async (categoryName, limit, offset) => {
     try {
-      const [rows] = await connection.query(queries.getProductCategories, [
+      const [rows] = await connection.query(queries.getProductByCategory, [
+        categoryName,
         limit,
         offset,
       ]);
@@ -24,13 +22,17 @@ const categories = {
       throw new Error(error);
     }
   },
-  getTotalProductCount: async () => {
+  getTotalProductCountByCategory: async (categoryName) => {
     try {
-      const [results] = await connection.query(queries.getTotalProductCount);
+      const [results] = await connection.query(
+        queries.getTotalProductCountByCategory,
+        [categoryName],
+      );
       return results[0].total;
     } catch (error) {
       throw error;
     }
   },
 };
+
 module.exports = categories;

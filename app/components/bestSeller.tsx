@@ -36,6 +36,7 @@ const BestSeller = async ({ className }: { className?: string }) => {
   return (
     <Carousel
       opts={{ align: "start", loop: true, skipSnaps: true, dragFree: true }}
+      className=""
     >
       <div
         className={`flex w-container flex-row justify-between gap-x-6 ${className}`}
@@ -44,32 +45,34 @@ const BestSeller = async ({ className }: { className?: string }) => {
           {products.map((product) => {
             return (
               <CarouselItem key={product.product_id} className="basis-1/4">
-                <div className="flex flex-col gap-y-5">
-                  <Image
-                    className="h-[256px] w-[256px] justify-self-center"
-                    src={product.product_thumbnail}
-                    alt={product.product_title}
-                    unoptimized
-                    height={256}
-                    width={256}
-                  />
-                  <Link href={`/products/${product.product_id}`}>
+                <Link href={`/products/${product.product_id}`}>
+                  <div className="flex flex-col gap-y-5 rounded-md border-x-[1px] border-n100 px-2 pb-2 transition-all duration-300 ease-in-out hover:shadow-xl">
+                    <Image
+                      className="h-[256px] w-[256px] justify-self-center object-cover transition-transform duration-200 ease-in-out hover:scale-105"
+                      src={product.product_thumbnail}
+                      alt={product.product_title}
+                      unoptimized
+                      height={256}
+                      width={256}
+                    />
+
                     <div className="h-[100px] w-[256px] text-b900">
                       {product.product_title}
                     </div>
-                  </Link>
-                  <div className="h-[30px] text-b900">
-                    {product.product_brand}
+
+                    <div className="h-[30px] text-b900">
+                      {product.product_brand}
+                    </div>
+                    <div className="flex w-auto items-center gap-4">
+                      <StockBadge
+                        status={getAvailabilityStatus(
+                          product.product_availability,
+                        )}
+                      />
+                      ${product.product_price}
+                    </div>
                   </div>
-                  <div className="flex w-auto items-center gap-4">
-                    <StockBadge
-                      status={getAvailabilityStatus(
-                        product.product_availability,
-                      )}
-                    />
-                    ${product.product_price}
-                  </div>
-                </div>
+                </Link>
               </CarouselItem>
             );
           })}

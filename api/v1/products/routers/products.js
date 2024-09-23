@@ -62,8 +62,6 @@ router.get("/bestseller", async (req, res) => {
   try {
     const [result] = await Promise.all([products.getBestSeller()]);
 
-    const totalPages = Math.ceil(totalCount / limit);
-
     return res.status(200).json({
       success: true,
       status: 200,

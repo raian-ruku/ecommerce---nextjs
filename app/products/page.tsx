@@ -85,37 +85,39 @@ const ProductPage = () => {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {products.map((prod) => (
                     <div key={prod.product_id}>
-                      <div className="flex flex-col gap-y-3 rounded-md border-[1px] border-n100 p-4 shadow-md">
-                        <div className="relative aspect-square w-full">
-                          <Image
-                            className="object-cover transition-transform duration-200 ease-in-out hover:scale-105"
-                            src={prod.product_thumbnail}
-                            alt={prod.product_title}
-                            layout="fill"
-                            unoptimized
-                          />
-                        </div>
-                        <Link href={`/products/${prod.product_id}`}>
+                      <Link href={`/products/${prod.product_id}`}>
+                        <div className="flex flex-col gap-y-3 rounded-md border-[1px] border-n100 p-4 shadow-md">
+                          <div className="relative aspect-square w-full">
+                            <Image
+                              className="object-cover transition-transform duration-200 ease-in-out hover:scale-105"
+                              src={prod.product_thumbnail}
+                              alt={prod.product_title}
+                              layout="fill"
+                              unoptimized
+                            />
+                          </div>
+
                           <div className="line-clamp-2 h-12 text-sm text-b900 hover:underline hover:underline-offset-2 sm:text-base">
                             {prod.product_title}
                           </div>
-                        </Link>
-                        <div className="h-6 text-xs text-b900 sm:text-sm">
-                          {prod.product_brand}
-                        </div>
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                          <div className="flex-shrink-0">
-                            <StockBadge
-                              status={getAvailabilityStatus(
-                                prod.product_availability,
-                              )}
-                            />
+
+                          <div className="h-6 text-xs text-b900 sm:text-sm">
+                            {prod.product_brand}
                           </div>
-                          <div className="text-sm font-semibold sm:text-base">
-                            ${prod.product_price}
+                          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex-shrink-0">
+                              <StockBadge
+                                status={getAvailabilityStatus(
+                                  prod.product_availability,
+                                )}
+                              />
+                            </div>
+                            <div className="text-sm font-semibold sm:text-base">
+                              ${prod.product_price}
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   ))}
                 </div>
