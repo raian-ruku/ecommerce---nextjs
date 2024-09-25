@@ -1,17 +1,16 @@
 "use client";
 
-import { Footer } from "@/app/components/footer";
-import { Newsletter } from "@/app/components/newsletter";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import CustomTop from "@/app/components/customTop";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import CustomTop from "../../components/customTop";
 import SideBar from "../../products/_components/sideBar";
-import StockBadge from "@/app/components/stockBadge";
-import PaginationComponent from "@/app/components/paginationComponent";
-import { useCart } from "@/context/cartContext";
+import StockBadge from "../../components/stockBadge";
+import { Footer } from "../../components/footer";
+import { Newsletter } from "../../components/newsletter";
+import PaginationComponent from "../../components/paginationComponent";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 interface ProductDetails {
   product_id: number;
@@ -32,7 +31,7 @@ interface ApiResponse {
   totalPages: number;
   totalCount: number;
 }
-
+//TODO FIX THE FILTER HANDLING AND PAGINATION. ALSO FIX FILTERS IN CATEGORY PAGE
 const ProductByCategoryPage = ({
   params,
 }: {
@@ -43,6 +42,9 @@ const ProductByCategoryPage = ({
   const [products, setProducts] = useState<ProductDetails[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const productsPerPage = 12;
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -56,15 +58,43 @@ const ProductByCategoryPage = ({
       setProducts(data.data);
       setTotalPages(data.totalPages);
     };
-
+    const currentPage = searchParams.get("page") || "1";
+    setPage(parseInt(currentPage, 10));
     fetchProducts();
-  }, [page, params.category]);
+  }, [searchParams, page, params.category]);
+
+  const handleFiltersChange = (
+    category: string | null,
+    price: [number, number],
+  ) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (category) {
+      params.set("category", category);
+    } else {
+      params.delete("category");
+    }
+
+    params.set("minPrice", price[0].toString());
+    params.set("maxPrice", price[1].toString());
+    params.set("page", "1");
+
+    router.push(`?${params.toString()}`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    // Update the URL and also the page state
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    setPage(newPage); // Update page state
+    router.push(`?${params.toString()}`);
+  };
 
   const getAvailabilityStatus = (product_availability: number) => {
     if (product_availability === 0) return "Out of Stock";
     if (product_availability === 1) return "In Stock";
     if (product_availability === 2) return "Low Stock";
-    return "Unknown"; // Add a default case to handle undefined values
+    return "Unknown";
   };
 
   return (
@@ -83,9 +113,11 @@ const ProductByCategoryPage = ({
             </div>
             <div className="flex flex-col lg:flex-row lg:justify-between">
               <div
-                className={`lg:w-1/4 ${isSidebarOpen ? "block" : "hidden lg:block"}`}
+                className={`lg:w-1/4 ${
+                  isSidebarOpen ? "block" : "hidden lg:block"
+                }`}
               >
-                <SideBar />
+                <SideBar onFiltersChange={handleFiltersChange} />
               </div>
               <div className="mt-4 lg:mt-0 lg:w-3/4 lg:pl-8">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -102,11 +134,9 @@ const ProductByCategoryPage = ({
                               unoptimized
                             />
                           </div>
-
                           <div className="line-clamp-2 h-12 text-sm text-b900 hover:underline hover:underline-offset-2 sm:text-base">
                             {prod.product_title}
                           </div>
-
                           <div className="h-6 text-xs text-b900 sm:text-sm">
                             {prod.product_brand}
                           </div>
@@ -136,7 +166,7 @@ const ProductByCategoryPage = ({
         <PaginationComponent
           currentPage={page}
           totalPages={totalPages}
-          onPageChange={setPage}
+          onPageChange={handlePageChange}
         />
       </div>
       <Newsletter />
