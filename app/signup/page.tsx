@@ -46,17 +46,31 @@ export default function SignupPage() {
           });
 
           if (!response.ok) {
-            throw new Error("Signup failed");
+            if (response.status === 409) {
+              // Handle email already exists
+              toast.error(
+                "Email already exists. Please use a different email.",
+                {
+                  dismissible: true,
+                  closeButton: true,
+                },
+              );
+            } else {
+              throw new Error("Signup failed");
+            }
+          } else {
+            toast.success("Signup successful", {
+              dismissible: true,
+              closeButton: true,
+            });
+            router.push("/login");
           }
-
-          const data = await response.json();
-          console.log(data);
-
-          toast.success("Signup successful");
-          router.push("/login");
         } catch (error) {
           console.error(error);
-          toast.error("Signup failed");
+          toast.error("Signup failed. Please try again.", {
+            dismissible: true,
+            closeButton: true,
+          });
         } finally {
           setIsSubmitting(false); // Reset the flag after submission
         }

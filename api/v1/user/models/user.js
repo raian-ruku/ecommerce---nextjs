@@ -29,6 +29,56 @@ const users = {
       throw error;
     }
   },
+  loginByEmail: async (user_email, user_password) => {
+    try {
+      // Fetch user from the database
+      const [userData] = await connection.query(queries.loginByEmail, [
+        user_email,
+      ]);
+
+      // Check if user exists
+      if (userData.length === 0) {
+        return null; // User not found
+      }
+
+      const user = userData[0];
+
+      // Compare passwords
+      const isPasswordValid = await bcrypt.compare(
+        user_password,
+        user.user_password,
+      );
+
+      if (isPasswordValid) {
+        // Remove password from user data before returning
+        const { user_password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      } else {
+        return null; // Invalid password
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
+  },
+  existingCheck: async (user_email) => {
+    try {
+      // Fetch user from the database
+      const [userData] = await connection.query(queries.existingCheck, [
+        user_email,
+      ]);
+
+      // Check if user exists
+      if (userData.length === 0) {
+        return false; // User does not exist
+      } else {
+        return true; // User exists
+      }
+    } catch (error) {
+      console.error("Email check error:", error);
+      throw error;
+    }
+  },
 };
 
 module.exports = users;
