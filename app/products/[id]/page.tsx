@@ -36,6 +36,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { MdContentCopy } from "react-icons/md";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 interface Reviews {
   review_id: number;
@@ -219,7 +221,16 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
                   </div>
                 </HoverCardTrigger>
                 <HoverCardContent className="w-80">
-                  <p>Share this product</p>
+                  <div className="flex flex-row items-center gap-3">
+                    <p>Share this product</p>
+
+                    <CopyToClipboard text={`${currentUrl}`}>
+                      <button>
+                        <MdContentCopy size={15} />
+                      </button>
+                    </CopyToClipboard>
+                  </div>
+
                   <p className="mt-2 break-all text-sm">{currentUrl}</p>
                 </HoverCardContent>
               </HoverCard>

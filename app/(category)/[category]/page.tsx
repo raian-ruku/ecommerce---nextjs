@@ -49,7 +49,7 @@ const ProductByCategoryPage = ({
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch(
-        `http://localhost:8000/api/v1/category/${params.category}?page=${page}&limit=${productsPerPage}`,
+        `${process.env.NEXT_PUBLIC_API}/category/${params.category}?page=${page}&limit=${productsPerPage}`,
       );
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
@@ -124,7 +124,7 @@ const ProductByCategoryPage = ({
                   {products.map((prod) => (
                     <div key={prod.product_id}>
                       <Link href={`/products/${prod.product_id}`}>
-                        <div className="flex flex-col gap-y-3 rounded-md border-[1px] border-n100 p-4 shadow-md">
+                        <div className="flex flex-col gap-y-3 rounded-md border-[1px] border-n100 p-4 shadow-md transition-all duration-200 ease-in-out hover:scale-[1.01] hover:bg-[#fffefc] hover:shadow-lg">
                           <div className="relative aspect-square w-full">
                             <Image
                               className="object-cover transition-transform duration-200 ease-in-out hover:scale-105"

@@ -21,7 +21,7 @@ type Products = {
 
 const BestSeller = async ({ className }: { className?: string }) => {
   const response = await fetch(
-    "http://localhost:8000/api/v1/bestseller?limit=10",
+    `${process.env.NEXT_PUBLIC_API}/bestseller?limit=10`,
   );
   const data = await response.json();
   const products: Products[] = data.data;

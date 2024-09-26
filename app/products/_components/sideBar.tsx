@@ -28,7 +28,7 @@ export default function SideBar({ onFiltersChange }: SideBarProps) {
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/v1/category-list",
+          `${process.env.NEXT_PUBLIC_API}/category-list`,
         );
         const data = await response.json();
         setCategories(data.data);
