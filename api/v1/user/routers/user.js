@@ -149,4 +149,36 @@ router.get("/check-auth", (req, res) => {
   }
 });
 
+router.get("/user-info", async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: "No token found" });
+  }
+
+  try {
+    const decoded = verifyToken(token);
+    if (decoded) {
+      const userDetails = await users.getUserById(decoded.id);
+      if (userDetails) {
+        return res.status(200).json({
+          success: true,
+          data: userDetails,
+        });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+    } else {
+      return res.status(401).json({ success: false, message: "Invalid token" });
+    }
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res
+      .status(500)
+      .json({ status: 500, success: false, message: "Internal server error" });
+  }
+});
+
 module.exports = router;

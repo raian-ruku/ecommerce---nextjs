@@ -58,7 +58,7 @@ const LoginPage = () => {
           // Dispatch custom event for successful login
           window.dispatchEvent(new Event("user-login"));
 
-          router.push("/");
+          router.push("/profile");
         } catch (error) {
           console.error(error);
           toast.error("Login failed", {

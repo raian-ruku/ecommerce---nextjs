@@ -79,6 +79,15 @@ const users = {
       throw error;
     }
   },
+  getUserById: async (userId) => {
+    try {
+      const [userData] = await connection.query(queries.getUserById, [userId]);
+      return userData[0] || null;
+    } catch (error) {
+      console.error("Get user details error:", error);
+      throw error;
+    }
+  },
 };
 
 module.exports = users;

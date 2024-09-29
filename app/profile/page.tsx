@@ -9,6 +9,7 @@ import { BsTruck } from "react-icons/bs";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { IoPersonOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
+import ProfileInfo from "./_components/profileInfo";
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("details");
@@ -22,7 +23,7 @@ const ProfilePage = () => {
           orientation="vertical"
           className="flex h-full w-full"
         >
-          <TabsList className="flex h-full w-[250px] flex-col gap-4 bg-transparent text-[20px]">
+          <TabsList className="flex h-full w-[250px] flex-col items-start justify-start gap-5 bg-transparent text-[20px]">
             <TabsTrigger
               value="orders"
               className="flex items-center gap-1 data-[state=active]:bg-b900 data-[state=active]:text-white"
@@ -67,7 +68,7 @@ const ProfilePage = () => {
             </TabsTrigger>
           </TabsList>
           {/* Vertical separator */}
-          <div className="mx-8 h-[300px] w-[1px] bg-neutral-200"></div>
+          <div className="mx-8 h-[400px] w-[1px] bg-neutral-200"></div>
           <div className="h-full flex-1 p-4">
             <TabsContent value="orders">Orders content here...</TabsContent>
             <TabsContent value="wishlist">
@@ -80,7 +81,9 @@ const ProfilePage = () => {
               <div className="p-4">Password content here...</div>
             </TabsContent>
             <TabsContent value="accountDetail">
-              <div className="p-4">Account Detail content here...</div>
+              <div className="p-4">
+                <ProfileInfo />
+              </div>
             </TabsContent>
             <TabsContent value="logout">
               <div className="p-4">Logout content here...</div>
