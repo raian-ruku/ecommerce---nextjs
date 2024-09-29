@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,10 +15,21 @@ interface Categories {
   category_name: string;
 }
 
-const CategoryDrop = async () => {
-  const response = await fetch("http://localhost:8000/api/v1/category-list");
-  const data = await response.json();
-  const categories: Categories[] = data.data;
+const CategoryDrop = () => {
+  const [categories, setCategories] = React.useState<Categories[]>([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/category-list`,
+      );
+      const data = await response.json();
+      const categories: Categories[] = data.data;
+      setCategories(categories);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <DropdownMenu>

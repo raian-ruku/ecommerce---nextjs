@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const cookie = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 
 const productRoutes = require("./api/v1/products/routers/products");
 const categoryRoutes = require("./api/v1/categories/routers/categories");
@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.use(cookie());
+app.use(cookieParser());
 
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", categoryRoutes);

@@ -1,6 +1,6 @@
 const { verifyToken } = require("./jwt");
 
-function getCurrentUser(context) {
+export function getCurrentUser(context) {
   const token = context.req.cookies.token;
 
   if (!token) {
@@ -27,5 +27,3 @@ function getCurrentUser(context) {
     props: { user },
   };
 }
-
-module.exports = { getCurrentUser };

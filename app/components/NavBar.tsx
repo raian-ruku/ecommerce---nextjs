@@ -1,14 +1,76 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Logo from "@/public/images/logo.png";
 import { Input } from "@nextui-org/input";
 import Image from "next/image";
 import Link from "next/link";
-import { CiLogin, CiSearch } from "react-icons/ci";
+import { CiLogin, CiSearch, CiLogout } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
 import CategoryDrop from "./categoryDrop";
 import CartCount from "./cartCount";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const NavBar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  const checkLoginStatus = () => {
+    fetch(`${process.env.NEXT_PUBLIC_API}/check-auth`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setIsLoggedIn(data.isAuthenticated);
+      })
+      .catch((error) => {
+        console.error("Error checking login status:", error);
+        setIsLoggedIn(false);
+      });
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+
+    // Listen for login events
+    window.addEventListener("user-login", checkLoginStatus);
+
+    // Listen for logout events
+    window.addEventListener("user-logout", () => setIsLoggedIn(false));
+
+    return () => {
+      window.removeEventListener("user-login", checkLoginStatus);
+      window.removeEventListener("user-logout", () => setIsLoggedIn(false));
+    };
+  }, []);
+
+  const handleLogout = () => {
+    fetch(`${process.env.NEXT_PUBLIC_API}/logout`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.ok) {
+          setIsLoggedIn(false);
+          toast.success("Logged out successfully", {
+            dismissible: true,
+            closeButton: true,
+          });
+          router.push("/login");
+          window.dispatchEvent(new Event("user-logout"));
+        } else {
+          throw new Error("Logout failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+        toast.error("Logout failed");
+      });
+  };
+
   return (
     <main className="flex flex-col">
       <div className="flex w-full flex-col">
@@ -69,9 +131,15 @@ const NavBar = () => {
                 <CartCount />
               </Link>
 
-              <Link href="/login">
-                <CiLogin size={25} className="text-neutral-500" />
-              </Link>
+              {isLoggedIn ? (
+                <Button variant="ghost" onClick={handleLogout} className="p-0">
+                  <CiLogout size={25} className="text-neutral-500" />
+                </Button>
+              ) : (
+                <Link href="/login">
+                  <CiLogin size={25} className="text-neutral-500" />
+                </Link>
+              )}
             </div>
           </div>
         </div>
