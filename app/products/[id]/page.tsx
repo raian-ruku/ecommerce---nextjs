@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/tooltip";
 import { MdContentCopy } from "react-icons/md";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import WishlistButton from "../_components/wishlistButton";
 
 interface Reviews {
   review_id: number;
@@ -316,9 +317,8 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
                 <span>Add to cart</span>
                 <CiShoppingCart size={25} />
               </Button>
-              <div className="flex w-full items-center justify-center rounded-md border-2 border-neutral-200 bg-transparent p-3 sm:w-auto">
-                <FaRegHeart className="text-n300 hover:fill-red-700" />
-              </div>
+              {/* add to wishlist */}
+              <WishlistButton productId={product.product_id} />
             </div>
           </div>
         </div>

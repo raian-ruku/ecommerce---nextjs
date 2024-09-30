@@ -12,6 +12,16 @@ import CartCount from "./cartCount";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -132,9 +142,27 @@ const NavBar = () => {
               </Link>
 
               {isLoggedIn ? (
-                <Button variant="ghost" onClick={handleLogout} className="p-0">
-                  <CiLogout size={25} className="text-neutral-500" />
-                </Button>
+                <Dialog>
+                  <DialogTrigger>
+                    <CiLogout size={25} className="text-neutral-500" />
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Are you sure to log out?</DialogTitle>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button
+                          variant="ghost"
+                          onClick={handleLogout}
+                          className="bg-red-500 text-white hover:bg-red-600 hover:text-white"
+                        >
+                          Log out
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               ) : (
                 <Link href="/login">
                   <CiLogin size={25} className="text-neutral-500" />
