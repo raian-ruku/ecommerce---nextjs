@@ -81,6 +81,40 @@ router.get("/bestseller", async (req, res) => {
   }
 });
 
-router.use(express.json());
+router.get("/search", async (req, res) => {
+  try {
+    const searchTerm = req.query.q;
+    const limit = parseInt(req.query.limit) || 12;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    if (!searchTerm) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Search term is required.",
+      });
+    }
+
+    const results = await products.searchProducts(searchTerm, limit, offset);
+
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Search results.",
+      currentPage: page,
+      limit: limit,
+      count: results.length,
+      data: results,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Error searching products.",
+      error: error.message,
+    });
+  }
+});
 
 module.exports = router;

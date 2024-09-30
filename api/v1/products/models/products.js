@@ -90,6 +90,21 @@ const products = {
       throw error;
     }
   },
+  searchProducts: async (searchTerm, limit, offset) => {
+    try {
+      const searchPattern = `%${searchTerm}%`;
+      const [results] = await connection.query(queries.searchProducts, [
+        searchPattern,
+        searchPattern,
+        searchPattern,
+        limit,
+        offset,
+      ]);
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = products;

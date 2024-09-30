@@ -111,10 +111,10 @@ const WishList = () => {
               </div>
               <div className="flex items-center space-x-4">
                 <button
-                  className="flex h-9 w-9 items-center justify-center rounded-md border border-red-600 bg-transparent text-red-600 transition-colors duration-300 ease-in-out hover:bg-red-600 hover:text-white"
+                  className="flex h-8 w-8 items-center justify-center rounded-md border border-red-600 bg-transparent text-red-600 transition-colors duration-300 ease-in-out hover:bg-red-600 hover:text-white"
                   onClick={() => handleRemoveFromWishlist(item.product_id)}
                 >
-                  <MdDeleteForever size={25} />
+                  <MdDeleteForever size={20} />
                 </button>
               </div>
             </div>

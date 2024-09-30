@@ -1,21 +1,18 @@
-"use client";
-
 import React, { useState } from "react";
 import CustomTop from "../components/customTop";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CiShoppingCart } from "react-icons/ci";
-import { FaRegHeart } from "react-icons/fa";
-import { BsTruck } from "react-icons/bs";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { IoPersonOutline } from "react-icons/io5";
-import { CiLogout } from "react-icons/ci";
+
+import { PiListHeartBold } from "react-icons/pi";
+import { FaMapPin } from "react-icons/fa";
+import { PiPasswordFill } from "react-icons/pi";
+import { IoPersonCircle } from "react-icons/io5";
+
 import ProfileInfo from "./_components/profileInfo";
 import { Footer } from "../components/footer";
 import WishList from "./_components/wishlist";
+import { FaShoppingCart } from "react-icons/fa";
 
 const ProfilePage = () => {
-  const [selectedTab, setSelectedTab] = useState("details");
-
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <CustomTop classname="bg-n100" />
@@ -28,38 +25,48 @@ const ProfilePage = () => {
           <TabsList className="flex h-full w-[250px] flex-col items-start justify-start gap-5 bg-transparent text-[20px]">
             <TabsTrigger
               value="orders"
-              className="flex items-center gap-1 data-[state=active]:w-[200px] data-[state=active]:items-start data-[state=active]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-white"
+              className="flex items-center gap-1 transition-all duration-300 ease-in-out data-[state=active]:w-[250px] data-[state=inactive]:w-[200px] data-[state=active]:items-start data-[state=inactive]:items-start data-[state=active]:justify-start data-[state=inactive]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-[20px] data-[state=inactive]:text-[15px] data-[state=active]:text-white"
             >
-              <CiShoppingCart size={20} />
-              Orders
+              <div className="flex items-center justify-center gap-2">
+                <FaShoppingCart />
+                Orders
+              </div>
             </TabsTrigger>
             <TabsTrigger
               value="wishlist"
-              className="flex items-center gap-1 data-[state=active]:w-[200px] data-[state=active]:items-start data-[state=active]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-white"
+              className="flex items-center gap-1 transition-all duration-300 ease-in-out data-[state=active]:w-[250px] data-[state=inactive]:w-[200px] data-[state=active]:items-start data-[state=inactive]:items-start data-[state=active]:justify-start data-[state=inactive]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-[20px] data-[state=inactive]:text-[15px] data-[state=active]:text-white"
             >
-              <FaRegHeart size={15} />
-              Wishlist
+              <div className="flex items-center justify-center gap-2">
+                <PiListHeartBold />
+                Wishlist
+              </div>
             </TabsTrigger>
             <TabsTrigger
               value="address"
-              className="flex items-center gap-1 data-[state=active]:w-[200px] data-[state=active]:items-start data-[state=active]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-white"
+              className="flex items-center gap-1 transition-all duration-300 ease-in-out data-[state=active]:w-[250px] data-[state=inactive]:w-[200px] data-[state=active]:items-start data-[state=inactive]:items-start data-[state=active]:justify-start data-[state=inactive]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-[20px] data-[state=inactive]:text-[15px] data-[state=active]:text-white"
             >
-              <BsTruck size={15} />
-              Address
+              <div className="flex items-center justify-center gap-2">
+                <FaMapPin />
+                Addresses
+              </div>
             </TabsTrigger>
             <TabsTrigger
               value="password"
-              className="flex items-center gap-1 data-[state=active]:w-[200px] data-[state=active]:items-start data-[state=active]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-white"
+              className="flex items-center gap-1 transition-all duration-300 ease-in-out data-[state=active]:w-[250px] data-[state=inactive]:w-[200px] data-[state=active]:items-start data-[state=inactive]:items-start data-[state=active]:justify-start data-[state=inactive]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-[20px] data-[state=inactive]:text-[15px] data-[state=active]:text-white"
             >
-              <RiLockPasswordLine size={15} />
-              Password
+              <div className="flex items-center justify-center gap-2">
+                <PiPasswordFill />
+                Password
+              </div>
             </TabsTrigger>
             <TabsTrigger
               value="accountDetail"
-              className="flex items-center gap-1 data-[state=active]:w-[200px] data-[state=active]:items-start data-[state=active]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-white"
+              className="flex items-center gap-1 transition-all duration-300 ease-in-out data-[state=active]:w-[250px] data-[state=inactive]:w-[200px] data-[state=active]:items-start data-[state=inactive]:items-start data-[state=active]:justify-start data-[state=inactive]:justify-start data-[state=active]:bg-b900 data-[state=active]:text-[20px] data-[state=inactive]:text-[15px] data-[state=active]:text-white"
             >
-              <IoPersonOutline size={15} />
-              Account Details
+              <div className="flex items-center justify-center gap-2">
+                <IoPersonCircle />
+                Account Details
+              </div>
             </TabsTrigger>
           </TabsList>
           {/* Vertical separator */}

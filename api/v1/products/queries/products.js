@@ -43,6 +43,16 @@ const queries = {
         LIMIT 10 OFFSET 10
     `,
   getTotalProductCount: `SELECT COUNT(*) AS total FROM ${table_name}`,
+
+  searchProducts: `
+    SELECT p.product_id, p.product_availability, p.product_title, p.product_thumbnail, p.product_brand, PM.product_price 
+    FROM ${table_name} AS p
+    INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
+    INNER JOIN category AS c ON p.category_id = c.category_id
+    WHERE p.product_title LIKE ? OR p.product_brand LIKE ? OR c.category_name LIKE ?
+    ORDER BY PM.product_price ASC
+    LIMIT ? OFFSET ?
+  `,
 };
 
 module.exports = queries;
