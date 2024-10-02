@@ -11,6 +11,7 @@ import ProfileInfo from "./_components/profileInfo";
 import { Footer } from "../components/footer";
 import WishList from "./_components/wishlist";
 import { FaShoppingCart } from "react-icons/fa";
+import ShippingAddress from "./_components/shippingAddress";
 
 const ProfilePage = () => {
   return (
@@ -71,21 +72,23 @@ const ProfilePage = () => {
           </TabsList>
           {/* Vertical separator */}
           <div className="mx-8 h-[400px] w-[1px] bg-neutral-200"></div>
-          <div className="h-full flex-1 p-4">
+          <div className="h-full flex-1 px-4">
             <TabsContent value="orders">Orders content here...</TabsContent>
             <TabsContent value="wishlist">
-              <div className="p-4">
+              <div className="px-4">
                 <WishList />
               </div>
             </TabsContent>
             <TabsContent value="address">
-              <div className="p-4">Address content here...</div>
+              <div className="px-4">
+                <ShippingAddress />
+              </div>
             </TabsContent>
             <TabsContent value="password">
-              <div className="p-4">Password content here...</div>
+              <div className="px-4">Password content here...</div>
             </TabsContent>
             <TabsContent value="accountDetail">
-              <div className="p-4">
+              <div className="px-4">
                 <ProfileInfo />
               </div>
             </TabsContent>

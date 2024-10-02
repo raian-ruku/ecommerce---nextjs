@@ -94,7 +94,7 @@ const DetailsReview = ({
           >
             <h2 className="text-xl font-semibold md:text-2xl">Details</h2>
             <p className="font-bold">{details}</p>
-            <p>Brand: {brand}</p>
+            <p>Brand: {brand ? brand : "Not mentioned"}</p>
             <p>Weight: {weight}</p>
             <p>Height: {height}</p>
             <p>Width: {width}</p>
