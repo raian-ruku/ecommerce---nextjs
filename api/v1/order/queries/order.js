@@ -1,11 +1,14 @@
-const table_name = "orders";
+const orders_table = "orders";
+const order_items_table = "order_items";
 
 const queries = {
-  createOrder: `INSERT INTO ${table_name} (product_id, user_id, shipping_id, order_date, quantity, order_status) VALUES (?, ?, ?, NOW(), ?, 0)`,
-  getOrderById: `SELECT * FROM ${table_name} WHERE order_id = ?`,
-  getOrdersByUserId: `SELECT o.order_id, o.product_id, o.user_id, o.shipping_id, o.order_date, o.quantity, o.order_status, o.price, p.product_title, p.product_thumbnail FROM ${table_name} as o  INNER JOIN products as p ON o.product_id = p.product_id WHERE user_id = ? ORDER BY order_date DESC`,
-  updateOrderStatus: `UPDATE ${table_name} SET order_status = ? WHERE order_id = ?`,
-  deleteOrder: `DELETE FROM ${table_name} WHERE order_id = ?`,
+  createOrder: `INSERT INTO ${orders_table} (user_id, shipping_id,  total_price, order_date, order_status) VALUES (?,?,?, NOW(), 0)`,
+  createOrderItem: `INSERT INTO ${order_items_table} (order_id, product_id, quantity, price, shipping_cost, tax) VALUES (?, ?, ?, ?,?,?)`,
+  getOrderById: `SELECT o.*, s.shipping_street, s.shipping_city, s.shipping_state, s.shipping_zip, s.shipping_country FROM ${orders_table} o JOIN shipping_address s ON o.shipping_id = s.shipping_id WHERE o.order_id = ?`,
+  getOrdersByUserId: `SELECT o.*, s.shipping_street, s.shipping_city, s.shipping_state, s.shipping_zip, s.shipping_country, oi.*, p.product_title, p.product_thumbnail FROM ${orders_table} o JOIN shipping_address s ON o.shipping_id = s.shipping_id  INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON oi.product_id = p.product_id WHERE o.user_id = ? ORDER BY o.order_date DESC`,
+  updateOrderStatus: `UPDATE ${orders_table} SET order_status = ? WHERE order_id = ?`,
+  deleteOrder: `DELETE FROM ${orders_table} WHERE order_id = ?`,
+  deleteOrderItems: `DELETE FROM ${order_items_table} WHERE order_id = ?`,
 };
 
 module.exports = queries;

@@ -1,4 +1,3 @@
-// routes/orders.js
 const express = require("express");
 const router = express.Router();
 const orders = require("../models/order");
@@ -29,10 +28,10 @@ const authenticateUser = (req, res, next) => {
 
 // Create a new order
 router.post("/create-order", authenticateUser, async (req, res) => {
-  const { product_id, shipping_id, quantity } = req.body;
+  const { shipping_id, total_price, orderItems } = req.body;
   const user_id = req.user.id;
 
-  if (isEmpty(product_id) || isEmpty(shipping_id) || isEmpty(quantity)) {
+  if (isEmpty(shipping_id) || isEmpty(total_price) || isEmpty(orderItems)) {
     return res.status(400).json({
       success: false,
       message: "All fields are required.",
@@ -41,10 +40,10 @@ router.post("/create-order", authenticateUser, async (req, res) => {
 
   try {
     const orderId = await orders.createOrder(
-      product_id,
       user_id,
       shipping_id,
-      quantity,
+      total_price,
+      orderItems,
     );
     return res.status(201).json({
       success: true,

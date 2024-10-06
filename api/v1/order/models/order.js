@@ -1,20 +1,38 @@
-// models/order.js
 const connection = require("../../connection/connection");
 const queries = require("../queries/order");
 
 const orders = {
-  createOrder: async (product_id, user_id, shipping_id, quantity) => {
+  createOrder: async (user_id, shipping_id, total_price, orderItems) => {
+    const conn = await connection.getConnection();
     try {
-      const [result] = await connection.query(queries.createOrder, [
-        product_id,
+      await conn.beginTransaction();
+
+      const [orderResult] = await conn.query(queries.createOrder, [
         user_id,
         shipping_id,
-        quantity,
+        total_price,
       ]);
-      return result.insertId;
+      const orderId = orderResult.insertId;
+
+      for (const item of orderItems) {
+        await conn.query(queries.createOrderItem, [
+          orderId,
+          item.id,
+          item.quantity,
+          item.price * item.quantity,
+          item.shipping_cost,
+          item.tax,
+        ]);
+      }
+
+      await conn.commit();
+      return orderId;
     } catch (error) {
+      await conn.rollback();
       console.error("Create order error:", error);
       throw error;
+    } finally {
+      conn.release();
     }
   },
 
@@ -23,7 +41,17 @@ const orders = {
       const [orderData] = await connection.query(queries.getOrderById, [
         order_id,
       ]);
-      return orderData[0] || null;
+      if (orderData.length === 0) return null;
+
+      const [orderItems] = await connection.query(
+        queries.getOrderItemsByOrderId,
+        [order_id],
+      );
+
+      return {
+        ...orderData[0],
+        items: orderItems,
+      };
     } catch (error) {
       console.error("Get order details error:", error);
       throw error;
@@ -56,12 +84,21 @@ const orders = {
   },
 
   deleteOrder: async (order_id) => {
+    const conn = await connection.getConnection();
     try {
-      const [result] = await connection.query(queries.deleteOrder, [order_id]);
+      await conn.beginTransaction();
+
+      await conn.query(queries.deleteOrderItems, [order_id]);
+      const [result] = await conn.query(queries.deleteOrder, [order_id]);
+
+      await conn.commit();
       return result.affectedRows > 0;
     } catch (error) {
+      await conn.rollback();
       console.error("Delete order error:", error);
       throw error;
+    } finally {
+      conn.release();
     }
   },
 };

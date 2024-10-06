@@ -166,19 +166,6 @@ const CheckoutPage = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (selectedAddress) {
-      router.push("/successfulorder");
-      setTimeout(() => {
-        clearCart();
-      }, 1000);
-    } else {
-      toast.error("Please select a shipping address");
-    }
-  };
-
   const calculateTotalPrice = () => {
     const totalPrice = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -202,6 +189,58 @@ const CheckoutPage = () => {
     const shipping = calculateShipping();
     const tax = Number(calculateTax());
     return (totalPrice + shipping + tax).toFixed(2);
+  };
+
+  const handlePlaceOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!selectedAddress) {
+      toast.error("Please select a shipping address");
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/create-order`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            shipping_id: selectedAddress.shipping_id,
+            total_price: parseFloat(calculateFinalPrice()),
+            orderItems: cartItems.map((item) => ({
+              id: item.id,
+              quantity: item.quantity,
+              price: item.price,
+              shipping_cost: calculateShipping(), // Distribute shipping cost equally among items
+              tax: Number(calculateTax()), // Distribute tax equally among items
+            })),
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to place order");
+      }
+
+      const data = await response.json();
+      toast.success(
+        `Order placed successfully! Order ID: ${data.data.order_id}`,
+      );
+      clearCart();
+      router.push(`/order-confirmation/${data.data.order_id}`);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("Failed to place order. Please try again.");
+    }
   };
 
   if (!isClient) return null;
@@ -236,7 +275,6 @@ const CheckoutPage = () => {
                         required
                       />
                     </div>
-
                     <div className="space-y-2">
                       <Label htmlFor="shipping_city">City</Label>
                       <Input
@@ -458,15 +496,9 @@ const CheckoutPage = () => {
               </Card>
             ))}
           </div>
-          <Button
-            onClick={handleSubmit}
-            className="mt-5 transition-colors duration-500 ease-in-out hover:bg-green-600"
-          >
-            Place Order
-          </Button>
         </div>
         <div className="mx-8 h-[500px] w-[1px] bg-neutral-200"></div>
-        <form className="flex w-96 flex-col p-5">
+        <form onSubmit={handlePlaceOrder} className="flex w-96 flex-col p-5">
           <h1 className="pb-5 text-xl font-bold text-b900">Your Order</h1>
           <div className="flex flex-row items-center justify-between gap-2">
             {cartItems.map((item) => (
@@ -510,6 +542,12 @@ const CheckoutPage = () => {
               <p>${calculateFinalPrice()}</p>
             </div>
           </div>
+          <Button
+            type="submit"
+            className="mt-5 transition-colors duration-500 ease-in-out hover:bg-green-600"
+          >
+            Place Order
+          </Button>
         </form>
       </div>
       <Footer className="mt-48 bg-n100" />
