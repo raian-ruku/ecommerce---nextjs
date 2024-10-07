@@ -103,7 +103,7 @@ export default function PlacedOrders() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4">
       <h1 className="mb-6 text-2xl font-bold">Your Orders</h1>
       <div className="space-y-6">
         {Object.entries(groupedOrders).map(([orderId, items]) => {

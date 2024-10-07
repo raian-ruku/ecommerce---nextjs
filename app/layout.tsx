@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import NavBar from "./components/NavBar";
+import ConditionalNavBar from "./components/conditionalNavbar";
 import localFont from "next/font/local";
 import { CartProvider } from "@/context/cartContext";
 import { Toaster } from "@/components/ui/sonner";
@@ -27,7 +27,7 @@ export default function RootLayout({
       <CartProvider>
         <body className={`${myFont.variable} font-iosevka`}>
           <ThemeProvider>
-            <NavBar />
+            <ConditionalNavBar />
             {children}
             <SpeedInsights />
             <Analytics />

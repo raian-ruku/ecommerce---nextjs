@@ -8,6 +8,16 @@ function generateToken(user) {
   });
 }
 
+function generateTokenAdmin(user) {
+  return jwt.sign(
+    { id: user.admin_id, email: user.admin_email, role: user.role },
+    JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
+}
+
 function verifyToken(token) {
   try {
     return jwt.verify(token, JWT_SECRET);
@@ -16,4 +26,4 @@ function verifyToken(token) {
   }
 }
 
-module.exports = { generateToken, verifyToken };
+module.exports = { generateToken, verifyToken, generateTokenAdmin };

@@ -43,10 +43,9 @@ const orders = {
       ]);
       if (orderData.length === 0) return null;
 
-      const [orderItems] = await connection.query(
-        queries.getOrderItemsByOrderId,
-        [order_id],
-      );
+      const [orderItems] = await connection.query(queries.getOrderById, [
+        order_id,
+      ]);
 
       return {
         ...orderData[0],

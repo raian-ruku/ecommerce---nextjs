@@ -72,7 +72,7 @@ const ProfilePage = () => {
             </TabsTrigger>
           </TabsList>
           {/* Vertical separator */}
-          <div className="mx-8 h-[400px] w-[1px] bg-neutral-200"></div>
+          <div className="mx-8 h-auto w-[1px] bg-neutral-200"></div>
           <div className="h-full flex-1 px-4">
             <TabsContent value="orders">
               <PlacedOrders />
@@ -98,7 +98,7 @@ const ProfilePage = () => {
           </div>
         </Tabs>
       </div>
-      <Footer className="bg-n100" />
+      <Footer className="mt-32 bg-n100" />
     </main>
   );
 };

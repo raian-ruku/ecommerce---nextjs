@@ -37,13 +37,16 @@ export default function SignupPage() {
     const submitForm = async () => {
       if (isSubmitting) {
         try {
-          const response = await fetch("http://localhost:8000/api/v1/signup", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API}/signup`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
             },
-            body: JSON.stringify(formData),
-          });
+          );
 
           if (!response.ok) {
             if (response.status === 409) {
