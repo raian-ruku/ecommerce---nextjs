@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Bar, BarChart, XAxis } from "recharts";
+import { Bar, BarChart, XAxis, LabelList } from "recharts";
+import {
+  format,
+  parseISO,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+} from "date-fns";
 
 import {
   Card,
@@ -17,95 +24,142 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "An interactive bar chart";
+export const description = "An interactive bar chart showing daily sales";
 
-const chartData = [
-  { date: "2024-06-01", desktop: 178, mobile: 200 },
-  { date: "2024-06-02", desktop: 470, mobile: 410 },
-  { date: "2024-06-03", desktop: 103, mobile: 160 },
-  { date: "2024-06-04", desktop: 439, mobile: 380 },
-  { date: "2024-06-05", desktop: 88, mobile: 140 },
-  { date: "2024-06-06", desktop: 294, mobile: 250 },
-  { date: "2024-06-07", desktop: 323, mobile: 370 },
-  { date: "2024-06-08", desktop: 385, mobile: 320 },
-  { date: "2024-06-09", desktop: 438, mobile: 480 },
-  { date: "2024-06-10", desktop: 155, mobile: 200 },
-  { date: "2024-06-11", desktop: 92, mobile: 150 },
-  { date: "2024-06-12", desktop: 492, mobile: 420 },
-  { date: "2024-06-13", desktop: 81, mobile: 130 },
-  { date: "2024-06-14", desktop: 426, mobile: 380 },
-  { date: "2024-06-15", desktop: 307, mobile: 350 },
-  { date: "2024-06-16", desktop: 371, mobile: 310 },
-  { date: "2024-06-17", desktop: 475, mobile: 520 },
-  { date: "2024-06-18", desktop: 107, mobile: 170 },
-  { date: "2024-06-19", desktop: 341, mobile: 290 },
-  { date: "2024-06-20", desktop: 408, mobile: 450 },
-  { date: "2024-06-21", desktop: 169, mobile: 210 },
-  { date: "2024-06-22", desktop: 317, mobile: 270 },
-  { date: "2024-06-23", desktop: 480, mobile: 530 },
-  { date: "2024-06-24", desktop: 132, mobile: 180 },
-  { date: "2024-06-25", desktop: 141, mobile: 190 },
-  { date: "2024-06-26", desktop: 434, mobile: 380 },
-  { date: "2024-06-27", desktop: 448, mobile: 490 },
-  { date: "2024-06-28", desktop: 149, mobile: 200 },
-  { date: "2024-06-29", desktop: 103, mobile: 160 },
-  { date: "2024-06-30", desktop: 446, mobile: 400 },
-];
+interface Order {
+  order_id: number;
+  order_date: string;
+  total_price: string; // Changed to string as it might come as a string from the API
+}
+
+interface ApiResponse {
+  success: boolean;
+  data: Order[];
+}
+
+interface ChartDataPoint {
+  date: string;
+  sales: number;
+}
 
 const chartConfig = {
   views: {
-    label: "Page Views",
+    label: "Sales",
   },
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
+  sales: {
+    label: "",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
 export function SalesChart() {
-  const [activeChart, setActiveChart] =
-    React.useState<keyof typeof chartConfig>("desktop");
+  const [chartData, setChartData] = React.useState<ChartDataPoint[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [totalSales, setTotalSales] = React.useState(0);
 
-  const total = React.useMemo(
-    () => ({
-      desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
-      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
-    }),
-    [],
-  );
+  React.useEffect(() => {
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/admin/order-sales`,
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+        const result: ApiResponse = await response.json();
+        if (!result.success || !Array.isArray(result.data)) {
+          throw new Error("Invalid data received from API");
+        }
+
+        const orders = result.data;
+
+        // Process orders data
+        const now = new Date();
+        const monthStart = startOfMonth(now);
+        const monthEnd = endOfMonth(now);
+
+        const dailySales = eachDayOfInterval({
+          start: monthStart,
+          end: monthEnd,
+        }).reduce(
+          (acc, date) => {
+            acc[format(date, "yyyy-MM-dd")] = 0;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
+
+        let totalSalesSum = 0;
+        orders.forEach((order) => {
+          const orderDate = format(parseISO(order.order_date), "yyyy-MM-dd");
+          const orderTotal = parseFloat(order.total_price);
+          if (!isNaN(orderTotal) && orderDate in dailySales) {
+            dailySales[orderDate] += orderTotal;
+            totalSalesSum += orderTotal;
+          }
+        });
+
+        const formattedData: ChartDataPoint[] = Object.entries(dailySales).map(
+          ([date, sales]) => ({
+            date,
+            sales: Number(sales.toFixed(2)), // Ensure sales is a number with 2 decimal places
+          }),
+        );
+
+        setChartData(formattedData);
+        setTotalSales(Number(totalSalesSum.toFixed(2))); // Ensure totalSales is a number with 2 decimal places
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <Card className="h-fit">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 sm:py-6">
+        <div className="flex flex-1 flex-col justify-center gap-1 px-5 sm:py-6">
           <CardTitle>Total Sales</CardTitle>
           <CardDescription>This month</CardDescription>
         </div>
         <div className="flex">
-          {["desktop"].map((key) => {
-            const chart = key as keyof typeof chartConfig;
-            return (
-              <button
-                key={chart}
-                data-active={activeChart === chart}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t text-left even:border-l data-[active=true]:bg-muted/50"
-                onClick={() => setActiveChart(chart)}
-              >
-                <span className="text-xs text-muted-foreground">
-                  {chartConfig[chart].label}
-                </span>
-                <span className="text-lg font-bold leading-none sm:text-3xl">
-                  {total[key as keyof typeof total].toLocaleString()}
-                </span>
-              </button>
-            );
-          })}
+          <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t text-left even:border-l data-[active=true]:bg-muted/50">
+            <span className="text-xs text-muted-foreground">
+              {chartConfig.sales.label}
+            </span>
+            <span className="px-5 text-lg font-bold leading-none sm:text-3xl">
+              {formatCurrency(totalSales)}
+            </span>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[150px] w-full"
+          className="aspect-auto h-[150px] w-full pt-3"
         >
           <BarChart
             accessibilityLayer
@@ -129,11 +183,12 @@ export function SalesChart() {
                 });
               }}
             />
+
             <ChartTooltip
               content={
                 <ChartTooltipContent
                   className="w-[150px]"
-                  nameKey="views"
+                  nameKey="sales"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
@@ -141,10 +196,15 @@ export function SalesChart() {
                       year: "numeric",
                     });
                   }}
+                  formatter={(value) => formatCurrency(Number(value))}
                 />
               }
             />
-            <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+            <Bar
+              dataKey="sales"
+              fill={`var(--color-sales)`}
+              className="transition-colors duration-100 ease-in-out hover:fill-green-500"
+            />
           </BarChart>
         </ChartContainer>
       </CardContent>

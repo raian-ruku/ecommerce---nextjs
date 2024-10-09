@@ -10,7 +10,7 @@ function generateToken(user) {
 
 function generateTokenAdmin(user) {
   return jwt.sign(
-    { id: user.admin_id, email: user.admin_email, role: user.role },
+    { admin_id: user.admin_id, admin_email: user.admin_email, role: user.role },
     JWT_SECRET,
     {
       expiresIn: "1d",

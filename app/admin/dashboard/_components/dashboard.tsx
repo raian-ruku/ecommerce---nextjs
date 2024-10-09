@@ -1,16 +1,18 @@
 import React from "react";
 import { SalesChart } from "./salesChart";
-import { CustomerChart } from "./customerChart";
 import { OrdersChart } from "./ordersChart";
+import { MostOrdered } from "./mostOrdered";
+import PendingCard from "./pendingCard";
 
 const DashboardPage = () => {
   return (
-    <div className="h-screen w-full">
-      <div className="grid h-96 grid-cols-3 gap-3">
+    <div className="flex h-screen w-full flex-col gap-3">
+      <PendingCard />
+      <div className="grid grid-cols-2 gap-3">
         <SalesChart />
-        <CustomerChart />
         <OrdersChart />
       </div>
+      <MostOrdered />
     </div>
   );
 };

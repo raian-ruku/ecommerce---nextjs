@@ -108,6 +108,22 @@ router.get("/user/all-orders", authenticateUser, async (req, res) => {
   }
 });
 
+router.get("/order-sales", async (req, res) => {
+  try {
+    const orderSales = await orders.getOrderSales();
+    return res.status(200).json({
+      success: true,
+      data: orderSales,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching order sales.",
+      error: error.message,
+    });
+  }
+});
+
 // Update order status
 router.put("/:orderId/status", authenticateUser, async (req, res) => {
   const orderId = req.params.orderId;
