@@ -68,38 +68,6 @@ const orders = {
       throw error;
     }
   },
-
-  updateOrderStatus: async (order_id, new_status) => {
-    try {
-      const [result] = await connection.query(queries.updateOrderStatus, [
-        new_status,
-        order_id,
-      ]);
-      return result.affectedRows > 0;
-    } catch (error) {
-      console.error("Update order status error:", error);
-      throw error;
-    }
-  },
-
-  deleteOrder: async (order_id) => {
-    const conn = await connection.getConnection();
-    try {
-      await conn.beginTransaction();
-
-      await conn.query(queries.deleteOrderItems, [order_id]);
-      const [result] = await conn.query(queries.deleteOrder, [order_id]);
-
-      await conn.commit();
-      return result.affectedRows > 0;
-    } catch (error) {
-      await conn.rollback();
-      console.error("Delete order error:", error);
-      throw error;
-    } finally {
-      conn.release();
-    }
-  },
 };
 
 module.exports = orders;

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
-
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,14 +33,6 @@ interface OrderItem {
   shipping_cost: number;
   tax: number;
 }
-
-const orderStatusMap: { [key: number]: string } = {
-  0: "Pending",
-  1: "Processing",
-  2: "Shipped",
-  3: "Delivered",
-  4: "Cancelled",
-};
 
 export default function PlacedOrders() {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
@@ -101,7 +93,48 @@ export default function PlacedOrders() {
   const formatPrice = (price: number) => {
     return (Math.round(price * 100) / 100).toFixed(2);
   };
-
+  const getStatusBadge = (status: number) => {
+    switch (status) {
+      case 0:
+        return (
+          <Badge
+            className="border-yellow-500 text-yellow-500"
+            variant="outline"
+          >
+            Pending
+          </Badge>
+        );
+      case 1:
+        return (
+          <Badge
+            className="border-orange-500 text-orange-500"
+            variant="outline"
+          >
+            Processing
+          </Badge>
+        );
+      case 2:
+        return (
+          <Badge className="border-lime-500 text-lime-500" variant="outline">
+            Shipped
+          </Badge>
+        );
+      case 3:
+        return (
+          <Badge className="border-green-500 text-green-500" variant="outline">
+            Completed
+          </Badge>
+        );
+      case 4:
+        return (
+          <Badge className="border-red-500 text-red-500" variant="outline">
+            Cancelled
+          </Badge>
+        );
+      default:
+        return <Badge>Unknown</Badge>;
+    }
+  };
   return (
     <div className="container mx-auto px-4">
       <h1 className="mb-6 text-2xl font-bold">Your Orders</h1>
@@ -122,9 +155,7 @@ export default function PlacedOrders() {
                   </p>
                 </div>
                 <div className="mt-2 sm:mt-0">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
-                    {orderStatusMap[items[0].order_status]}
-                  </span>
+                  {getStatusBadge(items[0].order_status)}
                 </div>
               </div>
               <div className="mb-4 flex flex-wrap gap-4">

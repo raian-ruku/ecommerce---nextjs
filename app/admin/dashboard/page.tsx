@@ -7,11 +7,13 @@ import { MdReviews } from "react-icons/md";
 import { IoSettingsSharp } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
 import { FaCartArrowDown } from "react-icons/fa6";
+import { BiSolidBadgeDollar } from "react-icons/bi";
 
 import Logo from "@/public/images/admin.png";
 import Image from "next/image";
 import ProductsPage from "./_components/products";
 import DashboardPage from "./_components/dashboard";
+import OrdersPage from "./_components/orders";
 
 const AdminDashboard = () => {
   return (
@@ -45,6 +47,15 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-center gap-2">
               <FaBoxArchive />
               Products
+            </div>
+          </TabsTrigger>
+          <TabsTrigger
+            value="sales"
+            className="flex items-center gap-1 transition-all duration-300 ease-in-out data-[state=active]:w-[200px] data-[state=inactive]:w-[200px] data-[state=active]:items-start data-[state=inactive]:items-start data-[state=active]:justify-start data-[state=inactive]:justify-start data-[state=active]:bg-red-500 data-[state=active]:text-[20px] data-[state=inactive]:text-[15px] data-[state=active]:text-white data-[state=active]:drop-shadow-xl"
+          >
+            <div className="flex items-center justify-center gap-2">
+              <BiSolidBadgeDollar />
+              Sales
             </div>
           </TabsTrigger>
           <TabsTrigger
@@ -94,7 +105,10 @@ const AdminDashboard = () => {
           <TabsContent value="products">
             <ProductsPage />
           </TabsContent>
-          <TabsContent value="orders">orders</TabsContent>
+          <TabsContent value="sales">Sales</TabsContent>
+          <TabsContent value="orders">
+            <OrdersPage />
+          </TabsContent>
           <TabsContent value="customers">customers</TabsContent>
           <TabsContent value="reviews">reviews</TabsContent>
           <TabsContent value="settings">settings</TabsContent>

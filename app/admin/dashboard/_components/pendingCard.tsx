@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import ProductsPage from "./products";
 
 interface OrderItem {
   product_id: number;
@@ -76,10 +79,43 @@ const PendingCard = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
+  const getStatusBadge = (status: number) => {
+    switch (status) {
+      case 0:
+        return (
+          <Badge
+            className="border-yellow-500 text-yellow-500"
+            variant="outline"
+          >
+            Pending
+          </Badge>
+        );
+      case 1:
+        return (
+          <Badge
+            className="border-orange-500 text-orange-500"
+            variant="outline"
+          >
+            Processing
+          </Badge>
+        );
+
+      default:
+        return <Badge>Unknown</Badge>;
+    }
+  };
+
   return (
     <Card className="h-[400px] w-full">
-      <CardHeader>
-        <CardTitle>Pending and Processing Orders</CardTitle>
+      <CardHeader className="flex flex-row justify-between">
+        <CardTitle>
+          Pending and Processing Orders{" "}
+          <Link href="/admin/dashboard/orders" target="_blank">
+            <Button className="" variant="link">
+              View All
+            </Button>
+          </Link>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[300px] w-full overflow-auto">
@@ -128,13 +164,7 @@ const PendingCard = () => {
                     {new Date(order.order_date).toLocaleString()}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <Badge
-                      variant={
-                        order.order_status === 0 ? "secondary" : "default"
-                      }
-                    >
-                      {order.order_status === 0 ? "Pending" : "Processing"}
-                    </Badge>
+                    {getStatusBadge(order.order_status)}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     {order.shipping_street}, {order.shipping_city},{" "}
