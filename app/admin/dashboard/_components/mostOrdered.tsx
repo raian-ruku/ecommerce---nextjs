@@ -150,7 +150,7 @@ export function MostOrdered() {
           Total Orders: {totalOrders} <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Total Revenue: ${totalRevenue}
+          Total Revenue: ${totalRevenue.toFixed(2)}
         </div>
       </CardFooter>
     </Card>

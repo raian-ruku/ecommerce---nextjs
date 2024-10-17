@@ -140,7 +140,10 @@ export default function OrdersPage() {
     switch (status) {
       case 0:
         return (
-          <Badge className="s-yellow-500 border-yellow-500" variant="outline">
+          <Badge
+            className="border-yellow-500 text-yellow-500"
+            variant="outline"
+          >
             Pending
           </Badge>
         );
@@ -292,7 +295,7 @@ export default function OrdersPage() {
                   <TableCell>${order.total_price}</TableCell>
                   <TableCell>{getStatusBadge(order.order_status)}</TableCell>
                   <TableCell>
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
                           <span className="sr-only">Open menu</span>
@@ -342,6 +345,11 @@ export default function OrdersPage() {
                         handlePageChange(pagination.currentPage - 1);
                       }
                     }}
+                    className={`cursor-pointer select-none border-none hover:bg-transparent ${
+                      pagination.currentPage > 1
+                        ? "hover:text-blue-700"
+                        : "text-n300 hover:text-red-100"
+                    }`}
                   />
                 </PaginationItem>
                 {[...Array(pagination.totalPages)].map((_, index) => {
@@ -383,6 +391,11 @@ export default function OrdersPage() {
                         handlePageChange(pagination.currentPage + 1);
                       }
                     }}
+                    className={`cursor-pointer select-none border-none hover:bg-transparent ${
+                      pagination.currentPage < pagination.totalPages
+                        ? "hover:text-blue-700"
+                        : "text-n300 hover:text-red-100"
+                    }`}
                   />
                 </PaginationItem>
               </PaginationContent>
