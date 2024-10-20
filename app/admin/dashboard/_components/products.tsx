@@ -32,6 +32,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -76,6 +77,7 @@ interface Product {
   height: number;
   width: number;
   depth: number;
+  total: number;
 }
 
 interface Category {
@@ -88,12 +90,14 @@ export default function ProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -115,6 +119,7 @@ export default function ProductsPage() {
       const data = await response.json();
       setProducts(data.products);
       setTotalPages(data.totalPages);
+      setTotalProducts(data.total);
     } catch (error) {
       console.error("Error fetching products:", error);
       setError(error instanceof Error ? error.message : "An error occurred");
@@ -196,18 +201,190 @@ export default function ProductsPage() {
       toast.error("Failed to update product");
     }
   };
+  const handleAddProduct = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const productData = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/admin/add-product`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(productData),
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      toast.success("Product added successfully");
+      setIsAddDialogOpen(false);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error adding product:", error);
+      toast.error("Failed to add product");
+    }
+  };
 
   return (
     <main className="flex h-screen w-full flex-col p-6">
       <div className="mb-6 flex h-fit w-full flex-row justify-between">
         <h1 className="text-2xl font-bold">Products</h1>
         <div className="flex flex-row items-center justify-center gap-3">
-          <Link href="/admin/products/add">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <LuPackagePlus className="mr-2" />
-              Add Product
-            </Button>
-          </Link>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <LuPackagePlus className="mr-2" />
+                Add Product
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-h-screen max-w-4xl overflow-y-scroll">
+              <DialogHeader>
+                <DialogTitle>Add Product</DialogTitle>
+                <DialogDescription>
+                  Enter the details for the new product.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddProduct} className="space-y-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Basic Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="product_title">Product Title</Label>
+                      <Input
+                        id="product_title"
+                        name="product_title"
+                        placeholder="Enter product title"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_sku">SKU</Label>
+                      <Input
+                        id="product_sku"
+                        name="product_sku"
+                        placeholder="Enter SKU"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_thumbnail">Thumbnail URL</Label>
+                      <Input
+                        id="product_thumbnail"
+                        name="product_thumbnail"
+                        placeholder="Enter thumbnail URL"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="category_id">Category</Label>
+                      <Select name="category_id" required>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem
+                              key={category.category_id}
+                              value={category.category_id.toString()}
+                            >
+                              {category.category_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Dimensions</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="height">Height</Label>
+                      <Input
+                        id="height"
+                        name="height"
+                        type="number"
+                        step="0.01"
+                        placeholder="Height"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="width">Width</Label>
+                      <Input
+                        id="width"
+                        name="width"
+                        type="number"
+                        step="0.01"
+                        placeholder="Width"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="depth">Depth</Label>
+                      <Input
+                        id="depth"
+                        name="depth"
+                        type="number"
+                        step="0.01"
+                        placeholder="Depth"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Pricing and Stock</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="purchase_price">Purchase Price</Label>
+                      <Input
+                        id="purchase_price"
+                        name="purchase_price"
+                        type="number"
+                        step="0.01"
+                        placeholder="Enter purchase price"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_price">Selling Price</Label>
+                      <Input
+                        id="product_price"
+                        name="product_price"
+                        type="number"
+                        step="0.01"
+                        placeholder="Enter selling price"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_stock">Stock</Label>
+                      <Input
+                        id="product_stock"
+                        name="product_stock"
+                        type="number"
+                        placeholder="Enter stock quantity"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="submit"
+                    className="bg-green-500 transition-colors duration-200 ease-in-out hover:bg-green-600"
+                  >
+                    Add new product
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
           <Input
             startContent={<CiSearch size={30} className="pr-2" />}
             className="h-full w-64 rounded-md border-[1px] border-n100"
@@ -298,7 +475,7 @@ export default function ProductsPage() {
             <div className="w-full">
               Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
               {Math.min(currentPage * itemsPerPage, products.length)} of{" "}
-              {products.length} products
+              {totalProducts} products
             </div>
             <Pagination>
               <PaginationContent>

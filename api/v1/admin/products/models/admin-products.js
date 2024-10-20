@@ -42,6 +42,50 @@ const admin_products = {
     }
   },
 
+  addProduct: async (productData) => {
+    const conn = await connection.getConnection();
+    try {
+      await conn.beginTransaction();
+
+      // Insert into products table
+      const [result] = await conn.query(queries.addProduct, [
+        productData.product_title,
+        productData.product_sku,
+        productData.product_thumbnail,
+        productData.category_id,
+      ]);
+
+      const productId = result.insertId;
+
+      // Insert into products_master table
+      await conn.query(queries.addProductMaster, [
+        productId,
+        productData.purchase_price,
+        productData.product_price,
+        productData.product_stock,
+      ]);
+
+      // Insert into dimensions table
+      if (productData.height || productData.width || productData.depth) {
+        await conn.query(queries.addDimensions, [
+          productId,
+          productData.height || null,
+          productData.width || null,
+          productData.depth || null,
+        ]);
+      }
+
+      await conn.commit();
+      return productId;
+    } catch (error) {
+      await conn.rollback();
+      console.error("Add product error:", error);
+      throw error;
+    } finally {
+      conn.release();
+    }
+  },
+
   updateProduct: async (productId, productData) => {
     const {
       product_title,

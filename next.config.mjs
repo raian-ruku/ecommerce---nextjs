@@ -2,7 +2,7 @@
 
 const nextConfig = {
   images: {
-    domains: ["cdn.dummyjson.com", "localhost"],
+    domains: ["cdn.dummyjson.com", "localhost", "hips.hearstapps.com"],
   },
 };
 

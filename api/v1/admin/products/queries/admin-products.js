@@ -48,6 +48,20 @@ const queries = {
     LEFT JOIN ${dimensions_table} d ON p.product_id = d.product_id
     WHERE p.product_id = ?
   `,
+  addProduct: `
+    INSERT INTO products (product_title, product_sku, product_thumbnail, category_id, created_by, creation_date)
+    VALUES (?, ?, ?, ?, 'admin', CURRENT_TIMESTAMP)
+  `,
+
+  addProductMaster: `
+    INSERT INTO products_master (product_id, purchase_price, product_price, product_stock, created_by, creation_date)
+    VALUES (?, ?, ?, ?, 'admin', CURRENT_TIMESTAMP)
+  `,
+
+  addDimensions: `
+    INSERT INTO dimensions (product_id, height, width, depth, created_by, creation_date)
+    VALUES (?, ?, ?, ?, 'admin', CURRENT_TIMESTAMP)
+  `,
   updateProduct: `
     UPDATE ${products_table}
     SET product_title = ?, product_sku = ?, product_thumbnail = ?, category_id = ?, last_updated_by = "admin", last_update_date = CURRENT_TIMESTAMP

@@ -57,6 +57,33 @@ router.get("/admin/all-products", authenticateUser, async (req, res) => {
   }
 });
 
+router.post("/admin/add-product", authenticateUser, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to perform this action.",
+      });
+    }
+
+    const productData = req.body;
+    const productId = await admin_products.addProduct(productData);
+
+    return res.status(201).json({
+      success: true,
+      message: "Product added successfully",
+      productId: productId,
+    });
+  } catch (error) {
+    console.error("Error in add product route:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error adding product.",
+      error: error.message,
+    });
+  }
+});
+
 router.get("/admin/product/:id", authenticateUser, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
