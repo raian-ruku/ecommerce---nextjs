@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/input": "^2.2.4",
+    "@nextui-org/input": "^2.2.5",
     "@nextui-org/tabs": "^2.0.35",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.1",
@@ -48,6 +48,7 @@
     "jose": "^5.9.3",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.447.0",
+    "multer": "^1.4.5-lts.1",
     "mysql2": "^3.11.0",
     "next": "14.2.5",
     "next-themes": "^0.3.0",

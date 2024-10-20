@@ -67,6 +67,4 @@ LIMIT ? OFFSET ?
   `,
 };
 
-//TODO: fix the revenue with purchase price and sales price
-
 module.exports = queries;

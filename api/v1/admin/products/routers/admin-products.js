@@ -57,4 +57,95 @@ router.get("/admin/all-products", authenticateUser, async (req, res) => {
   }
 });
 
+router.get("/admin/product/:id", authenticateUser, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to access this information.",
+      });
+    }
+    const product = await admin_products.getProductById(req.params.id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching product.",
+      error: error.message,
+    });
+  }
+});
+
+router.put("/admin/product/:id", authenticateUser, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to perform this action.",
+      });
+    }
+    await admin_products.updateProduct(req.params.id, req.body);
+    return res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error updating product.",
+      error: error.message,
+    });
+  }
+});
+
+router.delete("/admin/product/:id", authenticateUser, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to perform this action.",
+      });
+    }
+    await admin_products.deleteProduct(req.params.id);
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error deleting product.",
+      error: error.message,
+    });
+  }
+});
+
+router.get("/admin/categories", authenticateUser, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to access this information.",
+      });
+    }
+    const categories = await admin_products.getAllCategories();
+    return res.status(200).json({ success: true, categories });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching categories.",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;
