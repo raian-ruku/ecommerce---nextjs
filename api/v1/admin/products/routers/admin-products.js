@@ -3,6 +3,23 @@ const router = express.Router();
 const admin_products = require("../models/admin-products");
 const { verifyToken } = require("../../../jwt");
 const isEmpty = require("is-empty");
+const path = require("path");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../../../../../public/images/uploads"));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
+    );
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const authenticateUser = (req, res, next) => {
   const token = req.cookies.token;
@@ -57,32 +74,53 @@ router.get("/admin/all-products", authenticateUser, async (req, res) => {
   }
 });
 
-router.post("/admin/add-product", authenticateUser, async (req, res) => {
-  try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({
+router.post(
+  "/admin/add-product",
+  authenticateUser,
+  upload.fields([
+    { name: "thumbnail", maxCount: 1 },
+    { name: "productImages", maxCount: 5 },
+  ]),
+  async (req, res) => {
+    const relativePath = "/images/uploads/";
+    try {
+      if (req.user.role !== "admin") {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized to perform this action.",
+        });
+      }
+
+      const productData = req.body;
+      if (req.files["thumbnail"]) {
+        productData.product_thumbnail =
+          relativePath + req.files["thumbnail"][0].filename;
+      }
+      if (req.files["productImages"]) {
+        productData.productImages =
+          relativePath +
+          req.files["productImages"].map((file) => file.filename);
+      }
+
+      console.log("Product data to add:", productData);
+
+      const productId = await admin_products.addProduct(productData);
+
+      return res.status(201).json({
+        success: true,
+        message: "Product added successfully",
+        productId: productId,
+      });
+    } catch (error) {
+      console.error("Error in add product route:", error);
+      return res.status(500).json({
         success: false,
-        message: "You are not authorized to perform this action.",
+        message: "Error adding product.",
+        error: error.message, // This will provide detailed error info
       });
     }
-
-    const productData = req.body;
-    const productId = await admin_products.addProduct(productData);
-
-    return res.status(201).json({
-      success: true,
-      message: "Product added successfully",
-      productId: productId,
-    });
-  } catch (error) {
-    console.error("Error in add product route:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Error adding product.",
-      error: error.message,
-    });
-  }
-});
+  },
+);
 
 router.get("/admin/product/:id", authenticateUser, async (req, res) => {
   try {
@@ -112,27 +150,93 @@ router.get("/admin/product/:id", authenticateUser, async (req, res) => {
   }
 });
 
-router.put("/admin/product/:id", authenticateUser, async (req, res) => {
+router.put(
+  "/admin/product/:id",
+  authenticateUser,
+  upload.fields([
+    { name: "thumbnail", maxCount: 1 },
+    { name: "productImages", maxCount: 5 },
+  ]),
+  async (req, res) => {
+    try {
+      if (req.user.role !== "admin") {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized to perform this action.",
+        });
+      }
+
+      const productData = req.body;
+      if (req.files["thumbnail"]) {
+        productData.product_thumbnail = req.files["thumbnail"][0].filename;
+      }
+      if (req.files["productImages"]) {
+        productData.newImages = req.files["productImages"].map(
+          (file) => file.filename,
+        );
+      }
+
+      await admin_products.updateProduct(req.params.id, productData);
+
+      return res.status(200).json({
+        success: true,
+        message: "Product updated successfully",
+      });
+    } catch (error) {
+      console.error("Error in update product route:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error updating product.",
+        error: error.message,
+      });
+    }
+  },
+);
+
+router.get("/admin/product/:id/images", authenticateUser, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "You are not authorized to perform this action.",
+        message: "You are not authorized to access this information.",
       });
     }
-    await admin_products.updateProduct(req.params.id, req.body);
-    return res.status(200).json({
-      success: true,
-      message: "Product updated successfully",
-    });
+    const images = await admin_products.getProductImages(req.params.id);
+    return res.status(200).json({ success: true, images });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Error updating product.",
+      message: "Error fetching product images.",
       error: error.message,
     });
   }
 });
+
+router.delete(
+  "/admin/product/image/:id",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      if (req.user.role !== "admin") {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized to perform this action.",
+        });
+      }
+      await admin_products.deleteProductImage(req.params.id);
+      return res.status(200).json({
+        success: true,
+        message: "Product image deleted successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error deleting product image.",
+        error: error.message,
+      });
+    }
+  },
+);
 
 router.delete("/admin/product/:id", authenticateUser, async (req, res) => {
   try {

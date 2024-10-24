@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@nextui-org/input";
 import { CiSearch } from "react-icons/ci";
@@ -60,7 +60,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import Image from "next/image";
-import Link from "next/link";
 
 interface Product {
   product_id: number;
@@ -98,7 +97,16 @@ export default function ProductsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [productImages, setProductImages] = useState<File[]>([]);
+  const [productImagePreviews, setProductImagePreviews] = useState<string[]>(
+    [],
+  );
   const itemsPerPage = 10;
+
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const productImagesInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -150,6 +158,7 @@ export default function ProductsPage() {
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
+    setThumbnailPreview(product.product_thumbnail);
     setIsEditDialogOpen(true);
   };
 
@@ -174,19 +183,112 @@ export default function ProductsPage() {
     setIsDeleteDialogOpen(false);
   };
 
+  const handleThumbnailChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setThumbnailFile(file);
+      setThumbnailPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleProductImagesChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = Array.from(event.target.files || []);
+    setProductImages((prevImages) => [...prevImages, ...files]);
+    setProductImagePreviews((prevPreviews) => [
+      ...prevPreviews,
+      ...files.map((file) => URL.createObjectURL(file)),
+    ]);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+    type: "thumbnail" | "productImages",
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const files = Array.from(event.dataTransfer.files);
+
+    if (type === "thumbnail") {
+      const file = files[0];
+      setThumbnailFile(file);
+      setThumbnailPreview(URL.createObjectURL(file));
+    } else {
+      setProductImages((prevImages) => [...prevImages, ...files]);
+      setProductImagePreviews((prevPreviews) => [
+        ...prevPreviews,
+        ...files.map((file) => URL.createObjectURL(file)),
+      ]);
+    }
+  };
+
+  const handleAddProduct = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    if (thumbnailFile) {
+      formData.append("thumbnail", thumbnailFile);
+    }
+
+    productImages.forEach((file) => {
+      formData.append("productImages", file);
+    });
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/admin/add-product`,
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      toast.success("Product added successfully");
+      setIsAddDialogOpen(false);
+      fetchProducts();
+
+      // Reset form fields
+      setThumbnailFile(null);
+      setThumbnailPreview(null);
+      setProductImages([]);
+      setProductImagePreviews([]);
+    } catch (error) {
+      console.error("Error adding product:", error);
+      toast.error("Failed to add product");
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+
+    if (thumbnailFile) {
+      formData.append("thumbnail", thumbnailFile);
+    }
+
+    productImages.forEach((file) => {
+      formData.append("productImages", file);
+    });
 
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API}/admin/product/${selectedProduct?.product_id}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(Object.fromEntries(formData)),
+          body: formData,
           credentials: "include",
         },
       );
@@ -201,35 +303,10 @@ export default function ProductsPage() {
       toast.error("Failed to update product");
     }
   };
-  const handleAddProduct = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const productData = Object.fromEntries(formData.entries());
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/admin/add-product`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(productData),
-          credentials: "include",
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to add product");
-      }
-
-      toast.success("Product added successfully");
-      setIsAddDialogOpen(false);
-      fetchProducts();
-    } catch (error) {
-      console.error("Error adding product:", error);
-      toast.error("Failed to add product");
-    }
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
   return (
@@ -251,7 +328,11 @@ export default function ProductsPage() {
                   Enter the details for the new product.
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleAddProduct} className="space-y-6">
+              <form
+                onSubmit={handleAddProduct}
+                className="space-y-6"
+                encType="multipart/form-data"
+              >
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Basic Information</h3>
                   <div className="grid grid-cols-2 gap-4">
@@ -274,15 +355,6 @@ export default function ProductsPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="product_thumbnail">Thumbnail URL</Label>
-                      <Input
-                        id="product_thumbnail"
-                        name="product_thumbnail"
-                        placeholder="Enter thumbnail URL"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
                       <Label htmlFor="category_id">Category</Label>
                       <Select name="category_id" required>
                         <SelectTrigger>
@@ -300,6 +372,71 @@ export default function ProductsPage() {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Thumbnail</h3>
+                  <div
+                    className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, "thumbnail")}
+                    onClick={() => thumbnailInputRef.current?.click()}
+                  >
+                    <input
+                      type="file"
+                      ref={thumbnailInputRef}
+                      onChange={handleThumbnailChange}
+                      accept="image/*"
+                      style={{ display: "none" }}
+                    />
+                    {thumbnailPreview ? (
+                      <Image
+                        src={thumbnailPreview}
+                        alt="Thumbnail preview"
+                        width={100}
+                        height={100}
+                        className="mx-auto"
+                      />
+                    ) : (
+                      <p>
+                        Drag &apos;n&apos; drop a thumbnail here, or click to
+                        select one
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Product Images</h3>
+                  <div
+                    className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, "productImages")}
+                    onClick={() => productImagesInputRef.current?.click()}
+                  >
+                    <input
+                      type="file"
+                      ref={productImagesInputRef}
+                      onChange={handleProductImagesChange}
+                      accept="image/*"
+                      multiple
+                      style={{ display: "none" }}
+                    />
+                    <p>
+                      Drag &apos;n&apos; drop product images here, or click to
+                      select files
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-4 gap-4">
+                    {productImagePreviews.map((preview, index) => (
+                      <Image
+                        key={index}
+                        src={preview}
+                        alt={`Product image ${index + 1}`}
+                        width={100}
+                        height={100}
+                        className="rounded-md"
+                      />
+                    ))}
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -390,7 +527,7 @@ export default function ProductsPage() {
             className="h-full w-64 rounded-md border-[1px] border-n100"
             placeholder="Search products"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearch}
           />
         </div>
       </div>
@@ -474,7 +611,7 @@ export default function ProductsPage() {
           <div className="mt-4 flex items-center justify-between">
             <div className="w-full">
               Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-              {Math.min(currentPage * itemsPerPage, products.length)} of{" "}
+              {Math.min(currentPage * itemsPerPage, totalProducts)} of{" "}
               {totalProducts} products
             </div>
             <Pagination>
@@ -534,14 +671,18 @@ export default function ProductsPage() {
         </>
       )}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-h-screen max-w-4xl overflow-y-scroll">
           <DialogHeader>
             <DialogTitle>Edit Product</DialogTitle>
             <DialogDescription>
               Make changes to the product here.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            encType="multipart/form-data"
+          >
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Basic Information</h3>
               <div className="grid grid-cols-2 gap-4">
@@ -560,15 +701,6 @@ export default function ProductsPage() {
                     id="product_sku"
                     name="product_sku"
                     defaultValue={selectedProduct?.product_sku}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="product_thumbnail">Thumbnail URL</Label>
-                  <Input
-                    id="product_thumbnail"
-                    name="product_thumbnail"
-                    defaultValue={selectedProduct?.product_thumbnail}
                     className="w-full"
                   />
                 </div>
@@ -593,6 +725,71 @@ export default function ProductsPage() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Thumbnail</h3>
+              <div
+                className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, "thumbnail")}
+                onClick={() => thumbnailInputRef.current?.click()}
+              >
+                <input
+                  type="file"
+                  ref={thumbnailInputRef}
+                  onChange={handleThumbnailChange}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                />
+                {thumbnailPreview ? (
+                  <Image
+                    src={thumbnailPreview}
+                    alt="Thumbnail preview"
+                    width={100}
+                    height={100}
+                    className="mx-auto"
+                  />
+                ) : (
+                  <p>
+                    Drag &apos;n&apos; drop a thumbnail here, or click to select
+                    one
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Product Images</h3>
+              <div
+                className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, "productImages")}
+                onClick={() => productImagesInputRef.current?.click()}
+              >
+                <input
+                  type="file"
+                  ref={productImagesInputRef}
+                  onChange={handleProductImagesChange}
+                  accept="image/*"
+                  multiple
+                  style={{ display: "none" }}
+                />
+                <p>
+                  Drag &apos;n&apos; drop product images here, or click to
+                  select files
+                </p>
+              </div>
+              <div className="grid grid-cols-4 gap-4">
+                {productImagePreviews.map((preview, index) => (
+                  <Image
+                    key={index}
+                    src={preview}
+                    alt={`Product image ${index + 1}`}
+                    width={100}
+                    height={100}
+                    className="rounded-md"
+                  />
+                ))}
               </div>
             </div>
             <div className="space-y-4">

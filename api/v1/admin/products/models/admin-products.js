@@ -44,113 +44,115 @@ const admin_products = {
 
   addProduct: async (productData) => {
     const conn = await connection.getConnection();
+    console.log(
+      "Starting addProduct function with data:",
+      JSON.stringify(productData, null, 2),
+    );
+
     try {
       await conn.beginTransaction();
+      console.log("Transaction begun");
 
       // Insert into products table
+      console.log("Inserting into products table...");
       const [result] = await conn.query(queries.addProduct, [
         productData.product_title,
         productData.product_sku,
         productData.product_thumbnail,
         productData.category_id,
       ]);
+      console.log("Products insert result:", result);
 
       const productId = result.insertId;
+      console.log("New product ID:", productId);
 
       // Insert into products_master table
-      await conn.query(queries.addProductMaster, [
+      console.log("Inserting into products_master table...");
+      const [masterResult] = await conn.query(queries.addProductMaster, [
         productId,
         productData.purchase_price,
         productData.product_price,
         productData.product_stock,
       ]);
+      console.log("Products master insert result:", masterResult);
 
       // Insert into dimensions table
       if (productData.height || productData.width || productData.depth) {
-        await conn.query(queries.addDimensions, [
+        console.log("Inserting into dimensions table...");
+        const [dimensionsResult] = await conn.query(queries.addDimensions, [
           productId,
           productData.height || null,
           productData.width || null,
           productData.depth || null,
         ]);
+        console.log("Dimensions insert result:", dimensionsResult);
+      }
+
+      // Insert product images
+      if (productData.productImages && productData.productImages.length > 0) {
+        console.log("Inserting product images...");
+        for (const imageName of productData.productImages) {
+          const [imageResult] = await conn.query(queries.addProductImage, [
+            productId,
+            imageName,
+          ]);
+          console.log("Image insert result:", imageResult);
+        }
       }
 
       await conn.commit();
+      console.log("Transaction committed successfully");
       return productId;
     } catch (error) {
+      console.error("Error in addProduct:", error);
       await conn.rollback();
-      console.error("Add product error:", error);
+      console.log("Transaction rolled back due to error");
       throw error;
     } finally {
       conn.release();
+      console.log("Database connection released");
     }
   },
 
   updateProduct: async (productId, productData) => {
-    const {
-      product_title,
-      product_sku,
-      product_thumbnail,
-      category_id,
-      purchase_price,
-      product_price,
-      product_stock,
-      height,
-      width,
-      depth,
-    } = productData;
-
     const conn = await connection.getConnection();
-
     try {
       await conn.beginTransaction();
 
       await conn.query(queries.updateProduct, [
-        product_title,
-        product_sku,
-        product_thumbnail,
-        category_id,
+        productData.product_title,
+        productData.product_sku,
+        productData.product_thumbnail,
+        productData.category_id,
         productId,
       ]);
 
       await conn.query(queries.updateProductMaster, [
-        purchase_price,
-        product_price,
-        product_stock,
+        productData.purchase_price,
+        productData.product_price,
+        productData.product_stock,
         productId,
       ]);
 
-      await conn.query(queries.updateDimensions, [
-        height,
-        width,
-        depth,
-        productId,
-      ]);
+      if (productData.height || productData.width || productData.depth) {
+        await conn.query(queries.updateDimensions, [
+          productData.height || null,
+          productData.width || null,
+          productData.depth || null,
+          productId,
+        ]);
+      }
+
+      if (productData.newImages && productData.newImages.length > 0) {
+        for (const imageName of productData.newImages) {
+          await conn.query(queries.addProductImage, [productId, imageName]);
+        }
+      }
 
       await conn.commit();
     } catch (error) {
       await conn.rollback();
       console.error("Update product error:", error);
-      throw error;
-    } finally {
-      conn.release();
-    }
-  },
-
-  deleteProduct: async (productId) => {
-    const conn = await connection.getConnection();
-
-    try {
-      await conn.beginTransaction();
-
-      await conn.query(queries.deleteProductMaster, [productId]);
-      await conn.query(queries.deleteDimensions, [productId]);
-      await conn.query(queries.deleteProduct, [productId]);
-
-      await conn.commit();
-    } catch (error) {
-      await conn.rollback();
-      console.error("Delete product error:", error);
       throw error;
     } finally {
       conn.release();
@@ -165,15 +167,6 @@ const admin_products = {
       return images;
     } catch (error) {
       console.error("Get product images error:", error);
-      throw error;
-    }
-  },
-
-  addProductImage: async (productId, imageData) => {
-    try {
-      await connection.query(queries.addProductImage, [productId, imageData]);
-    } catch (error) {
-      console.error("Add product image error:", error);
       throw error;
     }
   },
