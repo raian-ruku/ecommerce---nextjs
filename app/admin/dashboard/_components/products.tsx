@@ -524,7 +524,7 @@ export default function ProductsPage() {
           </Dialog>
           <Input
             startContent={<CiSearch size={30} className="pr-2" />}
-            className="h-full w-64 rounded-md border-[1px] border-n100"
+            className="h-full w-64 rounded-md"
             placeholder="Search products"
             value={searchTerm}
             onChange={handleSearch}
@@ -546,7 +546,7 @@ export default function ProductsPage() {
                 <TableHead>SKU</TableHead>
                 <TableHead>Pur. Price</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead>Stock</TableHead>
+                <TableHead className="text-right">Stock</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Uploaded at</TableHead>
                 <TableHead>Actions</TableHead>
@@ -569,7 +569,9 @@ export default function ProductsPage() {
                   <TableCell>{product.product_sku}</TableCell>
                   <TableCell>${product.purchase_price}</TableCell>
                   <TableCell>${product.product_price}</TableCell>
-                  <TableCell>{product.product_stock}</TableCell>
+                  <TableCell className="text-right">
+                    {product.product_stock}
+                  </TableCell>
                   <TableCell>{product.category_name}</TableCell>
                   <TableCell>
                     {new Date(product.creation_date).toLocaleTimeString()}{" "}
@@ -623,6 +625,11 @@ export default function ProductsPage() {
                       e.preventDefault();
                       if (currentPage > 1) handlePageChange(currentPage - 1);
                     }}
+                    className={`cursor-pointer select-none border-none hover:bg-transparent ${
+                      currentPage > 1
+                        ? "hover:text-blue-700"
+                        : "text-n300 hover:text-red-100"
+                    }`}
                   />
                 </PaginationItem>
                 {[...Array(totalPages)].map((_, index) => {
@@ -663,6 +670,11 @@ export default function ProductsPage() {
                       if (currentPage < totalPages)
                         handlePageChange(currentPage + 1);
                     }}
+                    className={`cursor-pointer select-none border-none hover:bg-transparent ${
+                      currentPage < totalPages
+                        ? "hover:text-blue-700"
+                        : "text-n300 hover:text-red-100"
+                    }`}
                   />
                 </PaginationItem>
               </PaginationContent>

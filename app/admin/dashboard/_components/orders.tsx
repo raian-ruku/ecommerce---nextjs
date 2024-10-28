@@ -257,7 +257,7 @@ export default function OrdersPage() {
         <Input
           placeholder="Search orders"
           startContent={<CiSearch size={30} className="pr-2" />}
-          className="h-full w-[300px] rounded-md border-[1px] border-n100"
+          className="h-full w-[300px] rounded-md"
         />
       </div>
       {isLoading ? (
@@ -269,10 +269,10 @@ export default function OrdersPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Order ID</TableHead>
+                <TableHead className="text-right">Order ID</TableHead>
                 <TableHead>Items</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
+                <TableHead className="text-right">Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -280,19 +280,23 @@ export default function OrdersPage() {
             <TableBody>
               {filteredOrders.map((order) => (
                 <TableRow key={order.order_id}>
-                  <TableCell>{order.order_id}</TableCell>
+                  <TableCell className="text-right">{order.order_id}</TableCell>
                   <TableCell>
                     <Button
                       variant="link"
+                      className="m-0 p-0"
                       onClick={() => handleViewItems(order)}
                     >
                       View Items ({order.item_count})
                     </Button>
                   </TableCell>
                   <TableCell>
+                    {new Date(order.order_date).toLocaleTimeString("en-BD")}{" "}
                     {new Date(order.order_date).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>${order.total_price}</TableCell>
+                  <TableCell className="text-right">
+                    ${order.total_price}
+                  </TableCell>
                   <TableCell>{getStatusBadge(order.order_status)}</TableCell>
                   <TableCell>
                     <DropdownMenu modal={false}>
@@ -434,9 +438,7 @@ export default function OrdersPage() {
                 </label>
                 <Input
                   id="order-date"
-                  value={new Date(
-                    selectedOrder.order_date,
-                  ).toLocaleDateString()}
+                  value={`${new Date(selectedOrder.order_date).toLocaleTimeString("en-BD")} ${new Date(selectedOrder.order_date).toLocaleDateString()}`}
                   className="col-span-3"
                   readOnly
                   disabled

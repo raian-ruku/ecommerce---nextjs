@@ -14,6 +14,10 @@ import Image from "next/image";
 import ProductsPage from "./_components/products";
 import DashboardPage from "./_components/dashboard";
 import OrdersPage from "./_components/orders";
+import CustomersPage from "./_components/customers";
+import AdminSettings from "./_components/adminSettings";
+import SalesPage from "./_components/sales";
+import ReviewsPage from "./_components/reviews";
 
 const AdminDashboard = () => {
   return (
@@ -105,13 +109,21 @@ const AdminDashboard = () => {
           <TabsContent value="products">
             <ProductsPage />
           </TabsContent>
-          <TabsContent value="sales">Sales</TabsContent>
+          <TabsContent value="sales">
+            <SalesPage />
+          </TabsContent>
           <TabsContent value="orders">
             <OrdersPage />
           </TabsContent>
-          <TabsContent value="customers">customers</TabsContent>
-          <TabsContent value="reviews">reviews</TabsContent>
-          <TabsContent value="settings">settings</TabsContent>
+          <TabsContent value="customers">
+            <CustomersPage />
+          </TabsContent>
+          <TabsContent value="reviews">
+            <ReviewsPage />
+          </TabsContent>
+          <TabsContent value="settings">
+            <AdminSettings />
+          </TabsContent>
         </div>
       </Tabs>
     </main>

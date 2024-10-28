@@ -3,6 +3,7 @@ const router = express.Router();
 const admin_orders = require("../models/admin-orders");
 const { verifyToken } = require("../../../jwt");
 const isEmpty = require("is-empty");
+const { error } = require("console");
 
 const authenticateUser = (req, res, next) => {
   const token = req.cookies.token;
@@ -52,22 +53,6 @@ router.get("/admin/order-dates", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error fetching order dates.",
-      error: error.message,
-    });
-  }
-});
-
-router.get("/admin/monthly_goal", async (req, res) => {
-  try {
-    const monthlyGoal = await admin_orders.getMonthlyGoal();
-    return res.status(200).json({
-      success: true,
-      data: monthlyGoal,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Error fetching monthly goal.",
       error: error.message,
     });
   }
@@ -169,6 +154,7 @@ router.put("/admin/status/:orderId", authenticateUser, async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Failed to update order status.",
+        error: error.message,
       });
     }
   } catch (error) {

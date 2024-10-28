@@ -20,15 +20,7 @@ const admin_orders = {
       throw error;
     }
   },
-  getMonthlyGoal: async () => {
-    try {
-      const [monthlyGoal] = await connection.query(queries.getMonthlyGoal);
-      return monthlyGoal;
-    } catch (error) {
-      console.error("Get order dates error:", error);
-      throw error;
-    }
-  },
+
   getTopProducts: async () => {
     try {
       const [topProducts] = await connection.query(queries.getTopProducts);

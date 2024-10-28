@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import OrderStatusTimeline from "@/app/components/order_timeline";
 
 interface OrderItem {
   order_id: number;
@@ -24,6 +25,7 @@ interface OrderItem {
   order_date: string;
   price: number;
   order_status: number;
+  last_update_date: string;
   shipping_street: string;
   shipping_city: string;
   shipping_state: string;
@@ -158,6 +160,16 @@ export default function PlacedOrders() {
                   {getStatusBadge(items[0].order_status)}
                 </div>
               </div>
+              <div className="mb-4">
+                <OrderStatusTimeline currentStatus={items[0].order_status} />
+                <div className="text-[12px]">
+                  last updated at:{" "}
+                  {new Date(items[0].last_update_date).toLocaleTimeString(
+                    "en-bd",
+                  )}{" "}
+                  {new Date(items[0].last_update_date).toLocaleDateString()}
+                </div>
+              </div>
               <div className="mb-4 flex flex-wrap gap-4">
                 {items.slice(0, 3).map((item) => (
                   <Image
@@ -187,6 +199,16 @@ export default function PlacedOrders() {
                     <DialogHeader>
                       <DialogTitle>Order #{orderId} Details</DialogTitle>
                     </DialogHeader>
+                    <OrderStatusTimeline
+                      currentStatus={items[0].order_status}
+                    />
+                    <div className="text-[12px]">
+                          last updated at:{" "}
+                          {new Date(items[0].last_update_date).toLocaleTimeString(
+                            "en-bd",
+                          )}{" "}
+                          {new Date(items[0].last_update_date).toLocaleDateString()}
+                        </div>
                     <ScrollArea className="max-h-[60vh]">
                       <div className="space-y-4 p-4">
                         {items.map((item) => (

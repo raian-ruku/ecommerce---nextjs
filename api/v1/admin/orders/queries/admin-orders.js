@@ -4,7 +4,7 @@ const queries = {
   getPendingOrders: `SELECT o.order_date, o.order_status, o.order_id, s.shipping_street, s.shipping_city, s.shipping_state, s.shipping_zip, s.shipping_country, oi.product_id, oi.price, p.product_title, p.product_thumbnail FROM orders o JOIN shipping_address s ON o.shipping_id = s.shipping_id  INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON oi.product_id = p.product_id WHERE o.order_status=0 OR o.order_status=1 ORDER BY o.order_status ASC, o.order_date ASC`,
   getOrderSales: `SELECT order_id, order_date, total_price  FROM ${orders_table} WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY order_date ASC`,
   getOrderDates: `SELECT order_id, order_date FROM ${orders_table} WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY order_date ASC`,
-  getMonthlyGoal: `SELECT monthly_goal FROM admin_user WHERE admin_id = 2`,
+
   updateOrderStatus: `UPDATE ${orders_table} SET order_status = ?, last_updated_by = "admin", last_update_date = CURRENT_TIMESTAMP WHERE order_id = ?`,
   deleteOrder: `DELETE FROM ${orders_table} WHERE order_id = ?`,
   deleteOrderItems: `DELETE FROM order_items WHERE order_id = ?`,

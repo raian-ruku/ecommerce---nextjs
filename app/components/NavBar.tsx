@@ -25,6 +25,12 @@ import {
 
 const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  interface User {
+    user_name: string;
+    user_image: string;
+  }
+
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   const checkLoginStatus = () => {
@@ -41,9 +47,28 @@ const NavBar = () => {
         setIsLoggedIn(false);
       });
   };
+  const fetchUserInfo = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API}/user-info`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Important for including cookies
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUser(data.data);
+    } catch (error) {
+      console.error("Failed to fetch user info:", error);
+    }
+  };
 
   useEffect(() => {
     checkLoginStatus();
+    fetchUserInfo();
 
     // Listen for login events
     window.addEventListener("user-login", checkLoginStatus);
@@ -127,14 +152,33 @@ const NavBar = () => {
               <div className="hidden flex-row items-center sm:flex">
                 <Input
                   placeholder="Search products"
-                  variant="underlined"
                   startContent={<CiSearch size={30} className="pr-2" />}
-                  className="w-full max-w-[150px] rounded-md border-[1px] border-neutral-300 text-neutral-500 placeholder:text-neutral-300 sm:max-w-[200px] md:max-w-[300px]"
+                  className="rounded-mdtext-neutral-500 w-full max-w-[150px] placeholder:text-neutral-300 sm:max-w-[200px] md:max-w-[300px]"
                 />
               </div>
 
               <Link href="/profile">
-                <RxAvatar size={20} className="text-neutral-500" />
+                {isLoggedIn && user ? (
+                  user.user_image ? (
+                    <Image
+                      src={user.user_image}
+                      alt={user.user_name}
+                      width={25}
+                      height={25}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <Image
+                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_name)}`}
+                      alt={user.user_name}
+                      width={25}
+                      height={25}
+                      className="rounded-full"
+                    />
+                  )
+                ) : (
+                  <RxAvatar size={25} className="text-neutral-500" />
+                )}
               </Link>
 
               <Link href="/cart">

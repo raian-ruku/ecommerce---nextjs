@@ -158,6 +158,7 @@ router.put(
     { name: "productImages", maxCount: 5 },
   ]),
   async (req, res) => {
+    const relativePath = "/images/uploads/";
     try {
       if (req.user.role !== "admin") {
         return res.status(403).json({
@@ -168,12 +169,13 @@ router.put(
 
       const productData = req.body;
       if (req.files["thumbnail"]) {
-        productData.product_thumbnail = req.files["thumbnail"][0].filename;
+        productData.product_thumbnail =
+          relativePath + req.files["thumbnail"][0].filename;
       }
       if (req.files["productImages"]) {
-        productData.newImages = req.files["productImages"].map(
-          (file) => file.filename,
-        );
+        productData.newImages =
+          relativePath +
+          req.files["productImages"].map((file) => file.filename);
       }
 
       await admin_products.updateProduct(req.params.id, productData);
