@@ -69,7 +69,7 @@ const queries = {
   `,
 
   getSaleDetails: `
-    SELECT s.order_id, s.product_id, s.quantity, s.price, s.total, s.creation_date,
+    SELECT s.order_id, s.product_id, s.quantity, s.price, s.creation_date,
            p.product_title
     FROM ${sales_table} s
     JOIN ${products_table} p ON s.product_id = p.product_id

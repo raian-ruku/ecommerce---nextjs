@@ -17,8 +17,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
-import { FaEye, FaStar, FaEdit, FaTrashAlt } from "react-icons/fa";
+import {
+  FaEye,
+  FaStar,
+  FaEdit,
+  FaTrashAlt,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { toast } from "sonner";
 
@@ -42,6 +50,10 @@ const CheckoutPage = () => {
   const [isViewAddressDialogOpen, setIsViewAddressDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [isOrderSuccessDialogOpen, setIsOrderSuccessDialogOpen] =
+    useState(false);
+  const [isOrderFailedDialogOpen, setIsOrderFailedDialogOpen] = useState(false);
+  const [orderedItems, setOrderedItems] = useState(cartItems);
   const [newAddress, setNewAddress] = useState<
     Omit<Address, "shipping_id" | "user_id" | "is_default">
   >({
@@ -233,12 +245,14 @@ const CheckoutPage = () => {
       }
 
       const data = await response.json();
+      setOrderedItems(cartItems);
       toast.success(
         `Order placed successfully! Order ID: ${data.data.order_id}`,
       );
       clearCart();
-      router.push(`/order-confirmation/${data.data.order_id}`);
+      setIsOrderSuccessDialogOpen(true);
     } catch (error) {
+      setIsOrderFailedDialogOpen(true);
       console.error("Error placing order:", error);
       toast.error("Failed to place order. Please try again.");
     }
@@ -551,6 +565,67 @@ const CheckoutPage = () => {
           </Button>
         </form>
       </div>
+      <Dialog
+        open={isOrderSuccessDialogOpen}
+        onOpenChange={setIsOrderSuccessDialogOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-center text-2xl">
+              <FaCheckCircle className="mr-2 text-green-500" />
+              Order Placed Successfully
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <h3 className="mb-2 text-lg font-semibold">Ordered Items:</h3>
+            {orderedItems.map((item) => (
+              <div key={item.id} className="mb-2 flex items-center">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={40}
+                  height={40}
+                  className="mr-2 rounded-md"
+                />
+                <div>
+                  <p className="font-medium">{item.title}</p>
+                  <p className="text-sm text-gray-600">
+                    {item.quantity} | Price: ${Number(item.price).toFixed(2)} |
+                    Total: ${calculateFinalPrice()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => router.push("/")}>Continue Shopping</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isOrderFailedDialogOpen}
+        onOpenChange={setIsOrderFailedDialogOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-center text-2xl">
+              <FaTimesCircle className="mr-2 text-red-500" />
+              Order Failed
+            </DialogTitle>
+          </DialogHeader>
+          <p className="mt-4 text-center">
+            We&apos;re sorry, but there was an error processing your order.
+            Please try again or contact customer support if the problem
+            persists.
+          </p>
+          <DialogFooter>
+            <Button onClick={() => setIsOrderFailedDialogOpen(false)}>
+              Try Again
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Footer className="mt-48 bg-n100" />
     </main>
   );
