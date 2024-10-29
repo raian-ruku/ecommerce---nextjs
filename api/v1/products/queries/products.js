@@ -54,8 +54,7 @@ const queries = {
     INNER JOIN category AS c ON p.category_id = c.category_id
     WHERE p.product_title LIKE ? OR p.product_brand LIKE ? OR c.category_name LIKE ?
     ORDER BY PM.product_price ASC
-    LIMIT ? OFFSET ?
+   
   `,
 };
-
 module.exports = queries;

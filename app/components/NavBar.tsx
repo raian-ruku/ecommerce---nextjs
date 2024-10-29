@@ -9,13 +9,12 @@ import { CiLogin, CiSearch, CiLogout } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
 import CategoryDrop from "./categoryDrop";
 import CartCount from "./cartCount";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,14 +22,25 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
+interface User {
+  user_name: string;
+  user_image: string;
+}
+
+interface Product {
+  product_id: number;
+  product_title: string;
+  product_thumbnail: string;
+  product_price: number;
+}
+
 const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  interface User {
-    user_name: string;
-    user_image: string;
-  }
-
   const [user, setUser] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const checkLoginStatus = () => {
@@ -47,6 +57,7 @@ const NavBar = () => {
         setIsLoggedIn(false);
       });
   };
+
   const fetchUserInfo = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API}/user-info`, {
@@ -54,7 +65,7 @@ const NavBar = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Important for including cookies
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -66,31 +77,44 @@ const NavBar = () => {
     }
   };
 
- useEffect(() => {
-  checkLoginStatus();
-
-  // Listen for login events
-  const handleUserLogin = () => {
+  useEffect(() => {
     checkLoginStatus();
-    fetchUserInfo(); // Fetch user data immediately after login
-  };
 
-  window.addEventListener("user-login", handleUserLogin);
+    const handleUserLogin = () => {
+      checkLoginStatus();
+      fetchUserInfo();
+    };
 
-  // Listen for logout events
-  window.addEventListener("user-logout", () => setIsLoggedIn(false));
+    window.addEventListener("user-login", handleUserLogin);
+    window.addEventListener("user-logout", () => setIsLoggedIn(false));
 
-  return () => {
-    window.removeEventListener("user-login", handleUserLogin);
-    window.removeEventListener("user-logout", () => setIsLoggedIn(false));
-  };
-}, []);
+    return () => {
+      window.removeEventListener("user-login", handleUserLogin);
+      window.removeEventListener("user-logout", () => setIsLoggedIn(false));
+    };
+  }, []);
 
-useEffect(() => {
-  if (isLoggedIn) {
-    fetchUserInfo();
-  }
-}, [isLoggedIn]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchUserInfo();
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setIsSearching(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = () => {
     fetch(`${process.env.NEXT_PUBLIC_API}/logout`, {
@@ -114,6 +138,30 @@ useEffect(() => {
         console.error("Logout error:", error);
         toast.error("Logout failed");
       });
+  };
+
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setIsSearching(true);
+
+    if (value.trim()) {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/search?q=${encodeURIComponent(value.trim())}&limit=5`,
+        );
+        if (!response.ok) {
+          throw new Error("Search failed");
+        }
+        const data = await response.json();
+        setSearchResults(data.data);
+      } catch (error) {
+        console.error("Search error:", error);
+        toast.error("Failed to perform search");
+      }
+    } else {
+      setSearchResults([]);
+    }
   };
 
   return (
@@ -159,12 +207,46 @@ useEffect(() => {
             </div>
 
             <div className="flex items-center gap-4 md:gap-6">
-              <div className="hidden flex-row items-center sm:flex">
+              <div
+                ref={searchRef}
+                className="relative hidden flex-row items-center sm:flex"
+              >
                 <Input
                   placeholder="Search products"
                   startContent={<CiSearch size={30} className="pr-2" />}
                   className="rounded-mdtext-neutral-500 w-full max-w-[150px] placeholder:text-neutral-300 sm:max-w-[200px] md:max-w-[300px]"
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  onFocus={() => setIsSearching(true)}
                 />
+                {isSearching && searchResults.length > 0 && (
+                  <div className="absolute left-0 top-full z-50 mt-1 h-[100px] w-full overflow-y-scroll rounded-b-md bg-white shadow-lg">
+                    {searchResults.map((product) => (
+                      <Link
+                        key={product.product_id}
+                        href={`/products/${product.product_id}`}
+                      >
+                        <div className="flex items-center p-2 hover:bg-gray-100">
+                          <Image
+                            src={product.product_thumbnail}
+                            alt={product.product_title}
+                            width={40}
+                            height={40}
+                            className="mr-2 rounded-md"
+                          />
+                          <div>
+                            <p className="text-sm font-medium">
+                              {product.product_title}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              ${Number(product.product_price).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <Link href="/profile">

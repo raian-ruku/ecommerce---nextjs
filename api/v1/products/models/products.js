@@ -90,15 +90,13 @@ const products = {
       throw error;
     }
   },
-  searchProducts: async (searchTerm, limit, offset) => {
+  searchProducts: async (searchTerm) => {
     try {
       const searchPattern = `%${searchTerm}%`;
       const [results] = await connection.query(queries.searchProducts, [
         searchPattern,
         searchPattern,
         searchPattern,
-        limit,
-        offset,
       ]);
       return results;
     } catch (error) {
