@@ -119,7 +119,7 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
-router.get("/check-auth", (req, res) => {
+router.get("/admin/check-auth", (req, res) => {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
@@ -139,8 +139,10 @@ router.get("/check-auth", (req, res) => {
       return res.status(200).json({
         isAuthenticated: true,
         user: {
-          id: decoded.id,
-          email: decoded.email,
+          id: decoded.admin_id,
+          email: decoded.admin_email,
+          username: decoded.admin_username,
+          role: decoded.role,
         },
       });
     } else {

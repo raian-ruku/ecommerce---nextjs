@@ -1,5 +1,12 @@
 import React from "react";
-import { CheckCircle2, Circle, Clock, PackageCheck, Truck } from "lucide-react";
+import {
+  CheckCircle2,
+  CheckCircle,
+  Circle,
+  Clock,
+  PackageCheck,
+  Truck,
+} from "lucide-react";
 
 interface OrderStatusTimelineProps {
   currentStatus: number;
@@ -10,9 +17,9 @@ export default function OrderStatusTimeline(
 ) {
   const statuses = [
     { name: "Pending", icon: Clock, color: "text-yellow-500" },
-    { name: "Processing", icon: PackageCheck, color: "text-blue-500" },
-    { name: "Shipped", icon: Truck, color: "text-purple-500" },
-    { name: "Completed", icon: CheckCircle2, color: "text-green-500" },
+    { name: "Processing", icon: PackageCheck, color: "text-orange-500" },
+    { name: "Shipped", icon: Truck, color: "text-lime-500" },
+    { name: "Completed", icon: CheckCircle, color: "text-green-500" },
   ];
 
   return (
@@ -31,7 +38,11 @@ export default function OrderStatusTimeline(
             >
               <div className="flex w-full items-center">
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-300 py-3 transition duration-500 ease-in-out ${isActive ? `${status.color} border-${status.color.split("-")[1]}` : ""}`}
+                  className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-300 py-3 transition duration-500 ease-in-out ${
+                    isActive
+                      ? `${status.color} border-${status.color.split("-").slice(1).join("-")}`
+                      : ""
+                  }`}
                 >
                   {isCompleted ? (
                     <CheckCircle2 className={`h-8 w-8 ${status.color}`} />
@@ -43,7 +54,7 @@ export default function OrderStatusTimeline(
                 </div>
                 {!isLast && (
                   <div
-                    className={`flex-auto border-t-2 transition duration-500 ease-in-out ${isCompleted ? `border-${status.color.split("-")[1]}` : "border-gray-300"}`}
+                    className={`flex-auto border-t-2 transition duration-500 ease-in-out ${isCompleted ? `border-${status.color.split("-").slice(1).join("-")}` : "border-gray-300"}`}
                   />
                 )}
               </div>

@@ -15,6 +15,9 @@ const adminProductRoutes = require("./api/v1/admin/products/routers/admin-produc
 const adminSettingsRoutes = require("./api/v1/admin/settings/routers/admin-settings");
 const adminCustomerRoutes = require("./api/v1/admin/customers/routers/admin-customers");
 const adminSalesRoutes = require("./api/v1/admin/sales/routers/admin-sales");
+const passwordRoutes = require("./api/v1/password/routers/password");
+const reviewRoutes = require("./api/v1/reviews/routers/reviews");
+const adminReviewRoutes = require("./api/v1/admin/reviews/routers/admin-reviews");
 
 const port = process.env.PORT;
 const app = express();
@@ -36,6 +39,9 @@ app.use("/api/v1", adminProductRoutes);
 app.use("/api/v1", adminSettingsRoutes);
 app.use("/api/v1", adminCustomerRoutes);
 app.use("/api/v1", adminSalesRoutes);
+app.use("/api/v1", passwordRoutes);
+app.use("/api/v1", reviewRoutes);
+app.use("/api/v1", adminReviewRoutes);
 
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);

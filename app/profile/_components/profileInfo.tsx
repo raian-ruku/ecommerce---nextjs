@@ -51,7 +51,7 @@ const ProfileInfo = () => {
 
   return (
     <main>
-      <h1>Profile Information</h1>
+      <h2 className="text-2xl font-bold">Profile Information</h2>
       {userInfo ? (
         <div className="mt-10 flex flex-col gap-3">
           <p>Name: {userInfo.user_name}</p>

@@ -18,7 +18,8 @@ interface ProductDetails {
   product_price: number;
   product_thumbnail: string;
   product_brand: string;
-  product_availability: number;
+  product_stock: number;
+  product_minimum: number;
 }
 
 interface ApiResponse {
@@ -86,10 +87,13 @@ export default function ProductPage() {
     router.push(`?${params.toString()}`);
   };
 
-  const getAvailabilityStatus = (product_availability: number) => {
-    if (product_availability === 0) return "Out of Stock";
-    if (product_availability === 1) return "In Stock";
-    if (product_availability === 2) return "Low Stock";
+  const getAvailabilityStatus = (
+    product_stock: number,
+    product_minimum: number,
+  ) => {
+    if (product_stock === 0) return "Out of Stock";
+    if (product_stock >= product_minimum) return "In Stock";
+    if (product_stock < product_minimum) return "Low Stock";
     return "Unknown";
   };
 
@@ -140,7 +144,8 @@ export default function ProductPage() {
                             <div className="flex-shrink-0">
                               <StockBadge
                                 status={getAvailabilityStatus(
-                                  prod.product_availability,
+                                  prod.product_stock,
+                                  prod.product_minimum,
                                 )}
                               />
                             </div>

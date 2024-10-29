@@ -67,7 +67,7 @@ export default function ThemeControls() {
     if (selectedColorId !== null) {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/custom/${selectedColorId}`,
+          `${process.env.NEXT_PUBLIC_API}/custom/${selectedColorId}`,
           {
             method: "PUT",
             headers: {
@@ -100,7 +100,7 @@ export default function ThemeControls() {
 
   const fetchColors = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/custom`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API}/custom`);
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }

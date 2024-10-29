@@ -111,7 +111,7 @@ const AdminSettings = () => {
             <Input
               name="monthly_goal"
               type="number"
-              placeholder="Enter monthly goal"
+              placeholder=""
               required
               labelPlacement="outside"
               label="Monthly Goal"

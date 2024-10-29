@@ -13,6 +13,7 @@ import WishList from "./_components/wishlist";
 import { FaShoppingCart } from "react-icons/fa";
 import ShippingAddress from "./_components/shippingAddress";
 import PlacedOrders from "./_components/placedOrders";
+import PasswordPage from "./_components/password";
 
 const ProfilePage = () => {
   return (
@@ -88,7 +89,9 @@ const ProfilePage = () => {
               </div>
             </TabsContent>
             <TabsContent value="password">
-              <div className="px-4">Password content here...</div>
+              <div className="px-4">
+                <PasswordPage />
+              </div>
             </TabsContent>
             <TabsContent value="accountDetail">
               <div className="px-4">

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
-import { FaRegHeart } from "react-icons/fa6";
 import { CiShoppingCart } from "react-icons/ci";
 import StockBadge from "@/app/components/stockBadge";
 import QuantitySelector from "@/app/components/quantitySelector";
@@ -44,6 +43,8 @@ interface Reviews {
   review_id: number;
   review_rating: number;
   review_comment: string;
+  creation_date: string;
+  user_name: string;
 }
 
 type Dimensions = {
@@ -75,7 +76,6 @@ interface ProductDetails {
   category_name: string;
   product_thumbnail: string;
   product_stock: number;
-  product_availability: number;
 }
 
 export default function ProductbyID({ params }: { params: { id: number } }) {
@@ -88,38 +88,35 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/v1/products/${params.id}`,
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        if (data.success && data.data && data.data[0]) {
-          const productData = data.data[0];
-          console.log("Full Product Data:", productData);
-
-          // Convert single image_data to an array
-
-          setProduct(productData);
-        } else {
-          throw new Error("Product data not found in the response");
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred",
-        );
-        console.error("Error fetching product:", err);
-      } finally {
-        setIsLoading(false);
+  const fetchProduct = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/products/${params.id}`,
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
+      const data = await response.json();
+      if (data.success && data.data && data.data[0]) {
+        const productData = data.data[0];
+        console.log("Full Product Data:", productData);
+        setProduct(productData);
+      } else {
+        throw new Error("Product data not found in the response");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred",
+      );
+      console.error("Error fetching product:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProduct();
   }, [params.id]);
 
@@ -134,10 +131,13 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
     });
   }, [api, product]);
 
-  const getAvailabilityStatus = (product_availability: number) => {
-    if (product_availability === 0) return "Out of Stock";
-    if (product_availability === 1) return "In Stock";
-    if (product_availability === 2) return "Low Stock";
+  const getAvailabilityStatus = (
+    product_stock: number,
+    product_minimum: number,
+  ) => {
+    if (product_stock === 0) return "Out of Stock";
+    if (product_stock >= product_minimum) return "In Stock";
+    if (product_stock < product_minimum) return "Low Stock";
     return "Unknown";
   };
 
@@ -156,6 +156,10 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
         closeButton: true,
       });
     } else toast.error("Item was not added to cart");
+  };
+
+  const handleReviewSubmit = () => {
+    fetchProduct(); // Refresh the product data after a review is submitted
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -240,11 +244,14 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
             <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:space-x-5">
               <div className="mb-2 flex items-center sm:mb-0">
                 <FaStar size={20} className="mr-1 text-yellow-500" />
-                <span>{product.product_rating}</span>
+                <span>{Number(product.product_rating).toFixed(2)}</span>
               </div>
               <div className="flex-shrink-0">
                 <StockBadge
-                  status={getAvailabilityStatus(product.product_availability)}
+                  status={getAvailabilityStatus(
+                    product.product_stock,
+                    product.product_minimum,
+                  )}
                 />
               </div>
             </div>
@@ -309,20 +316,22 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
                 disabled={
                   product.product_stock < product.product_minimum ||
                   quantity < product.product_minimum ||
-                  getAvailabilityStatus(product.product_availability) ===
-                    "Out of Stock"
+                  getAvailabilityStatus(
+                    product.product_stock,
+                    product.product_minimum,
+                  ) === "Out of Stock"
                 }
                 onClick={handleAddToCart}
               >
                 <span>Add to cart</span>
                 <CiShoppingCart size={25} />
               </Button>
-              {/* add to wishlist */}
               <WishlistButton productId={product.product_id} />
             </div>
           </div>
         </div>
         <DetailsReview
+          productId={product.product_id}
           details={product.product_description}
           rating={product.product_rating}
           brand={product.product_brand}
@@ -335,6 +344,7 @@ export default function ProductbyID({ params }: { params: { id: number } }) {
           returnPolicy={product.product_return}
           minimum={product.product_minimum}
           reviews={product.review}
+          onReviewSubmit={handleReviewSubmit}
         />
         <div className="mb-20">
           <div className="mb-6 sm:mb-10">
