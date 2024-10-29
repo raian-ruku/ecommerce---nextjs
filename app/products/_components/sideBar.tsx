@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 interface Category {
   category_id: number;
@@ -20,9 +20,11 @@ interface SideBarProps {
 export default function SideBar({ onFiltersChange }: SideBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [maxPossiblePrice, setMaxPossiblePrice] = useState(1000);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -44,22 +46,34 @@ export default function SideBar({ onFiltersChange }: SideBarProps) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    if (categoryParam) {
+    if (pathname.startsWith("/category/")) {
+      const categoryFromPath = pathname.split("/").pop();
+      setSelectedCategory(categoryFromPath || null);
+      fetchPriceRange(categoryFromPath || null);
+    } else if (categoryParam) {
       setSelectedCategory(categoryParam);
+      fetchPriceRange(categoryParam);
+    } else {
+      fetchPriceRange();
     }
+
     if (minPrice && maxPrice) {
       setPriceRange([Number(minPrice), Number(maxPrice)]);
     }
-  }, [searchParams]);
+  }, [searchParams, pathname]);
 
   const handleCategoryChange = (categoryName: string) => {
+    if (pathname.startsWith("/category/")) {
+      return; // Don't allow category change on category pages
+    }
     setSelectedCategory((prevCategory) =>
       prevCategory === categoryName ? null : categoryName,
     );
+    fetchPriceRange(categoryName);
   };
 
   const handlePriceChange = (value: number[]) => {
-    setPriceRange(value);
+    setPriceRange(value as [number, number]);
   };
 
   const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +87,23 @@ export default function SideBar({ onFiltersChange }: SideBarProps) {
   };
 
   const applyFilters = () => {
-    onFiltersChange(selectedCategory, priceRange as [number, number]);
+    onFiltersChange(selectedCategory, priceRange);
+  };
+
+  const fetchPriceRange = async (category: string | null = null) => {
+    try {
+      const url = category
+        ? `${process.env.NEXT_PUBLIC_API}/price-range/${category}`
+        : `${process.env.NEXT_PUBLIC_API}/price-range`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const minPrice = Math.floor(data.min_price);
+      const maxPrice = Math.ceil(data.max_price);
+      setPriceRange([minPrice, maxPrice]);
+      setMaxPossiblePrice(maxPrice);
+    } catch (error) {
+      console.error("Error fetching price range:", error);
+    }
   };
 
   return (
@@ -92,6 +122,7 @@ export default function SideBar({ onFiltersChange }: SideBarProps) {
                 onCheckedChange={() =>
                   handleCategoryChange(category.category_name)
                 }
+                disabled={pathname.startsWith("/category/")}
               />
               <Label
                 htmlFor={`category-${category.category_id}`}
@@ -110,7 +141,7 @@ export default function SideBar({ onFiltersChange }: SideBarProps) {
           <SliderPrimitive.Root
             className="relative flex w-full touch-none select-none items-center"
             value={priceRange}
-            max={1000}
+            max={maxPossiblePrice}
             step={1}
             onValueChange={handlePriceChange}
           >
@@ -123,7 +154,7 @@ export default function SideBar({ onFiltersChange }: SideBarProps) {
           <div className="absolute left-0 top-0 -mt-6">
             <div className="relative">
               <div className="absolute left-0 top-full mt-2 -translate-x-1/2 transform">
-                <div className="rounded-md bg-slate-900 px-2 py-1 text-xs text-white">
+                <div  className="rounded-md bg-slate-900 px-2 py-1 text-xs text-white">
                   ${priceRange[0]}
                 </div>
               </div>

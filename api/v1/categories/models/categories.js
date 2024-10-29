@@ -42,6 +42,24 @@ const categories = {
       throw error;
     }
   },
+
+  getPriceRangeByCategory: async (categoryName) => {
+    try {
+      const [results] = await connection.query(queries.getPriceRangeByCategory, [categoryName]);
+      return results[0];
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getOverallPriceRange: async () => {
+    try {
+      const [results] = await connection.query(queries.getOverallPriceRange);
+      return results[0];
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = categories;

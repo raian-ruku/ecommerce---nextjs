@@ -1,69 +1,80 @@
 const express = require("express");
 const router = express.Router();
-const category = require("../models/categories");
+const categoriesModel = require("../models/categories");
 
 router.get("/category-list", async (req, res) => {
   try {
-    const result = await category.getList();
-    return res.status(200).json({
-      success: true,
-      status: 200,
-      message: "Category list.",
-      count: result.length,
-      data: result,
-    });
+    const categories = await categoriesModel.getList();
+    res.json({ success: true, data: categories });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      status: 500,
-      message: "Error retrieving categories.",
-      error: error.message,
-    });
+    console.error("Error fetching categories:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching categories" });
   }
 });
 
-router.get("/category/:name", async (req, res) => {
+router.get("/category/:category", async (req, res) => {
   try {
-    const categoryName = req.params.name;
-    const limit = parseInt(req.query.limit) || 12;
-    const page = parseInt(req.query.page) || 1;
+    const { category } = req.params;
+    const {
+      page = 1,
+      limit = 10,
+      minPrice = 0,
+      maxPrice = Number.MAX_SAFE_INTEGER,
+    } = req.query;
     const offset = (page - 1) * limit;
-    const minPrice = parseFloat(req.query.minPrice) || 0;
-    const maxPrice = parseFloat(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
 
-    const [result, totalCount] = await Promise.all([
-      category.getProductByCategory(
-        categoryName,
-        limit,
-        offset,
-        minPrice,
-        maxPrice,
-      ),
-      category.getTotalProductCountByCategory(categoryName, minPrice, maxPrice),
-    ]);
+    const products = await categoriesModel.getProductByCategory(
+      category,
+      parseInt(limit),
+      parseInt(offset),
+      parseFloat(minPrice),
+      parseFloat(maxPrice),
+    );
 
-    const totalPages = Math.ceil(totalCount / limit);
+    const totalCount = await categoriesModel.getTotalProductCountByCategory(
+      category,
+      parseFloat(minPrice),
+      parseFloat(maxPrice),
+    );
 
-    return res.status(200).json({
+    res.json({
       success: true,
-      status: 200,
-      message: "Product list by category.",
-      currentPage: page,
-      totalPages: totalPages,
-      totalCount: totalCount,
-      limit: limit,
-      count: result.length,
-      data: result,
+      data: products,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: parseInt(page),
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      status: 500,
-      message: "Error retrieving products by category.",
-      error: error.message,
-    });
+    console.error("Error fetching products by category:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching products" });
   }
 });
-router.use(express.json());
+
+router.get("/price-range/:category?", async (req, res) => {
+  try {
+    const { category } = req.params;
+    let priceRange;
+
+    if (category) {
+      priceRange = await categoriesModel.getPriceRangeByCategory(category);
+    } else {
+      priceRange = await categoriesModel.getOverallPriceRange();
+    }
+
+    res.json({
+      success: true,
+      min_price: priceRange.min_price,
+      max_price: priceRange.max_price,
+    });
+  } catch (error) {
+    console.error("Error fetching price range:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching price range" });
+  }
+});
 
 module.exports = router;

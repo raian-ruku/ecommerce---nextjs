@@ -66,21 +66,31 @@ const NavBar = () => {
     }
   };
 
-  useEffect(() => {
+ useEffect(() => {
+  checkLoginStatus();
+
+  // Listen for login events
+  const handleUserLogin = () => {
     checkLoginStatus();
+    fetchUserInfo(); // Fetch user data immediately after login
+  };
+
+  window.addEventListener("user-login", handleUserLogin);
+
+  // Listen for logout events
+  window.addEventListener("user-logout", () => setIsLoggedIn(false));
+
+  return () => {
+    window.removeEventListener("user-login", handleUserLogin);
+    window.removeEventListener("user-logout", () => setIsLoggedIn(false));
+  };
+}, []);
+
+useEffect(() => {
+  if (isLoggedIn) {
     fetchUserInfo();
-
-    // Listen for login events
-    window.addEventListener("user-login", checkLoginStatus);
-
-    // Listen for logout events
-    window.addEventListener("user-logout", () => setIsLoggedIn(false));
-
-    return () => {
-      window.removeEventListener("user-login", checkLoginStatus);
-      window.removeEventListener("user-logout", () => setIsLoggedIn(false));
-    };
-  }, []);
+  }
+}, [isLoggedIn]);
 
   const handleLogout = () => {
     fetch(`${process.env.NEXT_PUBLIC_API}/logout`, {
