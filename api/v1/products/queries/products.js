@@ -18,11 +18,11 @@ const queries = {
     WHERE PM.product_price BETWEEN ? AND ?`,
 
   getProduct: `
-        SELECT p.product_id, PM.product_stock, p.product_title, p.product_description, p.product_thumbnail, p.product_brand,  PM.product_price, p.product_return, p.product_shipping, p.product_warranty,  p.product_weight, p.product_minimum, c.category_name, AVG(r.review_rating) as product_rating
+        SELECT p.product_id, PM.product_stock, p.product_title, p.product_description, p.product_discount, p.product_thumbnail, p.product_brand,  PM.product_price, p.product_return, p.product_shipping, p.product_warranty,  p.product_weight, p.product_minimum, c.category_name, AVG(r.review_rating) as product_rating
         FROM ${table_name} AS p
         INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
         INNER JOIN category AS c ON p.category_id = c.category_id 
-        INNER JOIN reviews AS r ON p.product_id = r.product_id
+        LEFT JOIN reviews AS r ON p.product_id = r.product_id
         WHERE p.product_id = ?
         GROUP BY p.product_id, pm.product_stock, p.product_title, p.product_description, p.product_thumbnail, p.product_brand,  PM.product_price, p.product_return, p.product_shipping, p.product_warranty, p.product_weight, p.product_minimum, c.category_name
         

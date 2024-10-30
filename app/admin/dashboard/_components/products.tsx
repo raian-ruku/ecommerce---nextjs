@@ -8,6 +8,7 @@ import { LuPackagePlus } from "react-icons/lu";
 import { FiEdit } from "react-icons/fi";
 import { MdDeleteForever } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
+import { Textarea } from "@nextui-org/input";
 import {
   Table,
   TableBody,
@@ -65,6 +66,14 @@ interface Product {
   product_id: number;
   product_title: string;
   product_sku: string;
+  product_description: string;
+  product_brand: string;
+  product_warranty: string;
+  product_shipping: string;
+  product_return: string;
+  product_weight: number;
+  product_discount: number;
+  product_minimum: number;
   product_thumbnail: string;
   creation_date: string;
   category_id: number;
@@ -158,6 +167,7 @@ export default function ProductsPage() {
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
+    console.log(product);
     setThumbnailPreview(product.product_thumbnail);
     setIsEditDialogOpen(true);
   };
@@ -297,6 +307,7 @@ export default function ProductsPage() {
       }
       toast.success("Product updated successfully");
       setIsEditDialogOpen(false);
+      console.log(formData);
       fetchProducts();
     } catch (error) {
       console.error("Error updating product:", error);
@@ -333,181 +344,279 @@ export default function ProductsPage() {
                 className="space-y-6"
                 encType="multipart/form-data"
               >
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Basic Information</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="product_title">Product Title</Label>
-                      <Input
-                        id="product_title"
-                        name="product_title"
-                        placeholder="Enter product title"
-                        required
-                      />
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold">
+                        Basic Information
+                      </h3>
+                      <div className="mt-2 grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="product_title">Product Title</Label>
+                          <Input
+                            id="product_title"
+                            name="product_title"
+                            placeholder="Enter product title"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_sku">SKU</Label>
+                          <Input
+                            id="product_sku"
+                            name="product_sku"
+                            placeholder="Enter SKU"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="category_id">Category</Label>
+                          <Select name="category_id" required>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categories.map((category) => (
+                                <SelectItem
+                                  key={category.category_id}
+                                  value={category.category_id.toString()}
+                                >
+                                  {category.category_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_brand">Product Brand</Label>
+                          <Input
+                            id="product_brand"
+                            name="product_brand"
+                            placeholder="Enter product brand"
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="product_sku">SKU</Label>
-                      <Input
-                        id="product_sku"
-                        name="product_sku"
-                        placeholder="Enter SKU"
-                        required
-                      />
+                    <div>
+                      <h3 className="text-lg font-semibold">Description</h3>
+                      <div className="mt-2">
+                        <Textarea
+                          id="product_description"
+                          name="product_description"
+                          label="Description"
+                          labelPlacement="outside"
+                          placeholder="Enter product description"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="category_id">Category</Label>
-                      <Select name="category_id" required>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem
-                              key={category.category_id}
-                              value={category.category_id.toString()}
-                            >
-                              {category.category_name}
-                            </SelectItem>
+                    <div>
+                      <h3 className="text-lg font-semibold">Dimensions</h3>
+                      <div className="mt-2 grid grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="height">Height</Label>
+                          <Input
+                            id="height"
+                            name="height"
+                            type="number"
+                            step="0.01"
+                            placeholder="Height"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="width">Width</Label>
+                          <Input
+                            id="width"
+                            name="width"
+                            type="number"
+                            step="0.01"
+                            placeholder="Width"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="depth">Depth</Label>
+                          <Input
+                            id="depth"
+                            name="depth"
+                            type="number"
+                            step="0.01"
+                            placeholder="Depth"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold">Images</h3>
+                      <div className="mt-2 space-y-4">
+                        <div
+                          className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                          onDragOver={handleDragOver}
+                          onDrop={(e) => handleDrop(e, "thumbnail")}
+                          onClick={() => thumbnailInputRef.current?.click()}
+                        >
+                          <input
+                            type="file"
+                            ref={thumbnailInputRef}
+                            onChange={handleThumbnailChange}
+                            accept="image/*"
+                            style={{ display: "none" }}
+                          />
+                          {thumbnailPreview ? (
+                            <Image
+                              src={thumbnailPreview}
+                              alt="Thumbnail preview"
+                              width={100}
+                              height={100}
+                              className="mx-auto"
+                            />
+                          ) : (
+                            <p>
+                              Drag &apos;n&apos; drop a thumbnail here, or click
+                              to select one
+                            </p>
+                          )}
+                        </div>
+                        <div
+                          className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                          onDragOver={handleDragOver}
+                          onDrop={(e) => handleDrop(e, "productImages")}
+                          onClick={() => productImagesInputRef.current?.click()}
+                        >
+                          <input
+                            type="file"
+                            ref={productImagesInputRef}
+                            onChange={handleProductImagesChange}
+                            accept="image/*"
+                            multiple
+                            style={{ display: "none" }}
+                          />
+                          <p>
+                            Drag &apos;n&apos; drop product images here, or
+                            click to select files
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-4 gap-4">
+                          {productImagePreviews.map((preview, index) => (
+                            <Image
+                              key={index}
+                              src={preview}
+                              alt={`Product image ${index + 1}`}
+                              width={100}
+                              height={100}
+                              className="rounded-md"
+                            />
                           ))}
-                        </SelectContent>
-                      </Select>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Thumbnail</h3>
-                  <div
-                    className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, "thumbnail")}
-                    onClick={() => thumbnailInputRef.current?.click()}
-                  >
-                    <input
-                      type="file"
-                      ref={thumbnailInputRef}
-                      onChange={handleThumbnailChange}
-                      accept="image/*"
-                      style={{ display: "none" }}
-                    />
-                    {thumbnailPreview ? (
-                      <Image
-                        src={thumbnailPreview}
-                        alt="Thumbnail preview"
-                        width={100}
-                        height={100}
-                        className="mx-auto"
-                      />
-                    ) : (
-                      <p>
-                        Drag &apos;n&apos; drop a thumbnail here, or click to
-                        select one
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Product Images</h3>
-                  <div
-                    className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, "productImages")}
-                    onClick={() => productImagesInputRef.current?.click()}
-                  >
-                    <input
-                      type="file"
-                      ref={productImagesInputRef}
-                      onChange={handleProductImagesChange}
-                      accept="image/*"
-                      multiple
-                      style={{ display: "none" }}
-                    />
-                    <p>
-                      Drag &apos;n&apos; drop product images here, or click to
-                      select files
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-4 gap-4">
-                    {productImagePreviews.map((preview, index) => (
-                      <Image
-                        key={index}
-                        src={preview}
-                        alt={`Product image ${index + 1}`}
-                        width={100}
-                        height={100}
-                        className="rounded-md"
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Dimensions</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="height">Height</Label>
-                      <Input
-                        id="height"
-                        name="height"
-                        type="number"
-                        step="0.01"
-                        placeholder="Height"
-                      />
+                    <div>
+                      <h3 className="text-lg font-semibold">
+                        Pricing and Stock
+                      </h3>
+                      <div className="mt-2 grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="purchase_price">Purchase Price</Label>
+                          <Input
+                            id="purchase_price"
+                            name="purchase_price"
+                            type="number"
+                            step="0.01"
+                            placeholder="Enter purchase price"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_price">Selling Price</Label>
+                          <Input
+                            id="product_price"
+                            name="product_price"
+                            type="number"
+                            step="0.01"
+                            placeholder="Enter selling price"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_stock">Stock</Label>
+                          <Input
+                            id="product_stock"
+                            name="product_stock"
+                            type="number"
+                            placeholder="Enter stock quantity"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_minimum">
+                            Minimum Order Quantity
+                          </Label>
+                          <Input
+                            id="product_minimum"
+                            name="product_minimum"
+                            type="number"
+                            placeholder="Minimum order quantity"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_discount">Discount</Label>
+                          <Input
+                            id="product_discount"
+                            name="product_discount"
+                            type="number"
+                            step="0.01"
+                            placeholder="Enter discount"
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="width">Width</Label>
-                      <Input
-                        id="width"
-                        name="width"
-                        type="number"
-                        step="0.01"
-                        placeholder="Width"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="depth">Depth</Label>
-                      <Input
-                        id="depth"
-                        name="depth"
-                        type="number"
-                        step="0.01"
-                        placeholder="Depth"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Pricing and Stock</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="purchase_price">Purchase Price</Label>
-                      <Input
-                        id="purchase_price"
-                        name="purchase_price"
-                        type="number"
-                        step="0.01"
-                        placeholder="Enter purchase price"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="product_price">Selling Price</Label>
-                      <Input
-                        id="product_price"
-                        name="product_price"
-                        type="number"
-                        step="0.01"
-                        placeholder="Enter selling price"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="product_stock">Stock</Label>
-                      <Input
-                        id="product_stock"
-                        name="product_stock"
-                        type="number"
-                        placeholder="Enter stock quantity"
-                        required
-                      />
+                    <div>
+                      <h3 className="text-lg font-semibold">
+                        Additional Information
+                      </h3>
+                      <div className="mt-2 grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="product_warranty">Warranty</Label>
+                          <Input
+                            id="product_warranty"
+                            name="product_warranty"
+                            type="text"
+                            placeholder="Enter warranty information"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_shipping">Shipping</Label>
+                          <Input
+                            id="product_shipping"
+                            name="product_shipping"
+                            type="text"
+                            placeholder="Enter shipping information"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_return">Return Policy</Label>
+                          <Input
+                            id="product_return"
+                            name="product_return"
+                            type="text"
+                            placeholder="Enter return policy"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product_weight">Product Weight</Label>
+                          <Input
+                            id="product_weight"
+                            name="product_weight"
+                            type="number"
+                            step="0.01"
+                            placeholder="Enter product weight"
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -695,184 +804,287 @@ export default function ProductsPage() {
             className="space-y-6"
             encType="multipart/form-data"
           >
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Basic Information</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="product_title">Title</Label>
-                  <Input
-                    id="product_title"
-                    name="product_title"
-                    defaultValue={selectedProduct?.product_title}
-                    className="w-full"
-                  />
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold">Basic Information</h3>
+                  <div className="mt-2 grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="product_title">Title</Label>
+                      <Input
+                        id="product_title"
+                        name="product_title"
+                        defaultValue={selectedProduct?.product_title}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_sku">SKU</Label>
+
+                      <Input
+                        id="product_sku"
+                        name="product_sku"
+                        defaultValue={selectedProduct?.product_sku}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="category_id">Category</Label>
+                      <Select
+                        name="category_id"
+                        defaultValue={selectedProduct?.category_id.toString()}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem
+                              key={category.category_id}
+                              value={category.category_id.toString()}
+                            >
+                              {category.category_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_brand">Product Brand</Label>
+
+                      <Input
+                        id="product_brand"
+                        name="product_brand"
+                        placeholder="Enter product brand"
+                        required
+                        defaultValue={selectedProduct?.product_brand}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="product_sku">SKU</Label>
-                  <Input
-                    id="product_sku"
-                    name="product_sku"
-                    defaultValue={selectedProduct?.product_sku}
-                    className="w-full"
-                  />
+                <div>
+                  <h3 className="text-lg font-semibold">Description</h3>
+                  <div className="mt-2">
+                    <Textarea
+                      id="product_description"
+                      name="product_description"
+                      label="Description"
+                      labelPlacement="outside"
+                      placeholder="Enter product description"
+                      defaultValue={selectedProduct?.product_description}
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="category_id">Category</Label>
-                  <Select
-                    name="category_id"
-                    defaultValue={selectedProduct?.category_id.toString()}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem
-                          key={category.category_id}
-                          value={category.category_id.toString()}
-                        >
-                          {category.category_name}
-                        </SelectItem>
+                <div>
+                  <h3 className="text-lg font-semibold">Dimensions</h3>
+                  <div className="mt-2 grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="height">Height</Label>
+                      <Input
+                        id="height"
+                        name="height"
+                        type="number"
+                        defaultValue={selectedProduct?.height?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="width">Width</Label>
+                      <Input
+                        id="width"
+                        name="width"
+                        type="number"
+                        defaultValue={selectedProduct?.width?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="depth">Depth</Label>
+                      <Input
+                        id="depth"
+                        name="depth"
+                        type="number"
+                        defaultValue={selectedProduct?.depth?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold">Images</h3>
+                  <div className="mt-2 space-y-4">
+                    <div
+                      className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, "thumbnail")}
+                      onClick={() => thumbnailInputRef.current?.click()}
+                    >
+                      <input
+                        type="file"
+                        ref={thumbnailInputRef}
+                        onChange={handleThumbnailChange}
+                        accept="image/*"
+                        style={{ display: "none" }}
+                      />
+                      {thumbnailPreview ? (
+                        <Image
+                          src={thumbnailPreview}
+                          alt="Thumbnail preview"
+                          width={100}
+                          height={100}
+                          className="mx-auto"
+                        />
+                      ) : (
+                        <p>
+                          Drag &apos;n&apos; drop a thumbnail here, or click to
+                          select one
+                        </p>
+                      )}
+                    </div>
+                    <div
+                      className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, "productImages")}
+                      onClick={() => productImagesInputRef.current?.click()}
+                    >
+                      <input
+                        type="file"
+                        ref={productImagesInputRef}
+                        onChange={handleProductImagesChange}
+                        accept="image/*"
+                        multiple
+                        style={{ display: "none" }}
+                      />
+                      <p>
+                        Drag &apos;n&apos; drop product images here, or click to
+                        select files
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-4 gap-4">
+                      {productImagePreviews.map((preview, index) => (
+                        <Image
+                          key={index}
+                          src={preview}
+                          alt={`Product image ${index + 1}`}
+                          width={100}
+                          height={100}
+                          className="rounded-md"
+                        />
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Thumbnail</h3>
-              <div
-                className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, "thumbnail")}
-                onClick={() => thumbnailInputRef.current?.click()}
-              >
-                <input
-                  type="file"
-                  ref={thumbnailInputRef}
-                  onChange={handleThumbnailChange}
-                  accept="image/*"
-                  style={{ display: "none" }}
-                />
-                {thumbnailPreview ? (
-                  <Image
-                    src={thumbnailPreview}
-                    alt="Thumbnail preview"
-                    width={100}
-                    height={100}
-                    className="mx-auto"
-                  />
-                ) : (
-                  <p>
-                    Drag &apos;n&apos; drop a thumbnail here, or click to select
-                    one
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Product Images</h3>
-              <div
-                className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, "productImages")}
-                onClick={() => productImagesInputRef.current?.click()}
-              >
-                <input
-                  type="file"
-                  ref={productImagesInputRef}
-                  onChange={handleProductImagesChange}
-                  accept="image/*"
-                  multiple
-                  style={{ display: "none" }}
-                />
-                <p>
-                  Drag &apos;n&apos; drop product images here, or click to
-                  select files
-                </p>
-              </div>
-              <div className="grid grid-cols-4 gap-4">
-                {productImagePreviews.map((preview, index) => (
-                  <Image
-                    key={index}
-                    src={preview}
-                    alt={`Product image ${index + 1}`}
-                    width={100}
-                    height={100}
-                    className="rounded-md"
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Dimensions</h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="height">Height</Label>
-                  <Input
-                    id="height"
-                    name="height"
-                    type="number"
-                    defaultValue={selectedProduct?.height?.toString()}
-                    className="w-full"
-                  />
+                <div>
+                  <h3 className="text-lg font-semibold">Pricing and Stock</h3>
+                  <div className="mt-2 grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="purchase_price">Purchase Price</Label>
+                      <Input
+                        id="purchase_price"
+                        name="purchase_price"
+                        type="number"
+                        step="0.01"
+                        defaultValue={selectedProduct?.purchase_price?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_price">Selling Price</Label>
+                      <Input
+                        id="product_price"
+                        name="product_price"
+                        type="number"
+                        step="0.01"
+                        defaultValue={selectedProduct?.product_price?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_stock">Stock</Label>
+                      <Input
+                        id="product_stock"
+                        name="product_stock"
+                        type="number"
+                        defaultValue={selectedProduct?.product_stock?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_minimum">
+                        Minimum Order Quantity
+                      </Label>
+                      <Input
+                        id="product_minimum"
+                        name="product_minimum"
+                        type="number"
+                        step="0.01"
+                        defaultValue={selectedProduct?.product_minimum?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_discount">Discount</Label>
+                      <Input
+                        id="product_discount"
+                        name="product_discount"
+                        type="number"
+                        step="0.01"
+                        defaultValue={selectedProduct?.product_discount?.toString()}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="width">Width</Label>
-                  <Input
-                    id="width"
-                    name="width"
-                    type="number"
-                    defaultValue={selectedProduct?.width?.toString()}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="depth">Depth</Label>
-                  <Input
-                    id="depth"
-                    name="depth"
-                    type="number"
-                    defaultValue={selectedProduct?.depth?.toString()}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Pricing and Stock</h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="purchase_price">Purchase Price</Label>
-                  <Input
-                    id="purchase_price"
-                    name="purchase_price"
-                    type="number"
-                    step="0.01"
-                    defaultValue={selectedProduct?.purchase_price?.toString()}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="product_price">Selling Price</Label>
-                  <Input
-                    id="product_price"
-                    name="product_price"
-                    type="number"
-                    step="0.01"
-                    defaultValue={selectedProduct?.product_price?.toString()}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="product_stock">Stock</Label>
-                  <Input
-                    id="product_stock"
-                    name="product_stock"
-                    type="number"
-                    defaultValue={selectedProduct?.product_stock?.toString()}
-                    className="w-full"
-                  />
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    Additional Information
+                  </h3>
+                  <div className="mt-2 grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="product_warranty">Warranty</Label>
+                      <Input
+                        id="product_warranty"
+                        name="product_warranty"
+                        type="text"
+                        placeholder="Enter warranty information"
+                        defaultValue={selectedProduct?.product_warranty}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_shipping">Shipping</Label>
+                      <Input
+                        id="product_shipping"
+                        name="product_shipping"
+                        type="text"
+                        placeholder="Enter shipping information"
+                        defaultValue={selectedProduct?.product_shipping}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_return">Return Policy</Label>
+                      <Input
+                        id="product_return"
+                        name="product_return"
+                        type="text"
+                        placeholder="Enter return policy"
+                        defaultValue={selectedProduct?.product_return}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product_weight">Product Weight</Label>
+                      <Input
+                        id="product_weight"
+                        name="product_weight"
+                        type="number"
+                        step="0.01"
+                        placeholder="Enter product weight"
+                        defaultValue={String(selectedProduct?.product_weight)}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

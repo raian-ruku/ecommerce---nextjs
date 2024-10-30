@@ -167,9 +167,9 @@ const AdminDashboard = () => {
           </TabsTrigger>{" "}
           {isLoggedIn ? (
             <Dialog>
-              <DialogTrigger className="flex w-fit flex-row items-center gap-2 rounded-xl bg-red-700 p-2 text-white drop-shadow-xl">
-                <CiLogout size={15} />
-                <p className="text-[15px]">Logout</p>
+              <DialogTrigger className="flex w-fit flex-row items-center gap-2 rounded-xl p-2 text-red-500 drop-shadow-xl">
+                <CiLogout />
+                <p>Logout</p>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -189,13 +189,13 @@ const AdminDashboard = () => {
               </DialogContent>
             </Dialog>
           ) : (
-            <Button className="rounded-xl bg-green-500 p-2 text-white drop-shadow-xl hover:bg-green-600">
+            <Button className="rounded-xl bg-transparent p-2 text-green-500 drop-shadow-xl hover:bg-transparent hover:text-green-500">
               <Link
                 href="/admin/login"
                 className="flex w-fit flex-row items-center gap-2"
               >
-                <CiLogin size={15} />
-                <p className="text-[15px]">Login</p>
+                <CiLogin size={20} />
+                <p className="text-[20px]">Login</p>
               </Link>
             </Button>
           )}

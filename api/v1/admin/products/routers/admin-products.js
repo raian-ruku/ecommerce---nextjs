@@ -79,7 +79,7 @@ router.post(
   authenticateUser,
   upload.fields([
     { name: "thumbnail", maxCount: 1 },
-    { name: "productImages", maxCount: 5 },
+    { name: "productImages", maxCount: 10 },
   ]),
   async (req, res) => {
     const relativePath = "/images/uploads/";
@@ -96,13 +96,15 @@ router.post(
         productData.product_thumbnail =
           relativePath + req.files["thumbnail"][0].filename;
       }
-      if (req.files["productImages"]) {
-        productData.productImages =
-          relativePath +
-          req.files["productImages"].map((file) => file.filename);
+      if (req.files["productImages"] && req.files["productImages"].length > 0) {
+        // Map productImages if files exist
+        productData.productImages = req.files["productImages"].map(
+          (file) => relativePath + file.filename,
+        );
+      } else {
+        // Default to using product_thumbnail if no productImages are uploaded
+        productData.productImages = [productData.product_thumbnail];
       }
-
-      console.log("Product data to add:", productData);
 
       const productId = await admin_products.addProduct(productData);
 
@@ -116,7 +118,7 @@ router.post(
       return res.status(500).json({
         success: false,
         message: "Error adding product.",
-        error: error.message, // This will provide detailed error info
+        error: error.message,
       });
     }
   },
@@ -155,7 +157,7 @@ router.put(
   authenticateUser,
   upload.fields([
     { name: "thumbnail", maxCount: 1 },
-    { name: "productImages", maxCount: 5 },
+    { name: "productImages", maxCount: 10 },
   ]),
   async (req, res) => {
     const relativePath = "/images/uploads/";
@@ -173,9 +175,9 @@ router.put(
           relativePath + req.files["thumbnail"][0].filename;
       }
       if (req.files["productImages"]) {
-        productData.newImages =
-          relativePath +
-          req.files["productImages"].map((file) => file.filename);
+        productData.newImages = req.files["productImages"].map(
+          (file) => relativePath + file.filename,
+        );
       }
 
       await admin_products.updateProduct(req.params.id, productData);
