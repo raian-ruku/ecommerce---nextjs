@@ -32,7 +32,6 @@ interface ApiResponse {
   totalPages: number;
   totalCount: number;
 }
-//TODO FIX THE FILTER HANDLING AND PAGINATION. ALSO FIX FILTERS IN CATEGORY PAGE
 const ProductByCategoryPage = ({
   params,
 }: {

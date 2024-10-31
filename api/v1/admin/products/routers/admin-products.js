@@ -188,6 +188,13 @@ router.put(
       });
     } catch (error) {
       console.error("Error in update product route:", error);
+      if (error.name === "ValidationError") {
+        return res.status(400).json({
+          success: false,
+          message: "Validation error",
+          error: error.message,
+        });
+      }
       return res.status(500).json({
         success: false,
         message: "Error updating product.",

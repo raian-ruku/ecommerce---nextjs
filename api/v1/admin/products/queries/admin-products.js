@@ -84,20 +84,18 @@ const queries = {
   updateProduct: `
     UPDATE ${products_table}
     SET 
-      product_title = COALESCE(?, product_title),
-      product_description = COALESCE(?, product_description),
-      product_discount = COALESCE(?, product_discount),
-      product_brand = COALESCE(?, product_brand),
-      product_sku = COALESCE(?, product_sku),
-      product_warranty = COALESCE(?, product_warranty),
-      product_shipping = COALESCE(?, product_shipping),
-      product_return = COALESCE(?, product_return),
-      product_minimum = COALESCE(?, product_minimum),
-      product_weight = COALESCE(?, product_weight),
-      product_thumbnail = COALESCE(?, product_thumbnail),
-      category_id = COALESCE(?, category_id),
-      last_updated_by = 'admin',
-      last_update_date = CURRENT_TIMESTAMP
+      product_title = ?,
+      product_description = ?,
+      product_discount = ?,
+      product_brand = ?,
+      product_sku = ?,
+      product_warranty = ?,
+      product_shipping = ?,
+      product_return = ?,
+      product_minimum = ?,
+      product_weight = ?,
+      product_thumbnail = ?,
+      category_id = ?
     WHERE product_id = ?
   `,
 

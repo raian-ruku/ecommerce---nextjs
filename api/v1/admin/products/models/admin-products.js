@@ -1,6 +1,5 @@
 const connection = require("../../../connection/connection");
 const queries = require("../queries/admin-products");
-//TODO: FIX IMAGE WHILE EDITING
 const admin_products = {
   getAllProducts: async (page, pageSize, searchTerm) => {
     try {
@@ -126,23 +125,27 @@ const admin_products = {
       await conn.beginTransaction();
 
       // Update products table
-      await conn.query(queries.updateProduct, [
-        productData.product_title,
-        productData.product_description,
-        productData.product_discount
-          ? parseFloat(productData.product_discount)
-          : null,
-        productData.product_brand,
-        productData.product_sku,
-        productData.product_warranty,
-        productData.product_shipping,
-        productData.product_return,
-        productData.product_minimum,
-        productData.product_weight,
-        productData.product_thumbnail,
-        productData.category_id,
-        productId,
-      ]);
+      if (queries.updateProduct) {
+        await conn.query(queries.updateProduct, [
+          productData.product_title,
+          productData.product_description,
+          productData.product_discount
+            ? parseFloat(productData.product_discount)
+            : null,
+          productData.product_brand,
+          productData.product_sku,
+          productData.product_warranty,
+          productData.product_shipping,
+          productData.product_return,
+          productData.product_minimum,
+          productData.product_weight,
+          productData.product_thumbnail,
+          productData.category_id,
+          productId,
+        ]);
+      } else {
+        throw new Error("updateProduct query is undefined");
+      }
 
       // Update products_master table if price or stock is changed
       if (
@@ -150,46 +153,81 @@ const admin_products = {
         productData.product_price ||
         productData.product_stock
       ) {
-        await conn.query(queries.updateProductMaster, [
-          productData.purchase_price
-            ? parseFloat(productData.purchase_price)
-            : null,
-          productData.product_price
-            ? parseFloat(productData.product_price)
-            : null,
-          productData.product_stock
-            ? parseInt(productData.product_stock)
-            : null,
-          productId,
-        ]);
+        if (queries.updateProductMaster) {
+          await conn.query(queries.updateProductMaster, [
+            productData.purchase_price
+              ? parseFloat(productData.purchase_price)
+              : null,
+            productData.product_price
+              ? parseFloat(productData.product_price)
+              : null,
+            productData.product_stock
+              ? parseInt(productData.product_stock)
+              : null,
+            productId,
+          ]);
+        } else {
+          throw new Error("updateProductMaster query is undefined");
+        }
       }
 
       // Update dimensions table if any dimension is changed
       if (productData.height || productData.width || productData.depth) {
-        await conn.query(queries.updateDimensions, [
-          productData.height ? parseFloat(productData.height) : null,
-          productData.width ? parseFloat(productData.width) : null,
-          productData.depth ? parseFloat(productData.depth) : null,
-          productId,
-        ]);
+        if (queries.updateDimensions) {
+          await conn.query(queries.updateDimensions, [
+            productData.height ? parseFloat(productData.height) : null,
+            productData.width ? parseFloat(productData.width) : null,
+            productData.depth ? parseFloat(productData.depth) : null,
+            productId,
+          ]);
+        } else {
+          throw new Error("updateDimensions query is undefined");
+        }
       }
 
       // Handle image updates
-      if (productData.newImages && productData.newImages.length > 0) {
-        // Delete existing images
-        await conn.query(queries.deleteProductImages, [productId]);
+      const existingImages = productData.existingImages || [];
+      const newImages = productData.newImages || [];
 
-        // Insert new images
-        for (const imageName of productData.newImages) {
-          await conn.query(queries.addProductImage, [productId, imageName]);
-        }
-      } else if (productData.product_thumbnail) {
-        // If no new images, use the thumbnail as an image
-        await conn.query(queries.deleteProductImages, [productId]);
-        await conn.query(queries.addProductImage, [
+      // Delete images that are no longer in existingImages
+      if (queries.getProductImages && queries.deleteProductImage) {
+        const [currentImages] = await conn.query(queries.getProductImages, [
           productId,
-          productData.product_thumbnail,
         ]);
+        for (const image of currentImages) {
+          if (!existingImages.includes(image.image_data)) {
+            await conn.query(queries.deleteProductImage, [image.image_id]);
+            // Delete the file from the server
+            try {
+              await fs.unlink(
+                path.join(
+                  __dirname,
+                  "..",
+                  "..",
+                  "..",
+                  "..",
+                  "public",
+                  image.image_data,
+                ),
+              );
+            } catch (unlinkError) {
+              console.error("Error deleting image file:", unlinkError);
+            }
+          }
+        }
+      } else {
+        throw new Error(
+          "getProductImages or deleteProductImage query is undefined",
+        );
+      }
+
+      // Add new images
+      if (queries.addProductImage) {
+        for (const imagePath of newImages) {
+          await conn.query(queries.addProductImage, [productId, imagePath]);
+        }
+      } else {
+        throw new Error("addProductImage query is undefined");
       }
 
       await conn.commit();

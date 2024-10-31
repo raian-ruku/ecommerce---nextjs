@@ -9,6 +9,7 @@ import { FiEdit } from "react-icons/fi";
 import { MdDeleteForever } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 import { Textarea } from "@nextui-org/input";
+import { X } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -200,6 +201,8 @@ export default function ProductsPage() {
     if (file) {
       setThumbnailFile(file);
       setThumbnailPreview(URL.createObjectURL(file));
+      console.log("Thumbnail file:", file);
+      console.log("Thumbnail preview URL:", URL.createObjectURL(file));
     }
   };
 
@@ -212,6 +215,23 @@ export default function ProductsPage() {
       ...prevPreviews,
       ...files.map((file) => URL.createObjectURL(file)),
     ]);
+    console.log("Product images:", files);
+    console.log(
+      "Product image preview URLs:",
+      files.map((file) => URL.createObjectURL(file)),
+    );
+  };
+
+  const handleRemoveThumbnail = () => {
+    setThumbnailFile(null);
+    setThumbnailPreview(null);
+  };
+
+  const handleRemoveProductImage = (index: number) => {
+    setProductImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setProductImagePreviews((prevPreviews) =>
+      prevPreviews.filter((_, i) => i !== index),
+    );
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -916,7 +936,7 @@ export default function ProductsPage() {
                   <h3 className="text-lg font-semibold">Images</h3>
                   <div className="mt-2 space-y-4">
                     <div
-                      className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
+                      className="relative cursor-pointer rounded-md border-2 border-dashed border-gray-300 p-4 text-center"
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, "thumbnail")}
                       onClick={() => thumbnailInputRef.current?.click()}
@@ -929,13 +949,27 @@ export default function ProductsPage() {
                         style={{ display: "none" }}
                       />
                       {thumbnailPreview ? (
-                        <Image
-                          src={thumbnailPreview}
-                          alt="Thumbnail preview"
-                          width={100}
-                          height={100}
-                          className="mx-auto"
-                        />
+                        <>
+                          <Image
+                            src={thumbnailPreview}
+                            alt="Thumbnail preview"
+                            width={100}
+                            height={100}
+                            className="mx-auto"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute -right-2 -top-2 h-5 w-5"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveThumbnail();
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </>
                       ) : (
                         <p>
                           Drag &apos;n&apos; drop a thumbnail here, or click to
@@ -964,14 +998,24 @@ export default function ProductsPage() {
                     </div>
                     <div className="grid grid-cols-4 gap-4">
                       {productImagePreviews.map((preview, index) => (
-                        <Image
-                          key={index}
-                          src={preview}
-                          alt={`Product image ${index + 1}`}
-                          width={100}
-                          height={100}
-                          className="rounded-md"
-                        />
+                        <div key={index} className="relative">
+                          <Image
+                            src={preview}
+                            alt={`Product image ${index + 1}`}
+                            width={100}
+                            height={100}
+                            className="rounded-md"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute -right-2 -top-2 h-5 w-5"
+                            onClick={() => handleRemoveProductImage(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
                       ))}
                     </div>
                   </div>
