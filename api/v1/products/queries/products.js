@@ -39,12 +39,38 @@ const queries = {
         SELECT height, width, depth FROM dimensions WHERE product_id = ?
     `,
   getBestSeller: `
-        SELECT p.product_id, PM.product_stock, p.product_title, p.product_thumbnail, p.product_brand, PM.product_price, p.product_minimum
+        SELECT p.product_id, PM.product_stock, p.product_title, p.product_thumbnail, p.product_brand, PM.product_price, p.product_minimum, PM.product_stock
         FROM ${table_name} AS p
         INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
         ORDER BY p.product_rating DESC
         LIMIT 10 OFFSET 10
     `,
+  getLatestHome: `
+        SELECT p.product_id, PM.product_stock, p.product_title, p.product_thumbnail, p.product_brand, PM.product_price, p.product_minimum, PM.product_stock, p.creation_date
+        FROM ${table_name} AS p
+        INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
+        ORDER BY p.creation_date DESC
+        limit 10
+    `,
+  getFeaturedHome: `
+        SELECT p.product_id, PM.product_stock, p.product_title, p.product_thumbnail, p.product_brand, PM.product_price, p.product_minimum, PM.product_stock, p.creation_date, AVG(r.review_rating) as product_rating
+        FROM ${table_name} AS p
+        INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
+        LEFT JOIN reviews AS r ON p.product_id = r.product_id
+        group by p.product_id, PM.product_stock, p.product_title, p.product_thumbnail, p.product_brand, PM.product_price, p.product_minimum, PM.product_stock, p.creation_date
+        ORDER BY p.product_rating DESC
+        limit 10
+    `,
+  getSimilarProducts: `SELECT p.product_id, PM.product_stock, p.product_title, p.product_thumbnail, 
+       p.product_brand, PM.product_price, p.product_minimum 
+FROM ${table_name} AS p
+INNER JOIN products_master AS PM ON p.product_id = PM.product_id 
+INNER JOIN category AS c ON p.category_id = c.category_id
+WHERE c.category_name = ?
+AND p.product_id != ?
+ORDER BY PM.product_price ASC
+LIMIT 10`,
+
   getTotalProductCount: `SELECT COUNT(*) AS total FROM ${table_name}`,
 
   searchProducts: `

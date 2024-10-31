@@ -16,7 +16,8 @@ type Products = {
   product_price: number;
   product_thumbnail: string;
   product_brand: string;
-  product_availability: number;
+  product_minimum: number;
+  product_stock: number;
 };
 
 const BestSeller = async ({ className }: { className?: string }) => {
@@ -26,11 +27,14 @@ const BestSeller = async ({ className }: { className?: string }) => {
   const data = await response.json();
   const products: Products[] = data.data;
 
-  const getAvailabilityStatus = (product_availability: number) => {
-    if (product_availability === 0) return "Out of Stock";
-    if (product_availability === 1) return "In Stock";
-    if (product_availability === 2) return "Low Stock";
-    return "Unknown"; // Add a default case to handle undefined values
+  const getAvailabilityStatus = (
+    product_stock: number,
+    product_minimum: number,
+  ) => {
+    if (product_stock === 0) return "Out of Stock";
+    if (product_stock >= product_minimum) return "In Stock";
+    if (product_stock < product_minimum) return "Low Stock";
+    return "Unknown";
   };
 
   return (
@@ -66,7 +70,8 @@ const BestSeller = async ({ className }: { className?: string }) => {
                     <div className="flex w-auto items-center gap-4">
                       <StockBadge
                         status={getAvailabilityStatus(
-                          product.product_availability,
+                          product.product_stock,
+                          product.product_minimum,
                         )}
                       />
                       ${product.product_price}

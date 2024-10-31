@@ -182,15 +182,17 @@ const DetailsReview: React.FC<DetailsReviewProps> = ({
             <h2 className="text-xl font-semibold md:text-2xl">Details</h2>
             <p className="font-bold">{details}</p>
             <p>Brand: {brand ? brand : "Not mentioned"}</p>
-            <p>Weight: {weight}</p>
-            <p>Height: {height}</p>
-            <p>Width: {width}</p>
+            <p>Weight: {weight ? weight : "Not mentioned"}</p>
+            <p>Height: {height ? height : "Not mentioned"}</p>
+            <p>Width: {width ? width : "Not mentioned"}</p>
 
-            <p>Depth: {depth}</p>
-            <p>Warranty Policy: {warranty}</p>
-            <p>Return Policy: {returnPolicy}</p>
-            <p>Minimum order quantity: {minimum}</p>
-            <p>Shipping Information: {shipping}</p>
+            <p>Depth: {depth ? depth : "Not mentioned"}</p>
+            <p>Warranty Policy: {warranty ? warranty : "Not mentioned"}</p>
+            <p>
+              Return Policy: {returnPolicy ? returnPolicy : "Not mentioned"}
+            </p>
+            <p>Minimum order quantity: {minimum ? minimum : "Not mentioned"}</p>
+            <p>Shipping Information: {shipping ? shipping : "Not mentioned"}</p>
           </TabsContent>
           <TabsContent value="reviews" className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold md:text-2xl">Reviews</h2>

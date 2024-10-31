@@ -21,11 +21,27 @@ const CustomTop = ({ classname }: { classname: string }) => {
     const fetchProductName = async () => {
       if (isNaN(Number(productId))) return;
 
-      const response = await fetch(
-        `https://dummyjson.com/products/${productId}`,
-      );
-      const data = await response.json();
-      setProductName(data.title);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/products/${productId}`,
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        if (
+          data.success &&
+          data.data &&
+          data.data.length > 0 &&
+          data.data[0].product_title
+        ) {
+          setProductName(data.data[0].product_title);
+        } else {
+          console.error("Product title not found in response data");
+        }
+      } catch (error) {
+        console.error("Failed to fetch product name:", error);
+      }
     };
 
     fetchProductName();

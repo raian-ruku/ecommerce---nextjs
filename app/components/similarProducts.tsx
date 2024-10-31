@@ -12,13 +12,14 @@ import {
 } from "@/components/ui/carousel";
 import Link from "next/link";
 
-type Products = {
-  id: number;
-  title: string;
-  price: number;
-  thumbnail: string;
-  brand: string;
-  availabilityStatus: "In Stock" | "Out of Stock" | "Low Stock";
+type Product = {
+  product_id: number;
+  product_title: string;
+  product_price: number;
+  product_thumbnail: string;
+  product_brand: string;
+  product_minimum: number;
+  product_stock: number;
 };
 
 const SimilarProducts = ({
@@ -30,22 +31,38 @@ const SimilarProducts = ({
   category: string;
   excludeId: number;
 }) => {
-  const [products, setProducts] = useState<Products[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        `https://dummyjson.com/products/category/${category}?sortBy=rating&order=desc`,
-      );
-      const data = await response.json();
-      const filteredProducts = data.products.filter(
-        (product: Products) => product.id !== excludeId,
-      );
-      setProducts(filteredProducts);
+    const fetchSimilarProducts = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/similar-products/${category}/${excludeId}`,
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch similar products");
+        }
+        const data = await response.json();
+        if (data.success) {
+          setProducts(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching similar products:", error);
+      }
     };
 
-    fetchData();
+    fetchSimilarProducts();
   }, [category, excludeId]);
+
+  const getAvailabilityStatus = (
+    product_stock: number,
+    product_minimum: number,
+  ) => {
+    if (product_stock === 0) return "Out of Stock";
+    if (product_stock >= product_minimum) return "In Stock";
+    if (product_stock < product_minimum) return "Low Stock";
+    return "Unknown";
+  };
 
   return (
     <Carousel opts={{ align: "start", loop: true, dragFree: true }}>
@@ -53,32 +70,37 @@ const SimilarProducts = ({
         className={`flex w-container flex-row justify-between gap-x-6 ${className}`}
       >
         <CarouselContent className="w-container">
-          {products.map((product) => {
-            return (
-              <CarouselItem key={product.id} className="basis-1/4">
-                <div className="flex flex-col gap-y-5">
-                  <Image
-                    className="h-[256px] w-[256px] justify-self-center"
-                    src={product.thumbnail}
-                    alt={product.title}
-                    unoptimized
-                    height={256}
-                    width={256}
-                  />
-                  <Link href={`/products/${product.id}`}>
-                    <div className="h-[100px] w-[256px] text-b900">
-                      {product.title}
-                    </div>
-                  </Link>
-                  <div className="h-[30px] text-b900">{product.brand}</div>
-                  <div className="flex w-auto items-center gap-4">
-                    <StockBadge status={product.availabilityStatus} />$
-                    {product.price}
+          {products.map((product) => (
+            <CarouselItem key={product.product_id} className="basis-1/4">
+              <div className="flex flex-col gap-y-5">
+                <Image
+                  className="h-[256px] w-[256px] justify-self-center"
+                  src={product.product_thumbnail}
+                  alt={product.product_title}
+                  unoptimized
+                  height={256}
+                  width={256}
+                />
+                <Link href={`/products/${product.product_id}`}>
+                  <div className="h-[100px] w-[256px] text-b900">
+                    {product.product_title}
                   </div>
+                </Link>
+                <div className="h-[30px] text-b900">
+                  {product.product_brand}
                 </div>
-              </CarouselItem>
-            );
-          })}
+                <div className="flex w-auto items-center gap-4">
+                  <StockBadge
+                    status={getAvailabilityStatus(
+                      product.product_stock,
+                      product.product_minimum,
+                    )}
+                  />
+                  ${product.product_price}
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />

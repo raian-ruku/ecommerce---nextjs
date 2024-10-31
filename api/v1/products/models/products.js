@@ -48,14 +48,40 @@ const products = {
     }
   },
 
-  // getTotalProductCount: async () => {
-  //   try {
-  //     const [results] = await connection.query(queries.getTotalProductCount);
-  //     return results[0].total;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // },
+  getLatestHome: async (limit, offset) => {
+    try {
+      const [results] = await connection.query(queries.getLatestHome, [
+        limit,
+        offset,
+      ]);
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getFeaturedHome: async (limit, offset) => {
+    try {
+      const [results] = await connection.query(queries.getFeaturedHome, [
+        limit,
+        offset,
+      ]);
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getSimilarProducts: async (category, excludeId) => {
+    try {
+      const [products] = await connection.query(queries.getSimilarProducts, [
+        category,
+        excludeId,
+      ]);
+      return products;
+    } catch (error) {
+      console.error("Error fetching similar products:", error);
+      throw error;
+    }
+  },
 
   getProduct: async (id) => {
     try {

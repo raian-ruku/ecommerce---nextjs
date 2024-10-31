@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 interface ProductDetails {
-  id: number;
-  title: string;
+  product_id: number;
+  product_title: string;
 }
 
 type Props = {
@@ -12,11 +12,11 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = params.id;
   const product: ProductDetails = await fetch(
-    `https://dummyjson.com/products/${id}`,
+    `${process.env.NEXT_PUBLIC_API}/products/${id}`,
   ).then((response) => response.json());
 
   return {
-    title: product.title,
+    title: product.product_title,
   };
 }
 

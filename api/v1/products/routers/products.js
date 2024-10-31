@@ -80,6 +80,62 @@ router.get("/bestseller", async (req, res) => {
     });
   }
 });
+router.get("/latesthome", async (req, res) => {
+  try {
+    const [result] = await Promise.all([products.getLatestHome()]);
+
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Product list.",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Error retrieving products.",
+      error: error.message,
+    });
+  }
+});
+router.get("/featuredhome", async (req, res) => {
+  try {
+    const [result] = await Promise.all([products.getFeaturedHome()]);
+
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Product list.",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Error retrieving products.",
+      error: error.message,
+    });
+  }
+});
+
+router.get("/similar-products/:category/:excludeId", async (req, res) => {
+  try {
+    const { category, excludeId } = req.params;
+    const similarProducts = await products.getSimilarProducts(
+      category,
+      excludeId,
+    );
+    res.json({ success: true, data: similarProducts });
+  } catch (error) {
+    console.error("Error in similar products route:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching similar products",
+      error: error.message,
+    });
+  }
+});
 
 router.get("/search", async (req, res) => {
   try {
